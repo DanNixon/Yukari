@@ -1,0 +1,29 @@
+language: cpp
+
+sudo: false
+
+addons:
+  apt:
+    sources:
+      - kalakris-cmake
+    packages:
+      - cmake
+      - cppcheck
+      - doxygen
+      - lcov
+      - libboost-all-dev
+
+before_install:
+  - cmake --version
+
+script:
+  - mkdir -p build
+  - cd build
+  - cmake -DCMAKE_BUILD_TYPE=Debug ..
+  - make -j4
+  - ctest -VV
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
