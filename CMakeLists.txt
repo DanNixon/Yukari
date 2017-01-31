@@ -10,9 +10,8 @@ set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin )
 
 enable_testing ()
 
-# C++11
 if(UNIX)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x -pthread")
 endif()
 
 # Lcov
@@ -30,10 +29,15 @@ globally_enable_extra_compiler_warnings()
 include ( DoxygenTargets )
 
 # Includes
-include_directories ( ${CMAKE_CURRENT_SOURCE_DIR} )
+include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}
+                      ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty )
 
 # Libraries
+add_subdirectory ( YukariCommon )
 add_subdirectory ( YukariMaths )
+
+# Executables
+add_subdirectory ( YukariCaptureApplication )
 
 # Generate test coverage report
 if ( LCOV_PATH )
