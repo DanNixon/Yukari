@@ -4,13 +4,13 @@
 
 #include "LoggingService.h"
 
-#include <boost/property_tree/ini_parser.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
 namespace Yukari
 {
 namespace Common
 {
-  boost::property_tree::ptree ConfigurationManager::Load(const std::string &filename)
+  ConfigurationManager::Config ConfigurationManager::Load(const std::string &filename)
   {
     auto logger = LoggingService::GetLogger("ConfigurationManager");
 
@@ -18,9 +18,9 @@ namespace Common
     try
     {
       logger->debug("Reading configuration file \"{}\"", filename);
-      boost::property_tree::read_ini(filename, pt);
+      boost::property_tree::read_json(filename, pt);
     }
-    catch (boost::property_tree::ini_parser_error &e)
+    catch (boost::property_tree::json_parser_error &e)
     {
       logger->warn("Failed to read configuration file \"{}\": {}", filename, e.what());
     }

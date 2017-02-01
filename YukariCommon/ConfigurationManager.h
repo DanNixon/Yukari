@@ -11,7 +11,10 @@ namespace Common
   class ConfigurationManager
   {
   public:
-    static boost::property_tree::ptree Load(const std::string &filename);
+    typedef boost::property_tree::ptree Config;
+
+  public:
+    static Config Load(const std::string &filename);
   };
 }
 }
