@@ -23,7 +23,7 @@ namespace Maths
       BOOST_CHECK_EQUAL(v.x(), 0.0f);
       BOOST_CHECK_EQUAL(v.y(), 0.0f);
       BOOST_CHECK_EQUAL(v.z(), 0.0f);
-      BOOST_CHECK_EQUAL(v.w(), 0.0f);
+      BOOST_CHECK_EQUAL(v.w(), 1.0f);
     }
 
     BOOST_AUTO_TEST_CASE(Vector_Init_Value)
@@ -211,4 +211,5 @@ namespace Maths
   }
 }
 }
+
 #endif

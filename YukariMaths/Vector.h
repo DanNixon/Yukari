@@ -11,10 +11,15 @@ namespace Maths
   class Vector : public BaseMathType
   {
   public:
-    Vector(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 0.0f);
+    Vector(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 1.0f);
     virtual ~Vector();
 
     inline float x() const
+    {
+      return m_x;
+    }
+
+    inline float &x()
     {
       return m_x;
     }
@@ -24,7 +29,17 @@ namespace Maths
       return m_y;
     }
 
+    inline float &y()
+    {
+      return m_y;
+    }
+
     inline float z() const
+    {
+      return m_z;
+    }
+
+    inline float &z()
     {
       return m_z;
     }

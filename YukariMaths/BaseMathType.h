@@ -39,7 +39,7 @@ namespace Maths
       return !this->operator==(other);
     }
 
-    void toZero()
+    inline void toZero()
     {
       m_x = 0.0f;
       m_y = 0.0f;
@@ -47,7 +47,12 @@ namespace Maths
       m_w = 0.0f;
     }
 
-    float w() const
+    inline float w() const
+    {
+      return m_w;
+    }
+
+    inline float &w()
     {
       return m_w;
     }
