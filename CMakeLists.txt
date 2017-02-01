@@ -38,6 +38,7 @@ add_subdirectory ( YukariMaths )
 
 # Executables
 add_subdirectory ( YukariCaptureApplication )
+add_subdirectory ( KinectTestApp )
 
 # Generate test coverage report
 if ( LCOV_PATH )
