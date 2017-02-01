@@ -14,7 +14,9 @@ namespace Common
   class LoggingService
   {
     public:
+      static void Init();
       static void Configure();
+
       static std::shared_ptr<spdlog::logger> GetLogger(const std::string &name);
 
     private:

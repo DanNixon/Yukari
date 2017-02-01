@@ -1,9 +1,18 @@
+#include <iostream>
+
 #include <YukariCommon/LoggingService.h>
+#include <YukariCommon/ConfigurationManager.h>
 
 using namespace Yukari::Common;
 
 int main()
 {
+  LoggingService::Init();
+
+  auto pt = ConfigurationManager::Load("test.ini");
+
+  std::cout << pt.get<std::string>("hello.world", "nope") << '\n';
+
   LoggingService::Configure();
 
   auto logger = LoggingService::GetLogger("test1");

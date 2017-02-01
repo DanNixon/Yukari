@@ -8,11 +8,18 @@ namespace Common
 {
   std::shared_ptr<spdlog::sinks::dist_sink_st> LoggingService::m_sink;
 
+  void LoggingService::Init()
+  {
+    if (!m_sink)
+      m_sink = std::make_shared<spdlog::sinks::dist_sink_st>();
+  }
+
   void LoggingService::Configure()
   {
-    /* TODO */
-    m_sink = std::make_shared<spdlog::sinks::dist_sink_st>();
+    if (!m_sink)
+      return;
 
+    /* TODO */
     auto sink1 = std::make_shared<spdlog::sinks::stdout_sink_st>();
     auto sink2 =
         std::make_shared<spdlog::sinks::simple_file_sink_st>("mylog.log");

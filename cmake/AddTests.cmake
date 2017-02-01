@@ -1,4 +1,4 @@
-find_package ( Boost COMPONENTS unit_test_framework REQUIRED )
+find_package ( Boost REQUIRED COMPONENTS unit_test_framework )
 
 function ( AddTests _libs )
   include_directories ( ${Boost_INCLUDE_DIRS} )
