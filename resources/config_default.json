@@ -1,0 +1,16 @@
+{
+  "logging":
+  {
+    "sinks":
+    [
+      {
+        "type": "console"
+      },
+      {
+        "type": "file_simple",
+        "level": "trace",
+        "filename": "logs/test.log"
+      }
+    ]
+  }
+}
