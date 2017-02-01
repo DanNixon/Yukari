@@ -7,8 +7,7 @@ using namespace Yukari::Common;
 
 int main()
 {
-  LoggingService::Init();
-  auto config = ConfigurationManager::Load("config.json");
+  auto config = ConfigurationManager::LoadFromAppDataDirectory("yukari", "config.json");
   LoggingService::Configure(config);
 
   /* TODO */

@@ -2,9 +2,17 @@
 
 #include "ConfigurationManager.h"
 
-#include "LoggingService.h"
-
 #include <boost/property_tree/json_parser.hpp>
+
+#if defined(__linux__)
+#include <pwd.h>
+#endif
+
+#if defined(_WIN32)
+/* TODO */
+#endif
+
+#include "LoggingService.h"
 
 namespace Yukari
 {
@@ -26,6 +34,43 @@ namespace Common
     }
 
     return pt;
+  }
+
+  ConfigurationManager::Config ConfigurationManager::LoadFromAppDataDirectory(const std::string &appName, const std::string &filename)
+  {
+    auto path = GetAppDataDirectory(appName) / filename;
+    return Load(path.string());
+  }
+
+  boost::filesystem::path ConfigurationManager::GetUserHomeDirectory()
+  {
+#if defined(__linux__)
+    struct passwd *pwd = getpwuid(getuid());
+    if (pwd)
+      return boost::filesystem::path(pwd->pw_dir);
+    else
+      return boost::filesystem::path(getenv("HOME"));
+#endif
+
+#if defined(_WIN32)
+/* TODO */
+#endif
+
+    throw std::runtime_error("Unknown platform");
+  }
+
+  boost::filesystem::path ConfigurationManager::GetAppDataDirectory(const std::string &appName)
+  {
+#if defined(__linux__)
+    auto dir = GetUserHomeDirectory() / ("." + appName);
+    return dir;
+#endif
+
+#if defined(_WIN32)
+/* TODO */
+#endif
+
+    throw std::runtime_error("Unknown platform");
   }
 }
 }

@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+#include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <spdlog/sinks/base_sink.h>
 
@@ -13,25 +14,10 @@ namespace Common
 {
   std::shared_ptr<spdlog::sinks::dist_sink_st> LoggingService::m_sink;
 
-  void LoggingService::Init()
-  {
-    if (!m_sink)
-    {
-      m_sink = std::make_shared<spdlog::sinks::dist_sink_st>();
-    }
-    else
-    {
-      std::cerr << "Logger already initialised!\n";
-    }
-  }
-
   void LoggingService::Configure(ConfigurationManager::Config &config)
   {
     if (!m_sink)
-    {
-      std::cerr << "Logger not initialised!\n";
-      return;
-    }
+      m_sink = std::make_shared<spdlog::sinks::dist_sink_st>();
 
     auto sinks = config.get_child_optional("logging.sinks");
 
@@ -50,6 +36,7 @@ namespace Common
         else if (type == "file_simple")
         {
           const std::string logFile = it->second.get<std::string>("filename", "yukari.log");
+          EnsureLogDirectoryExists(logFile);
           sink = std::make_shared<spdlog::sinks::simple_file_sink_st>(logFile);
         }
         else
@@ -74,6 +61,9 @@ namespace Common
       std::cerr << "No log sinks defined, no logs will be available!\n";
     }
 
+    spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) {l->flush();});
+    spdlog::drop_all();
+
     GetLogger("LoggingService")->info("Logger configured.");
   }
 
@@ -82,7 +72,21 @@ namespace Common
     auto logger = spdlog::get(name);
     if (!logger)
     {
-      logger = std::make_shared<spdlog::logger>(name, m_sink);
+      if (m_sink)
+      {
+        logger = std::make_shared<spdlog::logger>(name, m_sink);
+      }
+      else
+      {
+        auto sink = std::make_shared<spdlog::sinks::stdout_sink_st>();
+        sink->set_level(spdlog::level::trace);
+        logger = std::make_shared<spdlog::logger>(name, sink);
+      }
+
+      /* Default to trace level for all loggers */
+      logger->set_level(spdlog::level::trace);
+
+      /* Register the logger */
       spdlog::register_logger(logger);
     }
 
@@ -97,6 +101,13 @@ namespace Common
       throw std::runtime_error("Invalid log level: \"" + levelStr + "\"");
     spdlog::level::level_enum level = (spdlog::level::level_enum)(pos - spdlog::level::level_names);
     return level;
+  }
+
+  void LoggingService::EnsureLogDirectoryExists(const std::string &filename)
+  {
+    boost::filesystem::path p(filename);
+    boost::filesystem::path parentDir = p.parent_path();
+    boost::filesystem::create_directories(parentDir);
   }
 }
 }
