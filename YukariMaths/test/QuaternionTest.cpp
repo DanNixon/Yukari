@@ -2,7 +2,6 @@
 
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE "QuaternionTest"
 
 #include <boost/test/unit_test.hpp>
