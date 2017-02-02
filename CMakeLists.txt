@@ -43,6 +43,7 @@ include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}
 # Libraries
 add_subdirectory ( YukariCommon )
 add_subdirectory ( YukariMaths )
+add_subdirectory ( YukariIMU )
 
 # Executables
 add_subdirectory ( YukariCaptureApplication )

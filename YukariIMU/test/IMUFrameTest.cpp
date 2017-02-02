@@ -6,11 +6,11 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <YukariMaths/IMUFrame.h>
+#include <YukariIMU/IMUFrame.h>
 
 namespace Yukari
 {
-namespace Maths
+namespace IMU
 {
   namespace Test
   {

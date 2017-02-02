@@ -4,7 +4,7 @@
 
 namespace Yukari
 {
-namespace Maths
+namespace IMU
 {
   IMUFrame::IMUFrame()
   {
