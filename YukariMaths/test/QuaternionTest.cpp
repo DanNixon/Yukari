@@ -8,8 +8,6 @@
 
 #include <YukariMaths/Quaternion.h>
 
-#define TOL 0.000011f
-
 namespace Yukari
 {
 namespace Maths

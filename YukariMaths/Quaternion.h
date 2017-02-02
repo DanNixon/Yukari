@@ -12,7 +12,6 @@ namespace Maths
   {
   public:
     Quaternion(float i = 0.0f, float j = 0.0f, float k = 0.0f, float w = 1.0f);
-    virtual ~Quaternion();
 
     inline float i() const
     {
@@ -43,6 +42,8 @@ namespace Maths
     {
       return m_z;
     }
+
+    /* TODO */
   };
 }
 }

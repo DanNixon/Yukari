@@ -2,11 +2,11 @@
 
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "MatrixTest"
+#define BOOST_TEST_MODULE "ExtendedIMUFrameTest"
 
 #include <boost/test/unit_test.hpp>
 
-#include <YukariMaths/Matrix.h>
+#include <YukariMaths/ExtendedIMUFrame.h>
 
 namespace Yukari
 {
@@ -14,9 +14,9 @@ namespace Maths
 {
   namespace Test
   {
-    BOOST_AUTO_TEST_CASE(Matrix_Init_Empty)
+    BOOST_AUTO_TEST_CASE(ExtendedIMUFrame_Init_Empty)
     {
-      Matrix m;
+      ExtendedIMUFrame f;
       /* TODO */
     }
 

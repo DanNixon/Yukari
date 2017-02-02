@@ -10,9 +10,5 @@ namespace Maths
       : BaseMathType(i, j, k, w)
   {
   }
-
-  Quaternion::~Quaternion()
-  {
-  }
 }
 }

@@ -11,10 +11,6 @@ namespace Maths
     toZero();
   }
 
-  Matrix::~Matrix()
-  {
-  }
-
   bool Matrix::operator==(const Matrix &other) const
   {
     for (size_t i = 0; i < NUM_ELEMENTS; i++)

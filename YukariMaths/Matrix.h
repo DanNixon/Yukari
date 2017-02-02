@@ -18,7 +18,6 @@ namespace Maths
 
   public:
     Matrix();
-    virtual ~Matrix();
 
     bool operator==(const Matrix &other) const;
     bool operator!=(const Matrix &other) const;

@@ -13,10 +13,6 @@ namespace Maths
   {
   }
 
-  Vector::~Vector()
-  {
-  }
-
   float Vector::length() const
   {
     return std::sqrt(length2());
