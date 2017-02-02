@@ -28,9 +28,17 @@ globally_enable_extra_compiler_warnings()
 
 include ( DoxygenTargets )
 
+# External library: Boost
+set ( Boost_USE_STATIC_LIBS ON )
+set ( Boost_USE_STATIC_RUNTIME OFF )
+set ( Boost_USE_MULTITHREADED ON )
+find_package ( Boost REQUIRED
+               COMPONENTS system filesystem unit_test_framework )
+
 # Includes
 include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}
-                      ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty )
+                      ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty
+					  ${Boost_INCLUDE_DIRS} )
 
 # Libraries
 add_subdirectory ( YukariCommon )
