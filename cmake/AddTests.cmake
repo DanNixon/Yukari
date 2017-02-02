@@ -1,15 +1,10 @@
-find_package ( Boost REQUIRED COMPONENTS unit_test_framework )
-
 function ( AddTests _libs )
-  include_directories ( ${Boost_INCLUDE_DIRS} )
-
   set ( test_dir "${CMAKE_CURRENT_SOURCE_DIR}/test")
 
   # Find test files
   file ( GLOB test_files
          RELATIVE "${test_dir}"
          "${test_dir}/*.cpp")
-
 
   # Generate test suites
   foreach ( test_file ${test_files} )
