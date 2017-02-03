@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <iostream>
+
 namespace Yukari
 {
 namespace Maths
@@ -57,11 +59,15 @@ namespace Maths
       return m_w;
     }
 
+    friend std::ostream &operator<<(std::ostream &s, const BaseMathType &o);
+
   protected:
     float m_x;
     float m_y;
     float m_z;
     float m_w;
   };
+
+  std::istream &operator>>(std::istream &s, BaseMathType &o);
 }
 }

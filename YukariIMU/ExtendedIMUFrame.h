@@ -33,6 +33,8 @@ namespace IMU
       return m_linearVelocity;
     }
 
+    IMUFrame_sptr predictFrame(float secondsFromNow) const;
+
   protected:
     Maths::Vector m_angularVelocity;
     Maths::Vector m_linearVelocity;

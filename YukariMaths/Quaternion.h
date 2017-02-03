@@ -4,6 +4,9 @@
 
 #include "BaseMathType.h"
 
+#include "Units.h"
+#include "Vector.h"
+
 namespace Yukari
 {
 namespace Maths
@@ -11,7 +14,8 @@ namespace Maths
   class Quaternion : public BaseMathType
   {
   public:
-    Quaternion(float i = 0.0f, float j = 0.0f, float k = 0.0f, float w = 1.0f);
+    Quaternion(float i, float j, float k, float w);
+    Quaternion(float roll = 0.0f, float pitch = 0.0f, float yaw = 0.0f, AngleUnit unit = RADIANS);
 
     inline float i() const
     {
@@ -43,7 +47,9 @@ namespace Maths
       return m_z;
     }
 
-    /* TODO */
+    Vector toEulerAngles(AngleUnit unit = DEGREES) const;
+
+    Vector rotate(const Vector & v) const;
   };
 }
 }

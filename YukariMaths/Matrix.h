@@ -3,6 +3,7 @@
 #pragma once
 
 #include <cstddef>
+#include <ostream>
 #include <stdexcept>
 
 #include "Vector.h"
@@ -24,8 +25,11 @@ namespace Maths
 
     void toZero();
 
-    Vector column(size_t idx) const;
     Vector row(size_t idx) const;
+    Vector column(size_t idx) const;
+
+    void setRow(size_t idx, const Vector &row);
+    void setColumn(size_t idx, const Vector &column);
 
     inline float operator[](size_t idx) const
     {
@@ -42,6 +46,8 @@ namespace Maths
 
       return m_values[idx];
     }
+
+    friend std::ostream &operator<<(std::ostream &s, const Matrix &m);
 
   protected:
     float m_values[NUM_ELEMENTS];

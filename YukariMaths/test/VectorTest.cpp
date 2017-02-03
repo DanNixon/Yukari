@@ -16,6 +16,8 @@ namespace Maths
 {
   namespace Test
   {
+    /* Vector functionality */
+
     BOOST_AUTO_TEST_CASE(Vector_Init_Empty)
     {
       Vector v;
@@ -32,26 +34,6 @@ namespace Maths
       BOOST_CHECK_EQUAL(v.y(), 2.2f);
       BOOST_CHECK_EQUAL(v.z(), 3.3f);
       BOOST_CHECK_EQUAL(v.w(), 4.4f);
-    }
-
-    BOOST_AUTO_TEST_CASE(Vector_Equality)
-    {
-      Vector v1(1.1f, 2.2f, 3.3f, 4.4f);
-      Vector v2(4.4f, 6.6f, 7.7f, 8.8f);
-      Vector v3(1.1f, 2.2f, 3.3f, 4.4f);
-      BOOST_CHECK(v1 == v3);
-      BOOST_CHECK(!(v1 == v2));
-      BOOST_CHECK(!(v2 == v3));
-    }
-
-    BOOST_AUTO_TEST_CASE(Vector_Inequality)
-    {
-      Vector v1(1.1f, 2.2f, 3.3f, 4.4f);
-      Vector v2(4.4f, 6.6f, 7.7f, 8.8f);
-      Vector v3(1.1f, 2.2f, 3.3f, 4.4f);
-      BOOST_CHECK(!(v1 != v3));
-      BOOST_CHECK(v1 != v2);
-      BOOST_CHECK(v2 != v3);
     }
 
     BOOST_AUTO_TEST_CASE(Vector_Length)
@@ -206,6 +188,44 @@ namespace Maths
       BOOST_CHECK_CLOSE(v1.y(), 0.44f, TOL);
       BOOST_CHECK_CLOSE(v1.z(), 0.66f, TOL);
       BOOST_CHECK_CLOSE(v1.w(), 0.88f, TOL);
+    }
+
+    /* BaseMathType functionality */
+
+    BOOST_AUTO_TEST_CASE(Vector_Equality)
+    {
+      Vector v1(1.1f, 2.2f, 3.3f, 4.4f);
+      Vector v2(4.4f, 6.6f, 7.7f, 8.8f);
+      Vector v3(1.1f, 2.2f, 3.3f, 4.4f);
+      BOOST_CHECK(v1 == v3);
+      BOOST_CHECK(!(v1 == v2));
+      BOOST_CHECK(!(v2 == v3));
+    }
+
+    BOOST_AUTO_TEST_CASE(Vector_Inequality)
+    {
+      Vector v1(1.1f, 2.2f, 3.3f, 4.4f);
+      Vector v2(4.4f, 6.6f, 7.7f, 8.8f);
+      Vector v3(1.1f, 2.2f, 3.3f, 4.4f);
+      BOOST_CHECK(!(v1 != v3));
+      BOOST_CHECK(v1 != v2);
+      BOOST_CHECK(v2 != v3);
+    }
+
+    BOOST_AUTO_TEST_CASE(Vector_Stream_Out)
+    {
+      Vector v(1.1f, 2.2f, 3.3f, 4.4f);
+      std::stringstream str;
+      str << v;
+      BOOST_CHECK_EQUAL("[1.1, 2.2, 3.3, 4.4]", str.str());
+    }
+
+    BOOST_AUTO_TEST_CASE(Vector_Stream_In)
+    {
+      std::stringstream str("[1.1, 2.2, 3.3, 4.4]");
+      Vector v;
+      str >> v;
+      BOOST_CHECK_EQUAL(v, Vector(1.1f, 2.2f, 3.3f, 4.4f));
     }
   }
 }

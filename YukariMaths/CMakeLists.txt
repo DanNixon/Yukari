@@ -4,6 +4,7 @@ project ( YukariMaths )
 
 add_library (
   ${PROJECT_NAME}
+  ${CMAKE_CURRENT_SOURCE_DIR}/BaseMathType.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/Matrix.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/Quaternion.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/Vector.cpp )
