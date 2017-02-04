@@ -69,7 +69,7 @@ namespace Maths
     {
       s << '[';
 
-      for (size_t i = 0; i < 4; i++)
+      for (size_t i = 0; i < SIZE; i++)
       {
         if (i > 0)
           s << ", ";

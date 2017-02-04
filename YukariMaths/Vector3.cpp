@@ -14,5 +14,46 @@ namespace Maths
     m_values[2] = z;
   }
 
+  Vector3 Vector3::operator+(const Vector3 &rhs) const
+  {
+    Vector3 v(*this);
+    v += rhs;
+    return v;
+  }
+
+  Vector3 Vector3::operator-(const Vector3 &rhs) const
+  {
+    Vector3 v(*this);
+    v -= rhs;
+    return v;
+  }
+
+  Vector3 Vector3::operator*(const Vector3 &rhs) const
+  {
+    Vector3 v(*this);
+    v *= rhs;
+    return v;
+  }
+
+  Vector3 Vector3::operator/(const Vector3 &rhs) const
+  {
+    Vector3 v(*this);
+    v /= rhs;
+    return v;
+  }
+
+  Vector3 Vector3::operator*(float rhs) const
+  {
+    Vector3 v(*this);
+    v *= rhs;
+    return v;
+  }
+
+  Vector3 Vector3::operator/(float rhs) const
+  {
+    Vector3 v(*this);
+    v /= rhs;
+    return v;
+  }
 }
 }

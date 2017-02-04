@@ -42,6 +42,14 @@ namespace Maths
     {
       return m_values[2];
     }
+
+    Vector3 operator+(const Vector3 &rhs) const;
+    Vector3 operator-(const Vector3 &rhs) const;
+    Vector3 operator*(const Vector3 &rhs) const;
+    Vector3 operator/(const Vector3 &rhs) const;
+
+    Vector3 operator*(float rhs) const;
+    Vector3 operator/(float rhs) const;
   };
 }
 }
