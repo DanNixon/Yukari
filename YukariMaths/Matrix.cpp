@@ -33,18 +33,18 @@ namespace Maths
       m_values[i] = 0.0f;
   }
 
-  Vector Matrix::row(size_t idx) const
+  Vector4 Matrix::row(size_t idx) const
   {
-    return Vector(m_values[idx], m_values[idx + 4], m_values[idx + 8], m_values[idx + 12]);
+    return Vector4(m_values[idx], m_values[idx + 4], m_values[idx + 8], m_values[idx + 12]);
   }
 
-  Vector Matrix::column(size_t idx) const
+  Vector4 Matrix::column(size_t idx) const
   {
     idx *= 4;
-    return Vector(m_values[idx], m_values[idx + 1], m_values[idx + 2], m_values[idx + 3]);
+    return Vector4(m_values[idx], m_values[idx + 1], m_values[idx + 2], m_values[idx + 3]);
   }
 
-  void Matrix::setRow(size_t idx, const Vector &row)
+  void Matrix::setRow(size_t idx, const Vector4 &row)
   {
     m_values[idx] = row.x();
     m_values[idx + 4] = row.y();
@@ -52,7 +52,7 @@ namespace Maths
     m_values[idx + 12] = row.w();
   }
 
-  void Matrix::setColumn(size_t idx, const Vector &column)
+  void Matrix::setColumn(size_t idx, const Vector4 &column)
   {
     idx *= 4;
     m_values[idx] = column.x();

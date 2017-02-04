@@ -5,7 +5,7 @@
 #include <memory>
 
 #include <YukariMaths/Quaternion.h>
-#include <YukariMaths/Vector.h>
+#include <YukariMaths/Vector3.h>
 
 namespace Yukari
 {
@@ -26,19 +26,19 @@ namespace IMU
       return m_orientation;
     }
 
-    inline Maths::Vector position() const
+    inline Maths::Vector3 position() const
     {
       return m_position;
     }
 
-    inline Maths::Vector &position()
+    inline Maths::Vector3 &position()
     {
       return m_position;
     }
 
   protected:
     Maths::Quaternion m_orientation;
-    Maths::Vector m_position;
+    Maths::Vector3 m_position;
   };
 
   typedef std::shared_ptr<IMUFrame> IMUFrame_sptr;

@@ -6,7 +6,7 @@
 #include <ostream>
 #include <stdexcept>
 
-#include "Vector.h"
+#include "Vector4.h"
 
 namespace Yukari
 {
@@ -25,11 +25,11 @@ namespace Maths
 
     void toZero();
 
-    Vector row(size_t idx) const;
-    Vector column(size_t idx) const;
+    Vector4 row(size_t idx) const;
+    Vector4 column(size_t idx) const;
 
-    void setRow(size_t idx, const Vector &row);
-    void setColumn(size_t idx, const Vector &column);
+    void setRow(size_t idx, const Vector4 &row);
+    void setColumn(size_t idx, const Vector4 &column);
 
     inline float operator[](size_t idx) const
     {

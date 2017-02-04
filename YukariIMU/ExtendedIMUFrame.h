@@ -13,22 +13,22 @@ namespace IMU
   public:
     ExtendedIMUFrame();
 
-    inline Maths::Vector angularVelocity() const
+    inline Maths::Vector3 angularVelocity() const
     {
       return m_angularVelocity;
     }
 
-    inline Maths::Vector &angularVelocity()
+    inline Maths::Vector3 &angularVelocity()
     {
       return m_angularVelocity;
     }
 
-    inline Maths::Vector linearVelocity() const
+    inline Maths::Vector3 linearVelocity() const
     {
       return m_linearVelocity;
     }
 
-    inline Maths::Vector &linearVelocity()
+    inline Maths::Vector3 &linearVelocity()
     {
       return m_linearVelocity;
     }
@@ -36,8 +36,8 @@ namespace IMU
     IMUFrame_sptr predictFrame(float secondsFromNow) const;
 
   protected:
-    Maths::Vector m_angularVelocity;
-    Maths::Vector m_linearVelocity;
+    Maths::Vector3 m_angularVelocity;
+    Maths::Vector3 m_linearVelocity;
   };
 
   typedef std::shared_ptr<ExtendedIMUFrame> ExtendedIMUFrame_sptr;

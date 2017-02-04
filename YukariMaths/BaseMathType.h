@@ -8,23 +8,18 @@ namespace Yukari
 {
 namespace Maths
 {
-  class BaseMathType
+  template <size_t SIZE> class BaseMathType
   {
   public:
-    BaseMathType(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 0.0f)
-        : m_x(x)
-        , m_y(y)
-        , m_z(z)
-        , m_w(w)
+    BaseMathType()
     {
+      toZero();
     }
 
     BaseMathType(const BaseMathType &o)
-        : m_x(o.m_x)
-        , m_y(o.m_y)
-        , m_z(o.m_z)
-        , m_w(o.m_w)
     {
+      for (size_t i = 0; i < SIZE; i++)
+        m_values[i] = o.m_values[i];
     }
 
     virtual ~BaseMathType()
@@ -33,7 +28,13 @@ namespace Maths
 
     inline bool operator==(const BaseMathType &other) const
     {
-      return (m_x == other.m_x) && (m_y == other.m_y) && (m_z == other.m_z) && (m_w == other.m_w);
+      for (size_t i = 0; i < SIZE; i++)
+      {
+        if (m_values[i] != other.m_values[i])
+          return false;
+      }
+
+      return true;
     }
 
     inline bool operator!=(const BaseMathType &other) const
@@ -43,31 +44,63 @@ namespace Maths
 
     inline void toZero()
     {
-      m_x = 0.0f;
-      m_y = 0.0f;
-      m_z = 0.0f;
-      m_w = 0.0f;
+      for (size_t i = 0; i < SIZE; i++)
+        m_values[i] = 0.0f;
     }
 
-    inline float w() const
+    inline float operator[](size_t idx) const
     {
-      return m_w;
+      if (idx > SIZE)
+        throw std::runtime_error("Math type index out of range.");
+
+      return m_values[idx];
     }
 
-    inline float &w()
+    inline float &operator[](size_t idx)
     {
-      return m_w;
+      if (idx > SIZE)
+        throw std::runtime_error("Math type index out of range.");
+
+      return m_values[idx];
     }
 
-    friend std::ostream &operator<<(std::ostream &s, const BaseMathType &o);
+    friend std::ostream &operator<<(std::ostream &s, const BaseMathType &o)
+    {
+      s << '[';
+
+      for (size_t i = 0; i < 4; i++)
+      {
+        if (i > 0)
+          s << ", ";
+        s << o.m_values[i];
+      }
+
+      s << ']';
+
+      return s;
+    }
+
+    friend std::istream &operator>>(std::istream &s, BaseMathType &o)
+    {
+      const int n = 50;
+
+      o = BaseMathType();
+
+      s.ignore(n, '[');
+      s >> o.m_values[0];
+      s.ignore(n, ',');
+      s >> o.m_values[1];
+      s.ignore(n, ',');
+      s >> o.m_values[2];
+      s.ignore(n, ',');
+      s >> o.m_values[3];
+      s.ignore(n, ']');
+
+      return s;
+    }
 
   protected:
-    float m_x;
-    float m_y;
-    float m_z;
-    float m_w;
+    float m_values[SIZE];
   };
-
-  std::istream &operator>>(std::istream &s, BaseMathType &o);
 }
 }

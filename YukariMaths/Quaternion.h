@@ -5,13 +5,13 @@
 #include "BaseMathType.h"
 
 #include "Units.h"
-#include "Vector.h"
+#include "Vector4.h"
 
 namespace Yukari
 {
 namespace Maths
 {
-  class Quaternion : public BaseMathType
+  class Quaternion : public BaseMathType<4>
   {
   public:
     Quaternion(float i, float j, float k, float w);
@@ -19,37 +19,47 @@ namespace Maths
 
     inline float i() const
     {
-      return m_x;
+      return m_values[0];
     }
 
     inline float &i()
     {
-      return m_x;
+      return m_values[0];
     }
 
     inline float j() const
     {
-      return m_y;
+      return m_values[1];
     }
 
     inline float &j()
     {
-      return m_y;
+      return m_values[1];
     }
 
     inline float k() const
     {
-      return m_z;
+      return m_values[2];
     }
 
     inline float &k()
     {
-      return m_z;
+      return m_values[2];
     }
 
-    Vector toEulerAngles(AngleUnit unit = DEGREES) const;
+    inline float w() const
+    {
+      return m_values[3];
+    }
 
-    Vector rotate(const Vector & v) const;
+    inline float &w()
+    {
+      return m_values[3];
+    }
+
+    Vector4 toEulerAngles(AngleUnit unit = DEGREES) const;
+
+    Vector4 rotate(const Vector4 & v) const;
   };
 }
 }
