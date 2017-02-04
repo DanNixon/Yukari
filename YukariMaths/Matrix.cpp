@@ -11,28 +11,6 @@ namespace Maths
     toZero();
   }
 
-  bool Matrix::operator==(const Matrix &other) const
-  {
-    for (size_t i = 0; i < NUM_ELEMENTS; i++)
-    {
-      if (m_values[i] != other.m_values[i])
-        return false;
-    }
-
-    return true;
-  }
-
-  bool Matrix::operator!=(const Matrix &other) const
-  {
-    return !this->operator==(other);
-  }
-
-  void Matrix::toZero()
-  {
-    for (size_t i = 0; i < NUM_ELEMENTS; i++)
-      m_values[i] = 0.0f;
-  }
-
   Vector4 Matrix::row(size_t idx) const
   {
     return Vector4(m_values[idx], m_values[idx + 4], m_values[idx + 8], m_values[idx + 12]);
@@ -63,11 +41,13 @@ namespace Maths
 
   std::ostream &operator<<(std::ostream &s, const Matrix &m)
   {
+    const float *v = m.m_values;
+
     // clang-format off
-    s << '[' << m.m_values[0] << ", " << m.m_values[4] << ", " << m.m_values[8] << ", " << m.m_values[12] << ",\n"
-      << ' ' << m.m_values[1] << ", " << m.m_values[5] << ", " << m.m_values[9] << ", " << m.m_values[13] << ",\n"
-      << ' ' << m.m_values[2] << ", " << m.m_values[6] << ", " << m.m_values[10] << ", " << m.m_values[14] << ",\n"
-      << ' ' << m.m_values[3] << ", " << m.m_values[7] << ", " << m.m_values[11] << ", " << m.m_values[15] << ']';
+    s << '[' << v[0] << ", " << v[4] << ", " << v[8] << ", " << v[12] << ",\n"
+      << ' ' << v[1] << ", " << v[5] << ", " << v[9] << ", " << v[13] << ",\n"
+      << ' ' << v[2] << ", " << v[6] << ", " << v[10] << ", " << v[14] << ",\n"
+      << ' ' << v[3] << ", " << v[7] << ", " << v[11] << ", " << v[15] << ']';
     // clang-format on
 
     return s;
