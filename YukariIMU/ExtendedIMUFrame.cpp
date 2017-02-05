@@ -6,7 +6,8 @@ namespace Yukari
 {
 namespace IMU
 {
-  ExtendedIMUFrame::ExtendedIMUFrame()
+  ExtendedIMUFrame::ExtendedIMUFrame(duration_t frameDuration)
+      : IMUFrame(frameDuration)
   {
   }
 

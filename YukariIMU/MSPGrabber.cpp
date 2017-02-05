@@ -6,31 +6,32 @@ namespace Yukari
 {
 namespace IMU
 {
-  MSPGrabber::MSPGrabber()
+  MSPGrabber::MSPGrabber(const std::string &port, int baud)
+      : m_port(port, baud, serial::Timeout::simpleTimeout(1000))
   {
   }
 
   MSPGrabber::~MSPGrabber()
   {
+    close();
   }
 
   void MSPGrabber::open()
   {
-    /* TODO */
+    m_port.open();
   }
 
   void MSPGrabber::close()
   {
-    /* TODO */
+    m_port.close();
   }
 
   bool MSPGrabber::isOpen() const
   {
-    /* TODO */
-    return false;
+    return m_port.isOpen();
   }
 
-  IMUFrame_sptr MSPGrabbergrabFrame()
+  IMUFrame_sptr MSPGrabber::grabFrame()
   {
     /* TODO */
     return nullptr;

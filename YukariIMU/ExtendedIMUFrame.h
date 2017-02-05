@@ -11,7 +11,7 @@ namespace IMU
   class ExtendedIMUFrame : public IMUFrame
   {
   public:
-    ExtendedIMUFrame();
+    ExtendedIMUFrame(duration_t frameDuration = duration_t(0.0f));
 
     inline Maths::Vector3 angularVelocity() const
     {

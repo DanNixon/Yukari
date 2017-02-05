@@ -4,6 +4,9 @@
 
 #include "IGrabber.h"
 
+#include <chrono>
+#include <serial/serial.h>
+
 namespace Yukari
 {
 namespace IMU
@@ -11,7 +14,7 @@ namespace IMU
   class MSPGrabber : public IGrabber
   {
   public:
-    MSPGrabber();
+    MSPGrabber(const std::string & port, int baud = 115200);
     virtual ~MSPGrabber();
 
     virtual void open();
@@ -19,6 +22,10 @@ namespace IMU
     virtual bool isOpen() const;
 
     virtual IMUFrame_sptr grabFrame();
+
+  protected:
+    std::chrono::time_point<std::chrono::high_resolution_clock> m_lastFrameTime;
+    serial::Serial m_port;
   };
 }
 }
