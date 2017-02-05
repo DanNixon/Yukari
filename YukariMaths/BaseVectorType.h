@@ -38,6 +38,19 @@ namespace Maths
       return delta.length2();
     }
 
+    void normalise()
+    {
+      float l = length();
+
+      if (l != 0.0f)
+      {
+        l = 1.0f / l;
+
+        for (size_t i = 0; i < SIZE; i++)
+          this->m_values[i] *= l;
+      }
+    }
+
     BaseVectorType &operator+=(const BaseVectorType &rhs)
     {
       for (size_t i = 0; i < 4; i++)

@@ -18,7 +18,7 @@ namespace Maths
   {
     /* Vector4 functionality */
 
-    BOOST_AUTO_TEST_CASE(Vector_Init_Empty)
+    BOOST_AUTO_TEST_CASE(Vector4_Init_Empty)
     {
       Vector4 v;
       BOOST_CHECK_EQUAL(v.x(), 0.0f);
@@ -27,7 +27,7 @@ namespace Maths
       BOOST_CHECK_EQUAL(v.w(), 1.0f);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Init_Value)
+    BOOST_AUTO_TEST_CASE(Vector4_Init_Value)
     {
       Vector4 v(1.1f, 2.2f, 3.3f, 4.4f);
       BOOST_CHECK_EQUAL(v.x(), 1.1f);
@@ -36,7 +36,7 @@ namespace Maths
       BOOST_CHECK_EQUAL(v.w(), 4.4f);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Addition)
+    BOOST_AUTO_TEST_CASE(Vector4_Addition)
     {
       Vector4 v1(1.1f, 2.2f, 3.3f, 4.4f);
       Vector4 v2(4.4f, 6.6f, 7.7f, 8.8f);
@@ -47,7 +47,7 @@ namespace Maths
       BOOST_CHECK_CLOSE(v3.w(), 13.2f, TOL);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Subtraction)
+    BOOST_AUTO_TEST_CASE(Vector4_Subtraction)
     {
       Vector4 v1(1.1f, 2.2f, 3.3f, 4.4f);
       Vector4 v2(4.4f, 6.6f, 7.7f, 8.8f);
@@ -58,7 +58,7 @@ namespace Maths
       BOOST_CHECK_CLOSE(v3.w(), -4.4f, TOL);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Multiplication_By_Vector)
+    BOOST_AUTO_TEST_CASE(Vector4_Multiplication_By_Vector4)
     {
       Vector4 v1(1.1f, 2.2f, 3.3f, 4.4f);
       Vector4 v2(4.4f, 6.6f, 7.7f, 8.8f);
@@ -69,7 +69,7 @@ namespace Maths
       BOOST_CHECK_CLOSE(v3.w(), 38.72f, TOL);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Multiplication_By_Scalar)
+    BOOST_AUTO_TEST_CASE(Vector4_Multiplication_By_Scalar)
     {
       Vector4 v1(1.1f, 2.2f, 3.3f, 4.4f);
       Vector4 v2 = v1 * 5.0f;
@@ -79,7 +79,7 @@ namespace Maths
       BOOST_CHECK_CLOSE(v2.w(), 22.0f, TOL);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Division_By_Vector)
+    BOOST_AUTO_TEST_CASE(Vector4_Division_By_Vector4)
     {
       Vector4 v1(4.4f, 6.6f, 6.6f, 8.8f);
       Vector4 v2(1.1f, 2.2f, 3.3f, 4.4f);
@@ -90,7 +90,7 @@ namespace Maths
       BOOST_CHECK_CLOSE(v3.w(), 2.0f, TOL);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Division_By_Scalar)
+    BOOST_AUTO_TEST_CASE(Vector4_Division_By_Scalar)
     {
       Vector4 v1(1.1f, 2.2f, 3.3f, 4.4f);
       Vector4 v2 = v1 / 5.0f;
@@ -102,33 +102,44 @@ namespace Maths
 
     /* BaseVectorType functionality */
 
-    BOOST_AUTO_TEST_CASE(Vector_Length)
+    BOOST_AUTO_TEST_CASE(Vector4_Length)
     {
       Vector4 v(2.0f, 5.0f, 7.0f, 9.0f);
       BOOST_CHECK_CLOSE(v.length(), 12.61f, 0.01f);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Length2)
+    BOOST_AUTO_TEST_CASE(Vector4_Length2)
     {
       Vector4 v(2.0f, 5.0f, 7.0f, 9.0f);
       BOOST_CHECK_CLOSE(v.length2(), 159.0f, TOL);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Distance)
+    BOOST_AUTO_TEST_CASE(Vector4_Distance)
     {
       Vector4 v1(2.0f, 5.0f, 7.0f, 9.0f);
       Vector4 v2(4.0f, 8.0f, 11.0f, 14.0f);
       BOOST_CHECK_CLOSE(v1.distance(v2), 7.348f, 0.01f);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Distance2)
+    BOOST_AUTO_TEST_CASE(Vector4_Distance2)
     {
       Vector4 v1(2.0f, 5.0f, 7.0f, 9.0f);
       Vector4 v2(4.0f, 8.0f, 11.0f, 14.0f);
       BOOST_CHECK_CLOSE(v1.distance2(v2), 54.0f, TOL);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Addition_Assignment)
+    BOOST_AUTO_TEST_CASE(Vector4_Normalise)
+    {
+      Vector4 v(2.0f, 5.0f, 7.0f, 9.0f);
+      v.normalise();
+      BOOST_CHECK_CLOSE(v.length(), 1.0f, TOL);
+      BOOST_CHECK_CLOSE(v.x(), 0.15861f, 0.01f);
+      BOOST_CHECK_CLOSE(v.y(), 0.39652f, 0.01f);
+      BOOST_CHECK_CLOSE(v.z(), 0.55513f, 0.01f);
+      BOOST_CHECK_CLOSE(v.w(), 0.71374f, 0.01f);
+    }
+
+    BOOST_AUTO_TEST_CASE(Vector4_Addition_Assignment)
     {
       Vector4 v1(1.1f, 2.2f, 3.3f, 4.4f);
       Vector4 v2(4.4f, 6.6f, 7.7f, 8.8f);
@@ -139,7 +150,7 @@ namespace Maths
       BOOST_CHECK_CLOSE(v1.w(), 13.2f, TOL);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Subtraction_Assignment)
+    BOOST_AUTO_TEST_CASE(Vector4_Subtraction_Assignment)
     {
       Vector4 v1(1.1f, 2.2f, 3.3f, 4.4f);
       Vector4 v2(4.4f, 6.6f, 7.7f, 8.8f);
@@ -150,7 +161,7 @@ namespace Maths
       BOOST_CHECK_CLOSE(v1.w(), -4.4f, TOL);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Multiplication_By_Vector_Assignment)
+    BOOST_AUTO_TEST_CASE(Vector4_Multiplication_By_Vector4_Assignment)
     {
       Vector4 v1(1.1f, 2.2f, 3.3f, 4.4f);
       Vector4 v2(4.4f, 6.6f, 7.7f, 8.8f);
@@ -161,7 +172,7 @@ namespace Maths
       BOOST_CHECK_CLOSE(v1.w(), 38.72f, TOL);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Multiplication_By_Scalar_Assignment)
+    BOOST_AUTO_TEST_CASE(Vector4_Multiplication_By_Scalar_Assignment)
     {
       Vector4 v1(1.1f, 2.2f, 3.3f, 4.4f);
       v1 *= 5.0f;
@@ -171,7 +182,7 @@ namespace Maths
       BOOST_CHECK_CLOSE(v1.w(), 22.0f, TOL);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Division_By_Vector_Assignment)
+    BOOST_AUTO_TEST_CASE(Vector4_Division_By_Vector4_Assignment)
     {
       Vector4 v1(4.4f, 6.6f, 6.6f, 8.8f);
       Vector4 v2(1.1f, 2.2f, 3.3f, 4.4f);
@@ -182,7 +193,7 @@ namespace Maths
       BOOST_CHECK_CLOSE(v1.w(), 2.0f, TOL);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Division_By_Scalar_Assignment)
+    BOOST_AUTO_TEST_CASE(Vector4_Division_By_Scalar_Assignment)
     {
       Vector4 v1(1.1f, 2.2f, 3.3f, 4.4f);
       v1 /= 5.0f;
@@ -194,7 +205,7 @@ namespace Maths
 
     /* BaseMathType functionality */
 
-    BOOST_AUTO_TEST_CASE(Vector_Equality)
+    BOOST_AUTO_TEST_CASE(Vector4_Equality)
     {
       Vector4 v1(1.1f, 2.2f, 3.3f, 4.4f);
       Vector4 v2(4.4f, 6.6f, 7.7f, 8.8f);
@@ -204,7 +215,7 @@ namespace Maths
       BOOST_CHECK(!(v2 == v3));
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Inequality)
+    BOOST_AUTO_TEST_CASE(Vector4_Inequality)
     {
       Vector4 v1(1.1f, 2.2f, 3.3f, 4.4f);
       Vector4 v2(4.4f, 6.6f, 7.7f, 8.8f);
@@ -214,7 +225,7 @@ namespace Maths
       BOOST_CHECK(v2 != v3);
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Stream_Out)
+    BOOST_AUTO_TEST_CASE(Vector4_Stream_Out)
     {
       Vector4 v(1.1f, 2.2f, 3.3f, 4.4f);
       std::stringstream str;
@@ -222,7 +233,7 @@ namespace Maths
       BOOST_CHECK_EQUAL("[1.1, 2.2, 3.3, 4.4]", str.str());
     }
 
-    BOOST_AUTO_TEST_CASE(Vector_Stream_In)
+    BOOST_AUTO_TEST_CASE(Vector4_Stream_In)
     {
       std::stringstream str("[1.1, 2.2, 3.3, 4.4]");
       Vector4 v;
