@@ -7,53 +7,10 @@ namespace Yukari
 namespace Maths
 {
   Vector3::Vector3(float x, float y, float z)
-      : BaseVectorType()
   {
     m_values[0] = x;
     m_values[1] = y;
     m_values[2] = z;
-  }
-
-  Vector3 Vector3::operator+(const Vector3 &rhs) const
-  {
-    Vector3 v(*this);
-    v += rhs;
-    return v;
-  }
-
-  Vector3 Vector3::operator-(const Vector3 &rhs) const
-  {
-    Vector3 v(*this);
-    v -= rhs;
-    return v;
-  }
-
-  Vector3 Vector3::operator*(const Vector3 &rhs) const
-  {
-    Vector3 v(*this);
-    v *= rhs;
-    return v;
-  }
-
-  Vector3 Vector3::operator/(const Vector3 &rhs) const
-  {
-    Vector3 v(*this);
-    v /= rhs;
-    return v;
-  }
-
-  Vector3 Vector3::operator*(float rhs) const
-  {
-    Vector3 v(*this);
-    v *= rhs;
-    return v;
-  }
-
-  Vector3 Vector3::operator/(float rhs) const
-  {
-    Vector3 v(*this);
-    v /= rhs;
-    return v;
   }
 }
 }

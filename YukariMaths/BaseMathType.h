@@ -14,7 +14,6 @@ namespace Maths
   public:
     BaseMathType()
     {
-      toZero();
     }
 
     BaseMathType(const BaseMathType &o)
@@ -25,28 +24,6 @@ namespace Maths
 
     virtual ~BaseMathType()
     {
-    }
-
-    inline bool operator==(const BaseMathType &other) const
-    {
-      for (size_t i = 0; i < SIZE; i++)
-      {
-        if (m_values[i] != other.m_values[i])
-          return false;
-      }
-
-      return true;
-    }
-
-    inline bool operator!=(const BaseMathType &other) const
-    {
-      return !this->operator==(other);
-    }
-
-    inline void toZero()
-    {
-      for (size_t i = 0; i < SIZE; i++)
-        m_values[i] = 0.0f;
     }
 
     inline float operator[](size_t idx) const

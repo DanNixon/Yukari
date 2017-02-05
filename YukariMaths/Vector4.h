@@ -2,13 +2,15 @@
 
 #pragma once
 
-#include "BaseVectorType.h"
+#include "BaseMathType.h"
+
+#include <boost/qvm/vec_traits.hpp>
 
 namespace Yukari
 {
 namespace Maths
 {
-  class Vector4 : public BaseVectorType<4>
+  class Vector4 : public BaseMathType<4>
   {
   public:
     Vector4(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 1.0f);
@@ -53,13 +55,39 @@ namespace Maths
       return m_values[3];
     }
 
-    Vector4 operator+(const Vector4 &rhs) const;
-    Vector4 operator-(const Vector4 &rhs) const;
-    Vector4 operator*(const Vector4 &rhs) const;
-    Vector4 operator/(const Vector4 &rhs) const;
+    friend struct boost::qvm::vec_traits<Yukari::Maths::Vector4>;
+  };
+}
+}
 
-    Vector4 operator*(float rhs) const;
-    Vector4 operator/(float rhs) const;
+namespace boost
+{
+namespace qvm
+{
+  template <> struct vec_traits<Yukari::Maths::Vector4>
+  {
+    static int const dim = 4;
+    typedef float scalar_type;
+
+    template <int I> static inline scalar_type &write_element(Yukari::Maths::Vector4 &v)
+    {
+      return v.m_values[I];
+    }
+
+    template <int I> static inline scalar_type read_element(Yukari::Maths::Vector4 const &v)
+    {
+      return v.m_values[I];
+    }
+
+    static inline scalar_type &write_element_idx(int i, Yukari::Maths::Vector4 &v)
+    {
+      return v.m_values[i];
+    }
+
+    static inline scalar_type read_element_idx(int i, Yukari::Maths::Vector4 const &v)
+    {
+      return v.m_values[i];
+    }
   };
 }
 }
