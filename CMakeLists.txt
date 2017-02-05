@@ -33,12 +33,16 @@ set ( Boost_USE_STATIC_LIBS ON )
 set ( Boost_USE_STATIC_RUNTIME OFF )
 set ( Boost_USE_MULTITHREADED ON )
 find_package ( Boost REQUIRED
-               COMPONENTS system filesystem unit_test_framework )
+  COMPONENTS system filesystem unit_test_framework )
 
 # Includes
 include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}
-                      ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty
-					  ${Boost_INCLUDE_DIRS} )
+  ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty
+  ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/serial/include
+  ${Boost_INCLUDE_DIRS} )
+
+# Third party libraries
+add_subdirectory ( ThirdParty/serial )
 
 # Libraries
 add_subdirectory ( YukariCommon )
@@ -46,6 +50,7 @@ add_subdirectory ( YukariMaths )
 
 # Executables
 add_subdirectory ( YukariCaptureApplication )
+add_subdirectory ( SerialPortTest )
 
 # Generate test coverage report
 if ( LCOV_PATH )
