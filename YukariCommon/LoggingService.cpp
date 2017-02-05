@@ -61,7 +61,7 @@ namespace Common
       std::cerr << "No log sinks defined, no logs will be available!\n";
     }
 
-    spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) {l->flush();});
+    spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) { l->flush(); });
     spdlog::drop_all();
 
     GetLogger("LoggingService")->info("Logger configured.");

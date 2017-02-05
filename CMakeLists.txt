@@ -47,6 +47,7 @@ add_subdirectory ( ThirdParty/serial )
 # Libraries
 add_subdirectory ( YukariCommon )
 add_subdirectory ( YukariMaths )
+add_subdirectory ( YukariIMU )
 
 # Executables
 add_subdirectory ( YukariCaptureApplication )

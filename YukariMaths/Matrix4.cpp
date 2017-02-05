@@ -2,49 +2,31 @@
 
 #include "Matrix4.h"
 
+#include <boost/qvm/all.hpp>
+
+using namespace boost::qvm;
+
 namespace Yukari
 {
 namespace Maths
 {
   Matrix4::Matrix4()
   {
-    toZero();
+    boost::qvm::set_identity(*this);
   }
 
-  Matrix4::~Matrix4()
+  std::ostream &operator<<(std::ostream &s, const Matrix4 &m)
   {
-  }
+    const float *v = m.m_values;
 
-  bool Matrix4::operator==(const Matrix4 &other) const
-  {
-    for (size_t i = 0; i < 16; i++)
-    {
-      if (m_values[i] != other.m_values[i])
-        return false;
-    }
+    // clang-format off
+    s << '[' << v[0] << ", " << v[4] << ", " << v[8] << ", " << v[12] << ",\n"
+      << ' ' << v[1] << ", " << v[5] << ", " << v[9] << ", " << v[13] << ",\n"
+      << ' ' << v[2] << ", " << v[6] << ", " << v[10] << ", " << v[14] << ",\n"
+      << ' ' << v[3] << ", " << v[7] << ", " << v[11] << ", " << v[15] << ']';
+    // clang-format on
 
-    return true;
-  }
-
-  bool Matrix4::operator!=(const Matrix4 &other) const
-  {
-    return !this->operator==(other);
-  }
-
-  void Matrix4::toZero()
-  {
-    for (size_t i = 0; i < 16; i++)
-      m_values[i] = 0.0f;
-  }
-
-  Vector Matrix4::column(size_t idx) const
-  {
-    return Vector();
-  }
-
-  Vector Matrix4::row(size_t idx) const
-  {
-    return Vector();
+    return s;
   }
 }
 }
