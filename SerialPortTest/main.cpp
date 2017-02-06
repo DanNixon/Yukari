@@ -27,7 +27,8 @@
 #include <unistd.h>
 #endif
 
-#include "serial/serial.h"
+#include <YukariIMU/MSPClient.h>
+#include <serial/serial.h>
 
 using std::string;
 using std::exception;
@@ -35,6 +36,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 using std::vector;
+using namespace Yukari::IMU;
 
 void my_sleep(unsigned long milliseconds)
 {
@@ -60,31 +62,23 @@ void enumerate_ports()
   }
 }
 
-void print_usage()
-{
-  cerr << "Usage: test_serial {-e|<serial port address>} ";
-  cerr << "<baudrate> [test string]" << endl;
-}
-
-int run(int argc, char **argv)
+int main(int argc, char **argv)
 {
   if (argc < 2)
   {
-    print_usage();
-    return 0;
+    return 1;
   }
 
   // Argument 1 is the serial port or enumerate flag
-  string port(argv[1]);
+  string portName(argv[1]);
 
-  if (port == "-e")
+  if (portName == "-e")
   {
     enumerate_ports();
     return 0;
   }
   else if (argc < 3)
   {
-    print_usage();
     return 1;
   }
 
@@ -96,98 +90,32 @@ int run(int argc, char **argv)
   sscanf(argv[2], "%lu", &baud);
 #endif
 
-  // port, baudrate, timeout in milliseconds
-  serial::Serial my_serial(port, baud, serial::Timeout::simpleTimeout(1000));
+  serial::Serial port(portName, baud);
+  MSPClient msp(port);
 
-  cout << "Is the serial port open?";
-  if (my_serial.isOpen())
-    cout << " Yes." << endl;
-  else
-    cout << " No." << endl;
+  cout << "Port open: " << port.isOpen() << '\n';
 
-  // Get the Test string
-  int count = 0;
-  string test_string;
-  if (argc == 4)
-    test_string = argv[3];
-  else
-    test_string = "Testing.";
+  cout << "Board wake...\n";
+  my_sleep(2000);
+  cout << "ok.\n";
 
-  // Test the timeout, there should be 1 second between prints
-  cout << "Timeout == 1000ms, asking for 1 more byte than written." << endl;
-  while (count < 10)
+  while (true)
   {
-    size_t bytes_wrote = my_serial.write(test_string);
+    MSPClient::Payload p;
+    bool ok = msp.requestData(MSPClient::RAW_IMU, p);
 
-    string result = my_serial.read(test_string.length() + 1);
+    if (ok)
+    {
+      std::cout << std::hex;
+      for (auto it = p.begin(); it != p.end(); ++it)
+        std::cout << *it << ' ';
+      std::cout << '\n';
+    }
+    else
+      std::cout << "fail\n";
 
-    cout << "Iteration: " << count << ", Bytes written: ";
-    cout << bytes_wrote << ", Bytes read: ";
-    cout << result.length() << ", String read: " << result << endl;
-
-    count += 1;
-  }
-
-  // Test the timeout at 250ms
-  my_serial.setTimeout(serial::Timeout::max(), 250, 0, 250, 0);
-  count = 0;
-  cout << "Timeout == 250ms, asking for 1 more byte than written." << endl;
-  while (count < 10)
-  {
-    size_t bytes_wrote = my_serial.write(test_string);
-
-    string result = my_serial.read(test_string.length() + 1);
-
-    cout << "Iteration: " << count << ", Bytes written: ";
-    cout << bytes_wrote << ", Bytes read: ";
-    cout << result.length() << ", String read: " << result << endl;
-
-    count += 1;
-  }
-
-  // Test the timeout at 250ms, but asking exactly for what was written
-  count = 0;
-  cout << "Timeout == 250ms, asking for exactly what was written." << endl;
-  while (count < 10)
-  {
-    size_t bytes_wrote = my_serial.write(test_string);
-
-    string result = my_serial.read(test_string.length());
-
-    cout << "Iteration: " << count << ", Bytes written: ";
-    cout << bytes_wrote << ", Bytes read: ";
-    cout << result.length() << ", String read: " << result << endl;
-
-    count += 1;
-  }
-
-  // Test the timeout at 250ms, but asking for 1 less than what was written
-  count = 0;
-  cout << "Timeout == 250ms, asking for 1 less than was written." << endl;
-  while (count < 10)
-  {
-    size_t bytes_wrote = my_serial.write(test_string);
-
-    string result = my_serial.read(test_string.length() - 1);
-
-    cout << "Iteration: " << count << ", Bytes written: ";
-    cout << bytes_wrote << ", Bytes read: ";
-    cout << result.length() << ", String read: " << result << endl;
-
-    count += 1;
+    p.clear();
   }
 
   return 0;
-}
-
-int main(int argc, char **argv)
-{
-  try
-  {
-    return run(argc, argv);
-  }
-  catch (exception &e)
-  {
-    cerr << "Unhandled Exception: " << e.what() << endl;
-  }
 }

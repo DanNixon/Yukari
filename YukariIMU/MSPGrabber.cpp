@@ -6,7 +6,8 @@ namespace Yukari
 {
 namespace IMU
 {
-  MSPGrabber::MSPGrabber(const std::string &port, int baud)
+
+  MSPGrabber::MSPGrabber(const std::string &port, unsigned int baud)
       : m_port(port, baud, serial::Timeout::simpleTimeout(1000))
   {
   }

@@ -9,4 +9,5 @@ add_executable (
 target_link_libraries (
   ${PROJECT_NAME}
   LINK_PUBLIC
+  YukariIMU
   serial )

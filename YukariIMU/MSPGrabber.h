@@ -14,7 +14,7 @@ namespace IMU
   class MSPGrabber : public IGrabber
   {
   public:
-    MSPGrabber(const std::string & port, int baud = 115200);
+    MSPGrabber(const std::string &port, unsigned int baud = 115200);
     virtual ~MSPGrabber();
 
     virtual void open();
