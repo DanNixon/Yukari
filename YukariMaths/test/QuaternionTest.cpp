@@ -5,6 +5,7 @@
 #define BOOST_TEST_MODULE "QuaternionTest"
 
 #include <boost/qvm/all.hpp>
+#include <boost/math/constants/constants.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include <YukariMaths/Quaternion.h>
@@ -102,7 +103,7 @@ namespace Maths
       Vector3 axis(1.0f, 1.0f, 1.0f);
       Quaternion q(axis, 90.0f, DEGREES);
 
-      double c = M_SQRT1_2;
+      double c = boost::math::constants::one_div_root_two<float>();
       double s = c / std::sqrt(3.0);
       BOOST_CHECK_CLOSE(q[1], s, TOL);
       BOOST_CHECK_CLOSE(q[2], s, TOL);
