@@ -55,23 +55,25 @@ namespace IMU
     if (!m_port.isOpen())
       return false;
 
+    size_t bytesTransfered = 0;
+
     /* Build and send payload */
     Payload txPayload;
-    BuildCommandPayload(payload, command, {});
-    m_port.write(txPayload);
+    BuildCommandPayload(txPayload, command, payload);
+    bytesTransfered = m_port.write(txPayload);
 
-    std::cout << "writedone\n";
+    std::cout << "writedone (" << bytesTransfered << ")\n";
+    std::cout << "writedone (" << txPayload.size() << ")\n";
 
     /* Receive payload */
     Payload rxPayload;
-    size_t read = 0;
 
-    read = m_port.read(rxPayload, 5);
-    if (read != 5)
+    bytesTransfered = m_port.read(rxPayload, 5);
+    if (bytesTransfered != 5)
       return false;
 
-    read = m_port.read(rxPayload, rxPayload[3] + 1);
-    if (read != rxPayload[3] + 1)
+    bytesTransfered = m_port.read(rxPayload, rxPayload[3] + 1);
+    if (bytesTransfered != rxPayload[3] + 1)
       return false;
 
     /* Parse response payload */
