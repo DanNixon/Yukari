@@ -9,6 +9,15 @@ namespace Yukari
 {
 namespace IMU
 {
+  /**
+   * @class MSPClient
+   * @brief Client for sending and receiving data over the MultiWii Serial protocol.
+   *
+   * The MSP client was coded with reference to the following:
+   *  - http://www.multiwii.com/forum/viewtopic.php?f=8&t=1516
+   *  - http://www.multiwii.com/forum/viewtopic.php?f=8&t=4518#
+   *  - https://github.com/alduxvm/pyMultiWii
+   */
   class MSPClient
   {
   public:
