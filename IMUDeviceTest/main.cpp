@@ -9,8 +9,12 @@
 #include <unistd.h>
 #endif
 
-#include <YukariIMU/MSPClient.h>
 #include <serial/serial.h>
+
+#include <YukariIMU/MSPClient.h>
+#include <YukariIMU/IGrabber.h>
+#include <YukariIMU/MSPGrabberAttitude.h>
+#include <YukariIMU/MSPGrabberIMU.h>
 
 using namespace Yukari::IMU;
 
@@ -23,30 +27,47 @@ void doSleep(unsigned long milliseconds)
 #endif
 }
 
+int runRawData(const std::string &portName, unsigned int baud);
+int runFrameGrabber(IGrabber *grabber);
+
 int main(int argc, char **argv)
 {
-  if (argc < 2)
-    return 1;
-
   /* List all ports */
   std::vector<serial::PortInfo> ports = serial::list_ports();
   for (auto it = ports.begin(); it != ports.end(); ++it)
     printf("(%s, %s, %s)\n", it->port.c_str(), it->description.c_str(), it->hardware_id.c_str());
 
-  if (argc < 3)
+  if (argc != 4)
     return 1;
+
+  const std::string portName(argv[2]);
 
   unsigned long baud = 0;
 #if defined(WIN32) && !defined(__MINGW32__)
-  sscanf_s(argv[2], "%lu", &baud);
+  sscanf_s(argv[3], "%lu", &baud);
 #else
-  sscanf(argv[2], "%lu", &baud);
+  sscanf(argv[3], "%lu", &baud);
 #endif
 
-  serial::Serial port(argv[1], baud);
+  const std::string mode(argv[1]);
+  if (mode == "raw")
+    return runRawData(portName, baud);
+  else if (mode == "attitude")
+    return runFrameGrabber(new MSPGrabberAttitude(portName, baud));
+  else if (mode == "imu")
+    return runFrameGrabber(new MSPGrabberIMU(portName, baud));
+  else
+    return 2;
+}
+
+int runRawData(const std::string &portName, unsigned int baud)
+{
+  serial::Serial port(portName, baud);
   MSPClient msp(port);
 
   std::cout << "Port open: " << port.isOpen() << '\n';
+  if (!port.isOpen())
+    return 3;
 
   std::cout << "Board wake...\n";
   doSleep(1000);
@@ -82,6 +103,29 @@ int main(int argc, char **argv)
 
     p1.clear();
     p2.clear();
+
+    doSleep(10);
+  }
+
+  return 0;
+}
+
+int runFrameGrabber(IGrabber * grabber)
+{
+  grabber->open();
+  std::cout << "Grabber open: " << grabber->isOpen() << '\n';
+  if (!grabber->isOpen())
+    return 3;
+
+  std::cout << "Device wake...\n";
+  doSleep(1000);
+  std::cout << "ok.\n";
+
+  while(true)
+  {
+    auto frame = grabber->grabFrame();
+    std::cout << *frame << '\n';
+
     doSleep(10);
   }
 

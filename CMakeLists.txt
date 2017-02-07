@@ -51,7 +51,7 @@ add_subdirectory ( YukariIMU )
 
 # Executables
 add_subdirectory ( YukariCaptureApplication )
-add_subdirectory ( SerialPortTest )
+add_subdirectory ( IMUDeviceTest )
 
 # Generate test coverage report
 if ( LCOV_PATH )
