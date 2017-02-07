@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include <memory>
 #include <chrono>
+#include <memory>
+#include <ostream>
 
 #include <YukariMaths/Quaternion.h>
 #include <YukariMaths/Vector3.h>
@@ -15,12 +16,12 @@ namespace IMU
   class IMUFrame
   {
   public:
-    typedef std::chrono::duration<float, std::milli> duration_t;
+    typedef std::chrono::duration<float, std::milli> Duration;
 
   public:
-    IMUFrame(duration_t frameDuration = duration_t(0.0f));
+    IMUFrame(Duration frameDuration = Duration(0.0f));
 
-    inline duration_t duration() const
+    inline Duration duration() const
     {
       return m_durationMs;
     }
@@ -45,10 +46,12 @@ namespace IMU
       return m_position;
     }
 
+    friend std::ostream &operator<<(std::ostream &s, const IMUFrame &f);
+
   protected:
+    Duration m_durationMs;
     Maths::Quaternion m_orientation;
     Maths::Vector3 m_position;
-    duration_t m_durationMs;
   };
 
   typedef std::shared_ptr<IMUFrame> IMUFrame_sptr;

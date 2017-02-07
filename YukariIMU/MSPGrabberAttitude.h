@@ -7,6 +7,8 @@
 #include <chrono>
 #include <serial/serial.h>
 
+#include "MSPClient.h"
+
 namespace Yukari
 {
 namespace IMU
@@ -24,8 +26,13 @@ namespace IMU
     virtual IMUFrame_sptr grabFrame();
 
   protected:
-    std::chrono::time_point<std::chrono::high_resolution_clock> m_lastFrameTime;
     serial::Serial m_port;
+    MSPClient m_client;
+
+    std::chrono::time_point<std::chrono::high_resolution_clock> m_lastFrameTime;
+
+    float m_attitude[3];
+    MSPClient::Payload m_mspPayload;
   };
 }
 }

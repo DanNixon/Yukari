@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 
-// OS Specific sleep
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -15,53 +14,28 @@
 
 using namespace Yukari::IMU;
 
-void my_sleep(unsigned long milliseconds)
+void doSleep(unsigned long milliseconds)
 {
 #ifdef _WIN32
-  Sleep(milliseconds); // 100 ms
+  Sleep(milliseconds);
 #else
-  usleep(milliseconds * 1000); // 100 ms
+  usleep(milliseconds * 1000);
 #endif
-}
-
-void enumerate_ports()
-{
-  std::vector<serial::PortInfo> devices_found = serial::list_ports();
-
-  std::vector<serial::PortInfo>::iterator iter = devices_found.begin();
-
-  while (iter != devices_found.end())
-  {
-    serial::PortInfo device = *iter++;
-
-    printf("(%s, %s, %s)\n", device.port.c_str(), device.description.c_str(),
-           device.hardware_id.c_str());
-  }
 }
 
 int main(int argc, char **argv)
 {
   if (argc < 2)
-  {
     return 1;
-  }
 
-  enumerate_ports();
+  /* List all ports */
+  std::vector<serial::PortInfo> ports = serial::list_ports();
+  for (auto it = ports.begin(); it != ports.end(); ++it)
+    printf("(%s, %s, %s)\n", it->port.c_str(), it->description.c_str(), it->hardware_id.c_str());
 
-  // Argument 1 is the serial port or enumerate flag
-  std::string portName(argv[1]);
-
-  if (portName == "-e")
-  {
-    enumerate_ports();
-    return 0;
-  }
-  else if (argc < 3)
-  {
+  if (argc < 3)
     return 1;
-  }
 
-  // Argument 2 is the baudrate
   unsigned long baud = 0;
 #if defined(WIN32) && !defined(__MINGW32__)
   sscanf_s(argv[2], "%lu", &baud);
@@ -69,13 +43,13 @@ int main(int argc, char **argv)
   sscanf(argv[2], "%lu", &baud);
 #endif
 
-  serial::Serial port(portName, baud);
+  serial::Serial port(argv[1], baud);
   MSPClient msp(port);
 
   std::cout << "Port open: " << port.isOpen() << '\n';
 
   std::cout << "Board wake...\n";
-  my_sleep(2000);
+  doSleep(1000);
   std::cout << "ok.\n";
 
   int16_t gyro[3];
@@ -108,7 +82,7 @@ int main(int argc, char **argv)
 
     p1.clear();
     p2.clear();
-    my_sleep(10);
+    doSleep(10);
   }
 
   return 0;

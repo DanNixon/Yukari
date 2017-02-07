@@ -11,7 +11,7 @@ namespace IMU
   class ExtendedIMUFrame : public IMUFrame
   {
   public:
-    ExtendedIMUFrame(duration_t frameDuration = duration_t(0.0f));
+    ExtendedIMUFrame(Duration frameDuration = Duration(0.0f));
 
     inline Maths::Vector3 angularVelocity() const
     {
@@ -34,6 +34,8 @@ namespace IMU
     }
 
     IMUFrame_sptr predictFrame(float secondsFromNow) const;
+
+    friend std::ostream &operator<<(std::ostream &s, const ExtendedIMUFrame &f);
 
   protected:
     Maths::Vector3 m_angularVelocity;

@@ -6,7 +6,7 @@ namespace Yukari
 {
 namespace IMU
 {
-  ExtendedIMUFrame::ExtendedIMUFrame(duration_t frameDuration)
+  ExtendedIMUFrame::ExtendedIMUFrame(Duration frameDuration)
       : IMUFrame(frameDuration)
   {
   }
@@ -15,6 +15,14 @@ namespace IMU
   {
     /* TODO */
     return std::make_shared<IMUFrame>();
+  }
+
+  std::ostream &operator<<(std::ostream &s, const ExtendedIMUFrame &f)
+  {
+    s << "(dt=" << f.m_durationMs.count() << ", o=" << f.m_orientation << ", p=" << f.m_position
+      << ", av=" << f.m_angularVelocity << ", lv=" << f.m_linearVelocity << ")";
+
+    return s;
   }
 }
 }
