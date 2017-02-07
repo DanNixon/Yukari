@@ -70,6 +70,13 @@ namespace IMU
       BOOST_CHECK_EQUAL(command, MSPClient::NOP);
       BOOST_CHECK(data.empty());
     }
+
+    BOOST_AUTO_TEST_CASE(MSPClient_Read16)
+    {
+      MSPClient::Payload data = {0xc9, 0xff};
+      int16_t result = MSPClient::Read16(data.begin());
+      BOOST_CHECK_EQUAL(result, -55);
+    }
   }
 }
 }

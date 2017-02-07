@@ -37,9 +37,52 @@ namespace IMU
       return false;
 
     /* Parse data */
-    command = (MSPCommand) payload[4];
+    command = (MSPCommand)payload[4];
     data.reserve(payload[3]);
     data.insert(data.begin(), payload.begin() + 5, payload.end() - 1);
+
+    return true;
+  }
+
+  int16_t MSPClient::Read16(Payload::const_iterator it)
+  {
+    union {
+      int16_t v;
+      uint8_t b[2];
+    } s;
+
+    s.b[0] = *(it++);
+    s.b[1] = *it;
+
+    return s.v;
+  }
+
+  bool MSPClient::ParseRawIMUPayload(const Payload &payload, float *gyro, float *acc, float *mag)
+  {
+    if (payload.size() != 18)
+      return false;
+
+    auto data = payload.begin();
+
+    size_t i;
+
+    for (i = 0; i < 3; i++)
+    {
+      acc[i] = Read16(data);
+      data += 2;
+    }
+
+    for (i = 0; i < 3; i++)
+    {
+      gyro[i] = Read16(data);
+      data += 2;
+    }
+
+    for (i = 0; i < 3; i++)
+    {
+      mag[i] = Read16(data);
+      data += 2;
+    }
 
     return true;
   }
@@ -61,9 +104,8 @@ namespace IMU
     Payload txPayload;
     BuildCommandPayload(txPayload, command, payload);
     bytesTransfered = m_port.write(txPayload);
-
-    std::cout << "writedone (" << bytesTransfered << ")\n";
-    std::cout << "writedone (" << txPayload.size() << ")\n";
+    if (bytesTransfered != txPayload.size())
+      return false;
 
     /* Receive payload */
     Payload rxPayload;
@@ -77,7 +119,7 @@ namespace IMU
       return false;
 
     /* Parse response payload */
-    return ParseResponsePayload(payload, command, rxPayload);
+    return ParseResponsePayload(rxPayload, command, payload);
   }
 }
 }

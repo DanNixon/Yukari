@@ -57,6 +57,10 @@ namespace IMU
     static void BuildCommandPayload(Payload &payload, MSPCommand command, const Payload &data);
     static bool ParseResponsePayload(const Payload &payload, MSPCommand &command, Payload &data);
 
+    static int16_t Read16(Payload::const_iterator it);
+
+    static bool ParseRawIMUPayload(const Payload &payload, float *gyro, float *acc, float *mag);
+
   public:
     MSPClient(serial::Serial &port);
 

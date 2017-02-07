@@ -1,24 +1,7 @@
-/***
- * This example expects the serial port has a loopback on it.
- *
- * Alternatively, you could use an Arduino:
- *
- * <pre>
- *  void setup() {
- *    Serial.begin(<insert your baudrate here>);
- *  }
- *
- *  void loop() {
- *    if (Serial.available()) {
- *      Serial.write(Serial.read());
- *    }
- *  }
- * </pre>
- */
-
 #include <cstdio>
 #include <iostream>
 #include <string>
+#include <iomanip>
 
 // OS Specific sleep
 #ifdef _WIN32
@@ -30,12 +13,6 @@
 #include <YukariIMU/MSPClient.h>
 #include <serial/serial.h>
 
-using std::string;
-using std::exception;
-using std::cout;
-using std::cerr;
-using std::endl;
-using std::vector;
 using namespace Yukari::IMU;
 
 void my_sleep(unsigned long milliseconds)
@@ -49,9 +26,9 @@ void my_sleep(unsigned long milliseconds)
 
 void enumerate_ports()
 {
-  vector<serial::PortInfo> devices_found = serial::list_ports();
+  std::vector<serial::PortInfo> devices_found = serial::list_ports();
 
-  vector<serial::PortInfo>::iterator iter = devices_found.begin();
+  std::vector<serial::PortInfo>::iterator iter = devices_found.begin();
 
   while (iter != devices_found.end())
   {
@@ -69,8 +46,10 @@ int main(int argc, char **argv)
     return 1;
   }
 
+  enumerate_ports();
+
   // Argument 1 is the serial port or enumerate flag
-  string portName(argv[1]);
+  std::string portName(argv[1]);
 
   if (portName == "-e")
   {
@@ -93,28 +72,37 @@ int main(int argc, char **argv)
   serial::Serial port(portName, baud);
   MSPClient msp(port);
 
-  cout << "Port open: " << port.isOpen() << '\n';
+  std::cout << "Port open: " << port.isOpen() << '\n';
 
-  cout << "Board wake...\n";
+  std::cout << "Board wake...\n";
   my_sleep(2000);
-  cout << "ok.\n";
+  std::cout << "ok.\n";
+
+  float gyro[3];
+  float acc[3];
+  float mag[3];
 
   while (true)
   {
     MSPClient::Payload p;
-    bool ok = msp.requestData(MSPClient::RAW_IMU, p);
+    bool ok = msp.requestData(MSPClient::RAW_IMU, p) && MSPClient::ParseRawIMUPayload(p, gyro, acc, mag);
 
     if (ok)
     {
-      std::cout << std::hex;
-      for (auto it = p.begin(); it != p.end(); ++it)
-        std::cout << *it << ' ';
+      size_t i;
+      for (i = 0; i < 3; i++)
+        std::cout << std::setw(8) << gyro[i] << ' ';
+      for (i = 0; i < 3; i++)
+        std::cout << std::setw(8) << acc[i] << ' ';
+      for (i = 0; i < 3; i++)
+        std::cout << std::setw(8) << mag[i] << ' ';
       std::cout << '\n';
     }
     else
       std::cout << "fail\n";
 
     p.clear();
+    my_sleep(10);
   }
 
   return 0;
