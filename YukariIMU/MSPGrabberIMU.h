@@ -2,30 +2,24 @@
 
 #pragma once
 
-#include "IGrabber.h"
-
-#include <chrono>
-#include <serial/serial.h>
+#include "MSPGrabber.h"
 
 namespace Yukari
 {
 namespace IMU
 {
-  class MSPGrabberIMU : public IGrabber
+  class MSPGrabberIMU : public MSPGrabber
   {
   public:
     MSPGrabberIMU(const std::string &port, unsigned int baud = 115200);
     virtual ~MSPGrabberIMU();
 
-    virtual void open();
-    virtual void close();
-    virtual bool isOpen() const;
-
     virtual IMUFrame_sptr grabFrame();
 
   protected:
-    std::chrono::time_point<std::chrono::high_resolution_clock> m_lastFrameTime;
-    serial::Serial m_port;
+    int16_t m_gyro[3];
+    int16_t m_acc[3];
+    int16_t m_mag[3];
   };
 }
 }

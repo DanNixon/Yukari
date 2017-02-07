@@ -13,34 +13,13 @@ namespace IMU
 {
 
   MSPGrabberAttitude::MSPGrabberAttitude(const std::string &port, unsigned int baud)
-      : m_port(port, baud, serial::Timeout::simpleTimeout(1000))
-      , m_client(m_port)
+      : MSPGrabber(port, baud)
   {
     m_mspPayload.reserve(6);
   }
 
   MSPGrabberAttitude::~MSPGrabberAttitude()
   {
-    close();
-  }
-
-  void MSPGrabberAttitude::open()
-  {
-    if (!m_port.isOpen())
-      m_port.open();
-
-    m_lastFrameTime = std::chrono::high_resolution_clock::now();
-  }
-
-  void MSPGrabberAttitude::close()
-  {
-    if (m_port.isOpen())
-      m_port.close();
-  }
-
-  bool MSPGrabberAttitude::isOpen() const
-  {
-    return m_port.isOpen();
   }
 
   IMUFrame_sptr MSPGrabberAttitude::grabFrame()
@@ -49,6 +28,7 @@ namespace IMU
 
     bool ok = m_client.requestData(MSPClient::ATTITUDE, m_mspPayload) &&
               MSPClient::ParseAttitudePayload(m_mspPayload, m_attitude);
+
     if (!ok)
       return nullptr;
 
