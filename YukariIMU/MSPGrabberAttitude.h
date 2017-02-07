@@ -11,11 +11,11 @@ namespace Yukari
 {
 namespace IMU
 {
-  class MSPGrabber : public IGrabber
+  class MSPGrabberAttitude : public IGrabber
   {
   public:
-    MSPGrabber(const std::string &port, unsigned int baud = 115200);
-    virtual ~MSPGrabber();
+    MSPGrabberAttitude(const std::string &port, unsigned int baud = 115200);
+    virtual ~MSPGrabberAttitude();
 
     virtual void open();
     virtual void close();

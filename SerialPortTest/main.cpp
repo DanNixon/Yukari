@@ -1,7 +1,7 @@
 #include <cstdio>
+#include <iomanip>
 #include <iostream>
 #include <string>
-#include <iomanip>
 
 // OS Specific sleep
 #ifdef _WIN32
@@ -78,14 +78,17 @@ int main(int argc, char **argv)
   my_sleep(2000);
   std::cout << "ok.\n";
 
-  float gyro[3];
-  float acc[3];
-  float mag[3];
+  int16_t gyro[3];
+  int16_t acc[3];
+  int16_t mag[3];
+  float att[3];
 
   while (true)
   {
-    MSPClient::Payload p;
-    bool ok = msp.requestData(MSPClient::RAW_IMU, p) && MSPClient::ParseRawIMUPayload(p, gyro, acc, mag);
+    MSPClient::Payload p1, p2;
+    bool ok = msp.requestData(MSPClient::RAW_IMU, p1) &&
+              MSPClient::ParseRawIMUPayload(p1, gyro, acc, mag) &&
+              msp.requestData(MSPClient::ATTITUDE, p2) && MSPClient::ParseAttitudePayload(p2, att);
 
     if (ok)
     {
@@ -96,12 +99,15 @@ int main(int argc, char **argv)
         std::cout << std::setw(8) << acc[i] << ' ';
       for (i = 0; i < 3; i++)
         std::cout << std::setw(8) << mag[i] << ' ';
+      for (i = 0; i < 3; i++)
+        std::cout << std::setw(8) << att[i] << ' ';
       std::cout << '\n';
     }
     else
       std::cout << "fail\n";
 
-    p.clear();
+    p1.clear();
+    p2.clear();
     my_sleep(10);
   }
 

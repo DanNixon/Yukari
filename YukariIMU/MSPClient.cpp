@@ -57,7 +57,7 @@ namespace IMU
     return s.v;
   }
 
-  bool MSPClient::ParseRawIMUPayload(const Payload &payload, float *gyro, float *acc, float *mag)
+  bool MSPClient::ParseRawIMUPayload(const Payload &payload, int16_t *gyro, int16_t *acc, int16_t *mag)
   {
     if (payload.size() != 18)
       return false;
@@ -83,6 +83,27 @@ namespace IMU
       mag[i] = Read16(data);
       data += 2;
     }
+
+    return true;
+  }
+
+  bool MSPClient::ParseAttitudePayload(const Payload &payload, float *att)
+  {
+    if (payload.size() != 6)
+      return false;
+
+    auto data = payload.begin();
+
+    /* X axis */
+    att[0] = Read16(data) / 10.0f;
+    data += 2;
+
+    /* Y axis */
+    att[1] = Read16(data) / 10.0f;
+    data += 2;
+
+    /* Heading */
+    att[2] = Read16(data);
 
     return true;
   }

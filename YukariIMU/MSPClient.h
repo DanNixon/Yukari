@@ -59,7 +59,9 @@ namespace IMU
 
     static int16_t Read16(Payload::const_iterator it);
 
-    static bool ParseRawIMUPayload(const Payload &payload, float *gyro, float *acc, float *mag);
+    static bool ParseRawIMUPayload(const Payload &payload, int16_t *gyro, int16_t *acc,
+                                   int16_t *mag);
+    static bool ParseAttitudePayload(const Payload &payload, float *att);
 
   public:
     MSPClient(serial::Serial &port);

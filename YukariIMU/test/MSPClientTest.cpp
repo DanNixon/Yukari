@@ -77,6 +77,24 @@ namespace IMU
       int16_t result = MSPClient::Read16(data.begin());
       BOOST_CHECK_EQUAL(result, -55);
     }
+
+    BOOST_AUTO_TEST_CASE(MSPClient_Parse_IMU_Payload)
+    {
+      /* TODO */
+    }
+
+    BOOST_AUTO_TEST_CASE(MSPClient_Parse_Attitude_Payload)
+    {
+      MSPClient::Payload data = {0x4d, 0x0, 0xec, 0xff, 0x76, 0x0};
+      float att[3];
+
+      bool result = MSPClient::ParseAttitudePayload(data, att);
+      BOOST_CHECK(result);
+
+      BOOST_CHECK_EQUAL(att[0], 7.7f);
+      BOOST_CHECK_EQUAL(att[1], -2.0f);
+      BOOST_CHECK_EQUAL(att[2], 118.0f);
+    }
   }
 }
 }
