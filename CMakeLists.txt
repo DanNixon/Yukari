@@ -42,7 +42,8 @@ add_definitions ( ${PCL_DEFINITIONS} )
 
 # Includes
 include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}
-                      ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty
+                      ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/spdlog
+                      ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/eigen
 					  ${PCL_INCLUDE_DIRS}
 					  ${Boost_INCLUDE_DIRS} )
 
