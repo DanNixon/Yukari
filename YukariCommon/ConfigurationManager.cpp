@@ -36,7 +36,9 @@ namespace Common
     return pt;
   }
 
-  ConfigurationManager::Config ConfigurationManager::LoadFromAppDataDirectory(const std::string &appName, const std::string &filename)
+  ConfigurationManager::Config
+  ConfigurationManager::LoadFromAppDataDirectory(const std::string &appName,
+                                                 const std::string &filename)
   {
     auto path = GetAppDataDirectory(appName) / filename;
     return Load(path.string());
