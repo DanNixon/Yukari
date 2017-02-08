@@ -12,7 +12,7 @@ before_install:
 script:
   - mkdir -p build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Debug ..
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DBOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu/
   - make -j4
   - ctest -VV
 
