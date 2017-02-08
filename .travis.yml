@@ -4,9 +4,9 @@ dist: trusty
 sudo: required
 
 before_install:
-  - sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl
-  - sudo apt-get update
-  - sudo apt-get install cmake libboost-all-dev libpcl-all
+  - sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl -y
+  - sudo apt-get -qq update
+  - sudo apt-get install -y cmake libboost-all-dev libpcl-all
   - cmake --version
 
 script:
