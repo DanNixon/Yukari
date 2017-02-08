@@ -1,133 +1,95 @@
-#include <cstdio>
-#include <iomanip>
-#include <iostream>
-#include <string>
+#include <vtkActor.h>
+#include <vtkAxes.h>
+#include <vtkCamera.h>
+#include <vtkCubeSource.h>
+#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
+#include <vtkCommand.h>
+#include <vtkSmartPointer.h>
+#include <vtkTransform.h>
 
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <unistd.h>
-#endif
-
-#include <serial/serial.h>
-
-#include <YukariIMU/MSPClient.h>
-#include <YukariIMU/IGrabber.h>
-#include <YukariIMU/MSPGrabberAttitude.h>
-#include <YukariIMU/MSPGrabberIMU.h>
-
-using namespace Yukari::IMU;
-
-void doSleep(unsigned long milliseconds)
+class vtkTimerCallback : public vtkCommand
 {
-#ifdef _WIN32
-  Sleep(milliseconds);
-#else
-  usleep(milliseconds * 1000);
-#endif
-}
-
-int runRawData(const std::string &portName, unsigned int baud);
-int runFrameGrabber(IGrabber *grabber);
-
-int main(int argc, char **argv)
-{
-  /* List all ports */
-  std::vector<serial::PortInfo> ports = serial::list_ports();
-  for (auto it = ports.begin(); it != ports.end(); ++it)
-    printf("(%s, %s, %s)\n", it->port.c_str(), it->description.c_str(), it->hardware_id.c_str());
-
-  if (argc != 4)
-    return 1;
-
-  const std::string portName(argv[2]);
-
-  unsigned long baud = 0;
-#if defined(WIN32) && !defined(__MINGW32__)
-  sscanf_s(argv[3], "%lu", &baud);
-#else
-  sscanf(argv[3], "%lu", &baud);
-#endif
-
-  const std::string mode(argv[1]);
-  if (mode == "raw")
-    return runRawData(portName, baud);
-  else if (mode == "attitude")
-    return runFrameGrabber(new MSPGrabberAttitude(portName, baud));
-  else if (mode == "imu")
-    return runFrameGrabber(new MSPGrabberIMU(portName, baud));
-  else
-    return 2;
-}
-
-int runRawData(const std::string &portName, unsigned int baud)
-{
-  serial::Serial port(portName, baud);
-  MSPClient msp(port);
-
-  std::cout << "Port open: " << port.isOpen() << '\n';
-  if (!port.isOpen())
-    return 3;
-
-  std::cout << "Board wake...\n";
-  doSleep(1000);
-  std::cout << "ok.\n";
-
-  int16_t gyro[3];
-  int16_t acc[3];
-  int16_t mag[3];
-  float att[3];
-
-  while (true)
+public:
+  static vtkTimerCallback *New()
   {
-    MSPClient::Payload p1, p2;
-    bool ok = msp.requestData(MSPClient::RAW_IMU, p1) &&
-              MSPClient::ParseRawIMUPayload(p1, gyro, acc, mag) &&
-              msp.requestData(MSPClient::ATTITUDE, p2) && MSPClient::ParseAttitudePayload(p2, att);
-
-    if (ok)
-    {
-      size_t i;
-      for (i = 0; i < 3; i++)
-        std::cout << std::setw(8) << gyro[i] << ' ';
-      for (i = 0; i < 3; i++)
-        std::cout << std::setw(8) << acc[i] << ' ';
-      for (i = 0; i < 3; i++)
-        std::cout << std::setw(8) << mag[i] << ' ';
-      for (i = 0; i < 3; i++)
-        std::cout << std::setw(8) << att[i] << ' ';
-      std::cout << '\n';
-    }
-    else
-      std::cout << "fail\n";
-
-    p1.clear();
-    p2.clear();
-
-    doSleep(10);
+    vtkTimerCallback *cb = new vtkTimerCallback;
+    cb->TimerCount = 0;
+    return cb;
   }
 
-  return 0;
-}
-
-int runFrameGrabber(IGrabber * grabber)
-{
-  grabber->open();
-  std::cout << "Grabber open: " << grabber->isOpen() << '\n';
-  if (!grabber->isOpen())
-    return 3;
-
-  std::cout << "Device wake...\n";
-  doSleep(1000);
-  std::cout << "ok.\n";
-
-  while(true)
+  virtual void Execute(vtkObject *caller, unsigned long eventId, void *vtkNotUsed(callData))
   {
-    auto frame = grabber->grabFrame();
-    std::cout << *frame << '\n';
+    if (vtkCommand::TimerEvent == eventId)
+      ++this->TimerCount;
 
-    doSleep(10);
+    cout << this->TimerCount << endl;
+
+    actor->SetOrientation(0, 0, 0);
+    actor->RotateWXYZ(this->TimerCount, 0, 1, 0);
+
+    vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::SafeDownCast(caller);
+    iren->GetRenderWindow()->Render();
   }
+
+public:
+  vtkActor *actor;
+
+private:
+  int TimerCount;
+};
+
+int main()
+{
+  vtkCubeSource *cylinder = vtkCubeSource::New();
+  cylinder->SetYLength(0.1);
+
+  vtkPolyDataMapper *cylinderMapper = vtkPolyDataMapper::New();
+  cylinderMapper->SetInputConnection(cylinder->GetOutputPort());
+
+  vtkActor *cylinderActor = vtkActor::New();
+  cylinderActor->SetMapper(cylinderMapper);
+  cylinderActor->GetProperty()->SetColor(1.0000, 0.3882, 0.2784);
+
+  vtkRenderer *ren1 = vtkRenderer::New();
+  vtkRenderWindow *renWin = vtkRenderWindow::New();
+  renWin->AddRenderer(ren1);
+  vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
+  iren->SetRenderWindow(renWin);
+
+  iren->Initialize();
+
+  vtkSmartPointer<vtkTimerCallback> cb = vtkSmartPointer<vtkTimerCallback>::New();
+  cb->actor = cylinderActor;
+  iren->AddObserver(vtkCommand::TimerEvent, cb);
+  iren->CreateRepeatingTimer(100);
+
+  ren1->AddActor(cylinderActor);
+  ren1->SetBackground(0.1, 0.2, 0.4);
+  renWin->SetSize(200, 200);
+
+  vtkAxes *axis = vtkAxes::New();
+  vtkPolyDataMapper *axisMapper = vtkPolyDataMapper::New();
+  axisMapper->SetInputConnection(axis->GetOutputPort());
+  vtkActor *axisActor = vtkActor::New();
+  axisActor->SetMapper(axisMapper);
+  ren1->AddActor(axisActor);
+
+  ren1->ResetCamera();
+  renWin->Render();
+
+  iren->Start();
+
+  cylinder->Delete();
+  cylinderMapper->Delete();
+  cylinderActor->Delete();
+  ren1->Delete();
+  renWin->Delete();
+  iren->Delete();
 
   return 0;
 }

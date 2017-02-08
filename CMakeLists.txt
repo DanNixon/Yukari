@@ -37,6 +37,7 @@ find_package(Boost REQUIRED
 
 if(UNIX)
   list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
+  list(REMOVE_ITEM VTK_LIBRARIES "vtkproj4")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x -pthread")
 endif()
 
@@ -46,6 +47,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/spdlog
                     ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/serial/include
                     ${Boost_INCLUDE_DIRS}
+                    ${VTK_INCLUDE_DIRS}
                     ${PCL_INCLUDE_DIRS})
 
 # Third party libraries
