@@ -28,12 +28,9 @@ globally_enable_extra_compiler_warnings()
 
 include ( DoxygenTargets )
 
-# External library: Boost
-set ( Boost_USE_STATIC_LIBS ON )
-set ( Boost_USE_STATIC_RUNTIME OFF )
-set ( Boost_USE_MULTITHREADED ON )
-find_package ( Boost REQUIRED
-  COMPONENTS system filesystem unit_test_framework )
+set ( Boost_NO_BOOST_CMAKE TRUE )
+set ( Boost_NO_SYSTEM_PATHS TRUE )
+set ( Boost_DETAILED_FAILURE_MSG ON )
 
 # External library: Eigen
 set ( EIGEN_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/eigen )
@@ -43,10 +40,19 @@ find_package ( PCL 1.6 REQUIRED )
 link_directories ( ${PCL_LIBRARY_DIRS} )
 add_definitions ( ${PCL_DEFINITIONS} )
 
+# External library: Boost
+set ( Boost_USE_STATIC_LIBS ON )
+set ( Boost_USE_STATIC_RUNTIME OFF )
+set ( Boost_USE_MULTITHREADED ON )
+find_package ( Boost REQUIRED
+  COMPONENTS system filesystem unit_test_framework serialization thread date_time iostreams chrono mpi )
+
+list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
+
 # Includes
 include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}
+                      ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/boost_qvm
                       ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/spdlog
-                      ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/boost
                       ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/serial/include
                       ${Boost_INCLUDE_DIRS}
                       ${PCL_INCLUDE_DIRS} )
