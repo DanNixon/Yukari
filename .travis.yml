@@ -1,20 +1,12 @@
 language: cpp
 
 dist: trusty
-sudo: false
-
-addons:
-  apt:
-    sources:
-      - kalakris-cmake
-    packages:
-      - cmake
-      - cppcheck
-      - doxygen
-      - lcov
-      - libboost-all-dev
+sudo: required
 
 before_install:
+  - sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl
+  - sudo apt-get update
+  - sudo apt-get install cmake libboost-all-dev libpcl-all
   - cmake --version
 
 script:
