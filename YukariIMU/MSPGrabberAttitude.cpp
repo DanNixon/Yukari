@@ -11,7 +11,6 @@ namespace Yukari
 {
 namespace IMU
 {
-
   MSPGrabberAttitude::MSPGrabberAttitude(const std::string &port, unsigned int baud)
       : MSPGrabber(port, baud)
   {
@@ -38,7 +37,7 @@ namespace IMU
 
     auto retVal = std::make_shared<IMUFrame>(frameDuration);
     retVal->orientation() =
-        Quaternion(Vector3(m_attitude[0], m_attitude[1], m_attitude[2]), Quaternion::XYZ, DEGREES);
+        Quaternion(Vector3(m_attitude[0], m_attitude[1], m_attitude[2]), Quaternion::YZX, DEGREES);
 
     return retVal;
   }

@@ -69,6 +69,9 @@ namespace Maths
       return m_values[0];
     }
 
+    float getAngle(AngleUnit unit = RADIANS) const;
+    Vector3 getAxis() const;
+
     Vector3 rotate(const Vector3 &v) const;
 
     friend boost::qvm::quat_traits<Quaternion>;

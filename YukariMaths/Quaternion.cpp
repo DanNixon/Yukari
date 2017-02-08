@@ -61,6 +61,20 @@ namespace Maths
     }
   }
 
+  float Quaternion::getAngle(AngleUnit unit) const
+  {
+    float a = 2.0f * std::acos(m_values[0]);
+    if (unit == DEGREES)
+      a *= RAD_TO_DEG;
+    return a;
+  }
+
+  Vector3 Quaternion::getAxis() const
+  {
+    float f = 1.0f / (std::sqrt(1.0f - std::pow(m_values[0], 2)));
+    return Vector3(m_values[1] * f, m_values[2] * f, m_values[3] * f);
+  }
+
   Vector3 Quaternion::rotate(const Vector3 &v) const
   {
     const Quaternion inv = inverse(*this);
