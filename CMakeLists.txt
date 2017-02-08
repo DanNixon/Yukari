@@ -35,6 +35,9 @@ set ( Boost_USE_MULTITHREADED ON )
 find_package ( Boost REQUIRED
   COMPONENTS system filesystem unit_test_framework )
 
+# External library: Eigen
+set ( EIGEN_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/eigen )
+
 # External library: PCL
 find_package ( PCL 1.6 REQUIRED )
 link_directories ( ${PCL_LIBRARY_DIRS} )
@@ -43,7 +46,6 @@ add_definitions ( ${PCL_DEFINITIONS} )
 # Includes
 include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}
                       ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/spdlog
-                      ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/eigen
                       ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/boost
                       ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/serial/include
                       ${Boost_INCLUDE_DIRS}
