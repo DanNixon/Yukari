@@ -8,7 +8,7 @@ add_library(${PROJECT_NAME}
   ${CMAKE_CURRENT_SOURCE_DIR}/MSPGrabberAttitude.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/MSPClient.cpp)
 
-target_link_libraries(${PROJECT_NAME} LINK_PUBLIC
+target_link_libraries(${PROJECT_NAME}
   YukariMaths
   serial)
 
