@@ -9,7 +9,8 @@
 #endif
 
 #if defined(_WIN32)
-/* TODO */
+#include <Shlobj.h>
+#include <Windows.h>
 #endif
 
 #include "LoggingService.h"
@@ -46,33 +47,56 @@ namespace Common
 
   boost::filesystem::path ConfigurationManager::GetUserHomeDirectory()
   {
+    auto logger = LoggingService::GetLogger("ConfigurationManager");
+    boost::filesystem::path retVal;
+
 #if defined(__linux__)
     struct passwd *pwd = getpwuid(getuid());
     if (pwd)
-      return boost::filesystem::path(pwd->pw_dir);
+      retVal = boost::filesystem::path(pwd->pw_dir);
     else
-      return boost::filesystem::path(getenv("HOME"));
+      retVal = boost::filesystem::path(getenv("HOME"));
 #endif
 
 #if defined(_WIN32)
-/* TODO */
+    WCHAR path[MAX_PATH];
+    char charPath[MAX_PATH];
+    char c = ' ';
+    if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, path)) &&
+        SUCCEEDED(WideCharToMultiByte(CP_ACP, 0, path, -1, charPath, 260, &c, NULL)))
+    {
+      retVal = boost::filesystem::path(charPath);
+    }
 #endif
 
-    throw std::runtime_error("Unknown platform");
+    logger->debug("Got home directory: {}", retVal);
+
+    return retVal;
   }
 
   boost::filesystem::path ConfigurationManager::GetAppDataDirectory(const std::string &appName)
   {
+    auto logger = LoggingService::GetLogger("ConfigurationManager");
+    boost::filesystem::path retVal;
+
 #if defined(__linux__)
-    auto dir = GetUserHomeDirectory() / ("." + appName);
-    return dir;
+    retVal = GetUserHomeDirectory() / ("." + appName);
 #endif
 
 #if defined(_WIN32)
-/* TODO */
+    WCHAR path[MAX_PATH];
+    char charPath[MAX_PATH];
+    char c = ' ';
+    if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_COMMON_APPDATA, NULL, 0, path)) &&
+        SUCCEEDED(WideCharToMultiByte(CP_ACP, 0, path, -1, charPath, 260, &c, NULL)))
+    {
+      retVal = boost::filesystem::path(charPath) / appName;
+    }
 #endif
 
-    throw std::runtime_error("Unknown platform");
+    logger->debug("Got application data directory: {}", retVal);
+
+    return retVal;
   }
 }
 }
