@@ -16,6 +16,7 @@ TODO
 
 1. Build PCL and dependencies
   - https://github.com/boostorg/boost
+  - https://github.com/RLovelett/eigen
   - https://github.com/mariusmuja/flann
   - https://github.com/Kitware/VTK
   - Qt
