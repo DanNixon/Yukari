@@ -12,6 +12,7 @@
 
 ## Building on Windows
 
-1. Install a prebuilt version of Boost
-2. Install prebuilt PCL and dependencies: http://pointclouds.org/downloads/windows.html
-3. `cmake ../Yukari -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DBoost_INCLUDE_DIR=C:\\local\\boost_1_63_0 -DBoost_LIBRARY_DIR=C:\\local\\boost_1_63_0\\lib64-msvc-14.0`
+TODO
+
+1. Build PCL and dependencies
+2. `cmake ../Yukari -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug`
