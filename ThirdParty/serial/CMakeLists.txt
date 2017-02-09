@@ -38,3 +38,5 @@ elseif(UNIX)
 else()
   target_link_libraries(${PROJECT_NAME} setupapi)
 endif()
+
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Libraries/ThirdParty)

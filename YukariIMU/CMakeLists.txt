@@ -16,3 +16,5 @@ include(AddTests)
 AddTests(${PROJECT_NAME}
   YukariMaths
   serial)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Libraries)

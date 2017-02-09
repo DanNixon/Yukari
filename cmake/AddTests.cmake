@@ -19,5 +19,7 @@ function(AddTests _libs)
     add_test(NAME ${test_name}
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test
       COMMAND ${CMAKE_BINARY_DIR}/test/${test_name})
+	  
+	set_target_properties(${test_name} PROPERTIES FOLDER Tests)
   endforeach(test_file)
 endfunction(AddTests)
