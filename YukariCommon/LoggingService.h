@@ -4,6 +4,7 @@
 
 #include <memory>
 
+#include <spdlog/fmt/ostr.h>
 #include <spdlog/sinks/dist_sink.h>
 #include <spdlog/spdlog.h>
 
@@ -16,9 +17,12 @@ namespace Common
   class LoggingService
   {
   public:
+    typedef std::shared_ptr<spdlog::logger> Logger;
+
+  public:
     static void Configure(ConfigurationManager::Config &config);
 
-    static std::shared_ptr<spdlog::logger> GetLogger(const std::string &name);
+    static Logger GetLogger(const std::string &name);
 
   private:
     static spdlog::level::level_enum GetLogLevelFromStr(const std::string &levelStr);

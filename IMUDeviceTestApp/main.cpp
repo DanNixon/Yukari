@@ -12,23 +12,23 @@
 #include <serial/serial.h>
 #include <vtkActor.h>
 #include <vtkAxes.h>
-#include <vtkCamera.h>
 #include <vtkCommand.h>
 #include <vtkCubeSource.h>
-#include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
-#include <vtkTransform.h>
 
-#include <YukariIMU/IGrabber.h>
+#include <YukariCommon/LoggingService.h>
 #include <YukariIMU/MSPClient.h>
 #include <YukariIMU/MSPGrabberAttitude.h>
 #include <YukariIMU/MSPGrabberIMU.h>
 
+#include "VTKIMUActorCallback.h"
+
+using namespace Yukari::Common;
 using namespace Yukari::IMU;
 using namespace Yukari::Maths;
 
@@ -46,6 +46,8 @@ int runFrameGrabber(IGrabber *grabber);
 
 int main(int argc, char **argv)
 {
+  auto logger = LoggingService::GetLogger("main");
+
   /* List all ports */
   std::vector<serial::PortInfo> ports = serial::list_ports();
   for (auto it = ports.begin(); it != ports.end(); ++it)
@@ -76,16 +78,24 @@ int main(int argc, char **argv)
 
 int runRawData(const std::string &portName, unsigned int baud)
 {
+  auto logger = LoggingService::GetLogger("runRawData");
+
   serial::Serial port(portName, baud);
   MSPClient msp(port);
 
-  std::cout << "Port open: " << port.isOpen() << '\n';
-  if (!port.isOpen())
-    return 3;
+  if (port.isOpen())
+  {
+    logger->info("Port is open.");
+  }
+  else
+  {
+    logger->error("Port failed to open.");
+    return 2;
+  }
 
-  std::cout << "Board wake...\n";
+  logger->info("Wait for board to wake...");
   doSleep(1000);
-  std::cout << "ok.\n";
+  logger->info("ok.");
 
   int16_t gyro[3];
   int16_t acc[3];
@@ -113,7 +123,7 @@ int runRawData(const std::string &portName, unsigned int baud)
       std::cout << '\n';
     }
     else
-      std::cout << "fail\n";
+      logger->warn("Failed to get MSP data!");
 
     p1.clear();
     p2.clear();
@@ -124,50 +134,24 @@ int runRawData(const std::string &portName, unsigned int baud)
   return 0;
 }
 
-class VTKIMUActorCallback : public vtkCommand
-{
-public:
-  static VTKIMUActorCallback *New()
-  {
-    VTKIMUActorCallback *cb = new VTKIMUActorCallback;
-    return cb;
-  }
-
-  virtual void Execute(vtkObject *caller, unsigned long vtkNotUsed(eventId),
-                       void *vtkNotUsed(callData))
-  {
-    auto frame = grabber->grabFrame();
-    std::cout << *frame << '\n';
-
-    actor->SetOrientation(0, 0, 0);
-
-    auto q = frame->orientation();
-    float angle = q.getAngle(DEGREES);
-    auto axis = q.getAxis();
-    std::cout << angle << " a=" << axis << '\n';
-
-    actor->RotateWXYZ(angle, axis.z(), axis.x(), axis.y());
-
-    vtkRenderWindowInteractor *rendererInteractor = vtkRenderWindowInteractor::SafeDownCast(caller);
-    rendererInteractor->GetRenderWindow()->Render();
-  }
-
-public:
-  /* TODO */
-  IGrabber *grabber;
-  vtkActor *actor;
-};
-
 int runFrameGrabber(IGrabber *grabber)
 {
-  grabber->open();
-  std::cout << "Grabber open: " << grabber->isOpen() << '\n';
-  if (!grabber->isOpen())
-    return 2;
+  auto logger = LoggingService::GetLogger("runFrameGrabber");
 
-  std::cout << "Device wake...\n";
+  grabber->open();
+  if (grabber->isOpen())
+  {
+    logger->info("Grabber is open.");
+  }
+  else
+  {
+    logger->error("Grabber failed to open.");
+    return 2;
+  }
+
+  logger->info("Wait for device to wake...");
   doSleep(1000);
-  std::cout << "ok.\n";
+  logger->info("ok.");
 
   vtkCubeSource *cube = vtkCubeSource::New();
   cube->SetYLength(0.1);
@@ -188,8 +172,8 @@ int runFrameGrabber(IGrabber *grabber)
   rendererInteractor->Initialize();
 
   vtkSmartPointer<VTKIMUActorCallback> cb = vtkSmartPointer<VTKIMUActorCallback>::New();
-  cb->grabber = grabber;
-  cb->actor = cubeActor;
+  cb->setGrabber(grabber);
+  cb->setActor(cubeActor);
   rendererInteractor->AddObserver(vtkCommand::TimerEvent, cb);
   rendererInteractor->CreateRepeatingTimer(10);
 

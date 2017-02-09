@@ -56,9 +56,9 @@ add_subdirectory(YukariMaths)
 add_subdirectory(YukariIMU)
 
 # Executables
-add_subdirectory(YukariCaptureApplication)
+add_subdirectory(YukariCaptureApp)
 add_subdirectory(KinectTestApp)
-add_subdirectory(IMUDeviceTest)
+add_subdirectory(IMUDeviceTestApp)
 
 # Docs
 add_doxygen(
