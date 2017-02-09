@@ -13,6 +13,7 @@
 #include <serial/serial.h>
 #include <vtkActor.h>
 #include <vtkAxes.h>
+#include <vtkCellArray.h>
 #include <vtkCommand.h>
 #include <vtkCubeSource.h>
 #include <vtkFloatArray.h>

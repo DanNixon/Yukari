@@ -16,7 +16,7 @@ namespace IMU
 
     virtual IMUFrame_sptr grabFrame();
 
-  /* protected: */
+    /* protected: */
     float m_attitude[3];
   };
 }

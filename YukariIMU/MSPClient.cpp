@@ -59,7 +59,8 @@ namespace IMU
     return s.v;
   }
 
-  bool MSPClient::ParseRawIMUPayload(const Payload &payload, int16_t *gyro, int16_t *acc, int16_t *mag)
+  bool MSPClient::ParseRawIMUPayload(const Payload &payload, int16_t *gyro, int16_t *acc,
+                                     int16_t *mag)
   {
     if (payload.size() != 18)
       return false;

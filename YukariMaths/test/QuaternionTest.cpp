@@ -4,8 +4,8 @@
 
 #define BOOST_TEST_MODULE "QuaternionTest"
 
-#include <boost/qvm/all.hpp>
 #include <boost/math/constants/constants.hpp>
+#include <boost/qvm/all.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include <YukariMaths/Quaternion.h>

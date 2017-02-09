@@ -2,9 +2,9 @@
 
 #include "MSPGrabberAttitude.h"
 
-#include <boost/qvm/all.hpp>
 #include <YukariMaths/Quaternion.h>
 #include <YukariMaths/Vector3.h>
+#include <boost/qvm/all.hpp>
 
 using namespace boost::qvm;
 using namespace Yukari::Maths;

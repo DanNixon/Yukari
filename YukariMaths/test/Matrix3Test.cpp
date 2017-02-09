@@ -48,9 +48,7 @@ namespace Maths
       assign(row<2>(m), Vector3(3.1f, 3.2f, 3.3f));
       std::stringstream str;
       str << m;
-      BOOST_CHECK_EQUAL(
-          "[1.1, 1.2, 1.3,\n 2.1, 2.2, 2.3,\n 3.1, 3.2, 3.3]",
-          str.str());
+      BOOST_CHECK_EQUAL("[1.1, 1.2, 1.3,\n 2.1, 2.2, 2.3,\n 3.1, 3.2, 3.3]", str.str());
     }
 
     /* Matrix3 functionality */
@@ -71,9 +69,7 @@ namespace Maths
       assign(col<2>(m), Vector3(1.3f, 2.3f, 3.3f));
       std::stringstream str;
       str << m;
-      BOOST_CHECK_EQUAL(
-          "[1.1, 1.2, 1.3,\n 2.1, 2.2, 2.3,\n 3.1, 3.2, 3.3]",
-          str.str());
+      BOOST_CHECK_EQUAL("[1.1, 1.2, 1.3,\n 2.1, 2.2, 2.3,\n 3.1, 3.2, 3.3]", str.str());
     }
   }
 }

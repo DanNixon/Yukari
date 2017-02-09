@@ -4,8 +4,8 @@
 
 #define BOOST_TEST_MODULE "Vector4Test"
 
-#include <boost/test/unit_test.hpp>
 #include <boost/qvm/all.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include <YukariMaths/Vector4.h>
 
