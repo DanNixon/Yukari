@@ -39,9 +39,9 @@ namespace IMU
 
     auto retVal = std::make_shared<IMUFrame>(frameDuration);
     Quaternion x, y, z;
-    rotate_x(x, m_attitude[2] * DEG_TO_RAD);
-    rotate_y(y, m_attitude[0] * DEG_TO_RAD);
-    rotate_z(z, m_attitude[1] * DEG_TO_RAD);
+    rotate_x(x, -m_attitude[2] * DEG_TO_RAD);
+    rotate_y(y, -m_attitude[0] * DEG_TO_RAD);
+    rotate_z(z, -m_attitude[1] * DEG_TO_RAD);
     retVal->orientation() = x * y * z;
 
     return retVal;
