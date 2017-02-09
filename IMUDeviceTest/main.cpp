@@ -140,17 +140,20 @@ public:
     std::cout << *frame << '\n';
 
     actor->SetOrientation(0, 0, 0);
+
     auto q = frame->orientation();
     float angle = q.getAngle(DEGREES);
     auto axis = q.getAxis();
-    actor->RotateWXYZ(angle, axis.y(), axis.x(), axis.z());
     std::cout << angle << " a=" << axis << '\n';
+
+    actor->RotateWXYZ(angle, axis.z(), axis.x(), axis.y());
 
     vtkRenderWindowInteractor *rendererInteractor = vtkRenderWindowInteractor::SafeDownCast(caller);
     rendererInteractor->GetRenderWindow()->Render();
   }
 
 public:
+  /* TODO */
   IGrabber *grabber;
   vtkActor *actor;
 };

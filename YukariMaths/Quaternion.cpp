@@ -39,6 +39,7 @@ namespace Maths
 
     set_identity(*this);
 
+    /* TODO */
     switch (order)
     {
     case ZYX:
@@ -57,6 +58,12 @@ namespace Maths
       rotate_y(*this, Y(eulerAngles));
       rotate_z(*this, Z(eulerAngles));
       rotate_x(*this, X(eulerAngles));
+      break;
+
+    case ZXY:
+      rotate_z(*this, Z(eulerAngles));
+      rotate_x(*this, X(eulerAngles));
+      rotate_y(*this, Y(eulerAngles));
       break;
     }
   }

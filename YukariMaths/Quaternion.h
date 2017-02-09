@@ -20,7 +20,8 @@ namespace Maths
     {
       ZYX,
       XYZ,
-      YZX
+      YZX,
+      ZXY
     };
 
   public:
