@@ -15,4 +15,12 @@
 TODO
 
 1. Build PCL and dependencies
+  - https://github.com/boostorg/boost
+  - https://github.com/RLovelett/eigen
+  - https://github.com/mariusmuja/flann
+  - https://github.com/Kitware/VTK
+  - Qt
+  - https://github.com/qhull/qhull
+  - https://github.com/OpenNI/OpenNI
+  - https://github.com/avin2/SensorKinect
 2. `cmake ../Yukari -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug`
