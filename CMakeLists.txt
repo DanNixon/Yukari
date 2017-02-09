@@ -20,9 +20,6 @@ set(Boost_NO_BOOST_CMAKE TRUE)
 set(Boost_NO_SYSTEM_PATHS TRUE)
 set(Boost_DETAILED_FAILURE_MSG ON)
 
-# External library: Eigen
-set(EIGEN_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/eigen)
-
 # External library: PCL
 find_package(PCL 1.6 REQUIRED)
 link_directories(${PCL_LIBRARY_DIRS})

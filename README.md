@@ -6,7 +6,7 @@
 
 ## Building on Ubuntu 16.04
 
-1. Install `libproj-dev libboost-all-dev libpcl1.7 libpcl-dev`
+1. Install `libproj-dev libboost-all-dev libpcl1.7 libpcl-dev libeigen3-dev`
 2. `cmake ../Yukari -DCMAKE_BUILD_TYPE=Debug -DBOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu/`
 3. `make`
 
