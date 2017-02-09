@@ -28,6 +28,8 @@ namespace IMU
 
   bool MSPClient::ParseResponsePayload(const Payload &payload, MSPCommand &command, Payload &data)
   {
+    command = MSPCommand::NOP;
+
     /* Test checksum */
     uint8_t checksum = 0;
     for (auto it = payload.begin() + 3; it != payload.end() - 1; ++it)
