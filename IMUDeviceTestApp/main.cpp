@@ -161,7 +161,7 @@ vtkPolyData *generateCube(Vector3 d)
   for (i = 0; i < 6; i++)
     polys->InsertNextCell(4, pts[i]);
   for (i = 0; i < 8; i++)
-    scalars->InsertTuple1(i, i > 3 ? 0 : 10);
+    scalars->InsertTuple1(i, i < 4);
 
   cube->SetPoints(points);
   points->Delete();
@@ -197,8 +197,12 @@ int runFrameGrabber(IGrabber *grabber)
   vtkPolyData *cube = generateCube(Vector3(1.0f, 0.1f, 1.0f));
 
   vtkPolyDataMapper *cubeMapper = vtkPolyDataMapper::New();
+  cubeMapper->SetScalarRange(0, 1);
+#if VTK_MAJOR_VERSION > 6
   cubeMapper->SetInputData(cube);
-  cubeMapper->SetScalarRange(0, 7);
+#else
+  cubeMapper->SetInput(cube);
+#endif
 
   vtkActor *cubeActor = vtkActor::New();
   cubeActor->SetMapper(cubeMapper);
