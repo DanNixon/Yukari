@@ -198,7 +198,7 @@ int runFrameGrabber(IGrabber *grabber)
 
   vtkPolyDataMapper *cubeMapper = vtkPolyDataMapper::New();
   cubeMapper->SetScalarRange(0, 1);
-#if VTK_MAJOR_VERSION > 6
+#if VTK_MAJOR_VERSION > 5
   cubeMapper->SetInputData(cube);
 #else
   cubeMapper->SetInput(cube);
