@@ -2,9 +2,11 @@
 
 #include "MSPGrabber.h"
 
+#include <YukariCommon/LoggingService.h>
 #include <YukariMaths/Quaternion.h>
 #include <YukariMaths/Vector3.h>
 
+using namespace Yukari::Common;
 using namespace Yukari::Maths;
 
 namespace Yukari
@@ -12,7 +14,9 @@ namespace Yukari
 namespace IMU
 {
   MSPGrabber::MSPGrabber(const std::string &port, unsigned int baud)
-      : m_port(port, baud, serial::Timeout::simpleTimeout(1000))
+      : m_defaultTimeout(serial::Timeout::simpleTimeout(1000))
+      , m_calibrationTimeout(serial::Timeout::simpleTimeout(30000))
+      , m_port(port, baud, m_defaultTimeout)
       , m_client(m_port)
   {
   }
@@ -43,14 +47,38 @@ namespace IMU
 
   bool MSPGrabber::calibrateAccelerometer()
   {
-    /* TODO */
-    return false;
+    auto logger = LoggingService::GetLogger("runFrameGrabber");
+
+    if (m_port.isOpen())
+    {
+      logger->error("MSP port not open, cannot run accelerometer calibration.");
+      return false;
+    }
+
+    m_port.setTimeout(m_calibrationTimeout);
+    bool ok = m_client.requestData(MSPClient::ACC_CALIBRATION, m_mspPayload);
+    logger->info("Accelerometer calibration done, result: {}", ok);
+    m_port.setTimeout(m_defaultTimeout);
+
+    return ok;
   }
 
   bool MSPGrabber::calibrateMagnetometer()
   {
-    /* TODO */
-    return false;
+    auto logger = LoggingService::GetLogger("runFrameGrabber");
+
+    if (m_port.isOpen())
+    {
+      logger->error("MSP port not open, cannot run magnetometer calibration.");
+      return false;
+    }
+
+    m_port.setTimeout(m_calibrationTimeout);
+    bool ok = m_client.requestData(MSPClient::MAG_CALIBRATION, m_mspPayload);
+    logger->info("Magnetometer calibration done, result: {}", ok);
+    m_port.setTimeout(m_defaultTimeout);
+
+    return ok;
   }
 }
 }

@@ -29,6 +29,8 @@ namespace IMU
     bool calibrateMagnetometer();
 
   protected:
+    serial::Timeout m_defaultTimeout;
+    serial::Timeout m_calibrationTimeout;
     serial::Serial m_port;
     MSPClient m_client;
 
