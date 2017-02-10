@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "IGrabber.h"
+#include "IIMUGrabber.h"
 
 #include <chrono>
 #include <serial/serial.h>
@@ -13,7 +13,7 @@ namespace Yukari
 {
 namespace IMU
 {
-  class MSPGrabber : public IGrabber
+  class MSPGrabber : public IIMUGrabber
   {
   public:
     MSPGrabber(const std::string &port, unsigned int baud = 115200);

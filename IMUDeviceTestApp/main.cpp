@@ -47,7 +47,7 @@ void doSleep(unsigned long milliseconds)
 }
 
 int runRawData(const std::string &portName, unsigned int baud);
-int runFrameGrabber(IGrabber *grabber);
+int runFrameGrabber(IIMUGrabber_sptr grabber);
 
 int main(int argc, char **argv)
 {
@@ -74,9 +74,9 @@ int main(int argc, char **argv)
   if (mode == "raw")
     return runRawData(portName, baud);
   else if (mode == "attitude")
-    return runFrameGrabber(new MSPGrabberAttitude(portName, baud));
+    return runFrameGrabber(std::make_shared<MSPGrabberAttitude>(portName, baud));
   else if (mode == "imu")
-    return runFrameGrabber(new MSPGrabberIMU(portName, baud));
+    return runFrameGrabber(std::make_shared<MSPGrabberIMU>(portName, baud));
   else
     return 2;
 }
@@ -173,7 +173,7 @@ vtkPolyData *generateCube(Vector3 d)
   return cube;
 }
 
-int runFrameGrabber(IGrabber *grabber)
+int runFrameGrabber(IIMUGrabber_sptr grabber)
 {
   auto logger = LoggingService::GetLogger("runFrameGrabber");
 

@@ -11,7 +11,7 @@
 #include <vtkSmartPointer.h>
 
 #include <YukariCommon/LoggingService.h>
-#include <YukariIMU/IGrabber.h>
+#include <YukariIMU/IIMUGrabber.h>
 
 class VTKIMUActorCallback : public vtkCommand
 {
@@ -21,7 +21,7 @@ public:
   virtual void Execute(vtkObject *caller, unsigned long vtkNotUsed(eventId),
                        void *vtkNotUsed(callData));
 
-  inline void setGrabber(Yukari::IMU::IGrabber *grabber)
+  inline void setGrabber(Yukari::IMU::IIMUGrabber_sptr grabber)
   {
     m_grabber = grabber;
   }
@@ -32,7 +32,7 @@ public:
   }
 
 private:
-  Yukari::IMU::IGrabber *m_grabber;
+  Yukari::IMU::IIMUGrabber_sptr m_grabber;
   vtkSmartPointer<vtkActor> m_actor;
   Yukari::Common::LoggingService::Logger m_logger;
 };

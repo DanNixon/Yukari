@@ -2,13 +2,15 @@
 
 #pragma once
 
+#include <memory>
+
 #include "IMUFrame.h"
 
 namespace Yukari
 {
 namespace IMU
 {
-  class IGrabber
+  class IIMUGrabber
   {
   public:
     virtual void open()
@@ -21,10 +23,12 @@ namespace IMU
 
     virtual bool isOpen() const
     {
-      return false;
+      return true;
     }
 
     virtual IMUFrame_sptr grabFrame() = 0;
   };
+
+  typedef std::shared_ptr<IIMUGrabber> IIMUGrabber_sptr;
 }
 }

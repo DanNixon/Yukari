@@ -2,8 +2,6 @@
 
 [![Build Status](https://travis-ci.com/DanNixon/Yukari.svg?token=hEeXj1er91qf6vBmhf9x&branch=master)](https://travis-ci.com/DanNixon/Yukari)
 
-3D environment mapper
-
 ## Building on Ubuntu 16.04
 
 1. Install `libproj-dev libboost-all-dev libpcl1.7 libpcl-dev libeigen3-dev`

@@ -56,14 +56,16 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 add_subdirectory(ThirdParty/serial)
 
 # Libraries
+add_subdirectory(YukariCloudCapture)
 add_subdirectory(YukariCommon)
-add_subdirectory(YukariMaths)
 add_subdirectory(YukariIMU)
+add_subdirectory(YukariMaths)
+add_subdirectory(YukariProcessing)
 
 # Executables
-add_subdirectory(YukariCaptureApp)
-add_subdirectory(KinectTestApp)
 add_subdirectory(IMUDeviceTestApp)
+add_subdirectory(KinectTestApp)
+add_subdirectory(YukariCaptureApp)
 
 # Docs
 add_doxygen(
