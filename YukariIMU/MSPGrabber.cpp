@@ -11,7 +11,6 @@ namespace Yukari
 {
 namespace IMU
 {
-
   MSPGrabber::MSPGrabber(const std::string &port, unsigned int baud)
       : m_port(port, baud, serial::Timeout::simpleTimeout(1000))
       , m_client(m_port)
@@ -40,6 +39,18 @@ namespace IMU
   bool MSPGrabber::isOpen() const
   {
     return m_port.isOpen();
+  }
+
+  bool MSPGrabber::calibrateAccelerometer()
+  {
+    /* TODO */
+    return false;
+  }
+
+  bool MSPGrabber::calibrateMagnetometer()
+  {
+    /* TODO */
+    return false;
   }
 }
 }

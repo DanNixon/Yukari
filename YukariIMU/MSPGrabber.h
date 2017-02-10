@@ -25,6 +25,9 @@ namespace IMU
 
     virtual IMUFrame_sptr grabFrame() = 0;
 
+    bool calibrateAccelerometer();
+    bool calibrateMagnetometer();
+
   protected:
     serial::Serial m_port;
     MSPClient m_client;
