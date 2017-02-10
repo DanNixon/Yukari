@@ -12,6 +12,8 @@ enable_testing()
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+add_definitions(-DNOMINMAX)
+
 # All warnings
 include(EnableExtraCompilerWarnings)
 globally_enable_extra_compiler_warnings()

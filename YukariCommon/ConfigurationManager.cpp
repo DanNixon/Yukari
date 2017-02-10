@@ -4,11 +4,11 @@
 
 #include <boost/property_tree/json_parser.hpp>
 
-#if defined(__linux__)
+#ifdef __linux__
 #include <pwd.h>
 #endif
 
-#if defined(_WIN32)
+#ifdef _WIN32
 #include <Shlobj.h>
 #include <Windows.h>
 #endif
