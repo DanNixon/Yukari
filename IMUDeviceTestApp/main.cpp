@@ -31,6 +31,7 @@
 #include <YukariIMU/MSPGrabberIMU.h>
 
 #include "VTKIMUActorCallback.h"
+#include "VTKIMUCalibrationInteractionStyle.h"
 
 using namespace boost::qvm;
 using namespace Yukari::Common;
@@ -177,8 +178,6 @@ int runFrameGrabber(IGrabber *grabber)
 {
   auto logger = LoggingService::GetLogger("runFrameGrabber");
 
-  logger->info("Blue is front of device, red is back of device");
-
   grabber->open();
   if (grabber->isOpen())
   {
@@ -189,10 +188,6 @@ int runFrameGrabber(IGrabber *grabber)
     logger->error("Grabber failed to open.");
     return 2;
   }
-
-  logger->info("Wait for device to wake...");
-  doSleep(1000);
-  logger->info("ok.");
 
   vtkPolyData *cube = generateCube(Vector3(1.0f, 0.1f, 1.0f));
 
@@ -221,6 +216,12 @@ int runFrameGrabber(IGrabber *grabber)
   rendererInteractor->AddObserver(vtkCommand::TimerEvent, cb);
   rendererInteractor->CreateRepeatingTimer(10);
 
+  vtkSmartPointer<VTKIMUCalibrationInteractionStyle> style =
+      vtkSmartPointer<VTKIMUCalibrationInteractionStyle>::New();
+  style->setGrabber(grabber);
+  rendererInteractor->SetInteractorStyle(style);
+  style->SetCurrentRenderer(renderer);
+
   renderer->AddActor(cubeActor);
   renderer->SetBackground(0.2, 0.4, 0.8);
   renderWindow->SetSize(300, 300);
@@ -234,6 +235,10 @@ int runFrameGrabber(IGrabber *grabber)
 
   renderer->ResetCamera();
   renderWindow->Render();
+
+  logger->info("Wait for device to wake...");
+  doSleep(2000);
+  logger->info("ok.");
 
   rendererInteractor->Start();
 

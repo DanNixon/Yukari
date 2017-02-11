@@ -6,9 +6,10 @@ using namespace Yukari::Maths;
 
 VTKIMUActorCallback *VTKIMUActorCallback::New()
 {
-  VTKIMUActorCallback *cb = new VTKIMUActorCallback;
-  cb->m_logger = LoggingService::GetLogger("runFrameGrabber");
-  return cb;
+  VTKIMUActorCallback *o = new VTKIMUActorCallback;
+  o->m_logger = LoggingService::GetLogger("runFrameGrabber");
+  o->m_logger->info("Blue is front of device, red is back of device");
+  return o;
 }
 
 void VTKIMUActorCallback::Execute(vtkObject *caller, unsigned long vtkNotUsed(eventId),

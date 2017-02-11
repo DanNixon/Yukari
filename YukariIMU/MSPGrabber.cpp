@@ -49,7 +49,7 @@ namespace IMU
   {
     auto logger = LoggingService::GetLogger("runFrameGrabber");
 
-    if (m_port.isOpen())
+    if (!m_port.isOpen())
     {
       logger->error("MSP port not open, cannot run accelerometer calibration.");
       return false;
@@ -67,7 +67,7 @@ namespace IMU
   {
     auto logger = LoggingService::GetLogger("runFrameGrabber");
 
-    if (m_port.isOpen())
+    if (!m_port.isOpen())
     {
       logger->error("MSP port not open, cannot run magnetometer calibration.");
       return false;
