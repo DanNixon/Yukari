@@ -48,7 +48,8 @@ namespace IMU
 
   int16_t MSPClient::Read16(Payload::const_iterator it)
   {
-    union {
+    union
+    {
       int16_t v;
       uint8_t b[2];
     } s;
