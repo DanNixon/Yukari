@@ -209,6 +209,7 @@ int runFrameGrabber(IIMUGrabber_sptr grabber)
 
   vtkRenderer *renderer = vtkRenderer::New();
   vtkRenderWindow *renderWindow = vtkRenderWindow::New();
+  renderWindow->SetWindowName("IMU visualisation");
   renderWindow->AddRenderer(renderer);
   vtkRenderWindowInteractor *rendererInteractor = vtkRenderWindowInteractor::New();
   rendererInteractor->SetRenderWindow(renderWindow);
