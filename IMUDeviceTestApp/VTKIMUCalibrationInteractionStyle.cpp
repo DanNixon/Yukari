@@ -2,8 +2,6 @@
 
 #include <vtkRenderWindowInteractor.h>
 
-#include <YukariIMU/MSPGrabber.h>
-
 using namespace Yukari::Common;
 using namespace Yukari::IMU;
 
@@ -21,15 +19,13 @@ void VTKIMUCalibrationInteractionStyle::OnKeyPress()
   vtkRenderWindowInteractor *rwi = this->Interactor;
   std::string key = rwi->GetKeySym();
 
-  auto mspGrabber = dynamic_cast<MSPGrabber *>(m_grabber);
-
   if (key == "a")
   {
     m_logger->info("Acelerometer calibration requested.");
 
-    if (mspGrabber)
+    if (m_grabber)
     {
-      bool result = mspGrabber->calibrateAccelerometer();
+      bool result = m_grabber->calibrateAccelerometer();
       if (result)
         m_logger->info("Accelerometer calibration complete.");
       else
@@ -41,9 +37,9 @@ void VTKIMUCalibrationInteractionStyle::OnKeyPress()
   {
     m_logger->info("Magnetometer calibration requested.");
 
-    if (mspGrabber)
+    if (m_grabber)
     {
-      bool result = mspGrabber->calibrateAccelerometer();
+      bool result = m_grabber->calibrateAccelerometer();
       if (result)
         m_logger->info("Magnetometer calibration complete.");
       else

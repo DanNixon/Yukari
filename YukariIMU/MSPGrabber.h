@@ -5,6 +5,7 @@
 #include "IIMUGrabber.h"
 
 #include <chrono>
+#include <memory>
 #include <serial/serial.h>
 
 #include "MSPClient.h"
@@ -38,5 +39,7 @@ namespace IMU
 
     MSPClient::Payload m_mspPayload;
   };
+
+  typedef std::shared_ptr<MSPGrabber> MSPGrabber_sptr;
 }
 }
