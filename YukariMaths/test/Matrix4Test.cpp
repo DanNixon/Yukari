@@ -18,6 +18,8 @@ namespace Maths
 {
   namespace Test
   {
+    /* Boost provided functionality */
+
     BOOST_AUTO_TEST_CASE(Matrix4_Set_Row_Get_Column)
     {
       Matrix4 m;
@@ -58,16 +60,6 @@ namespace Maths
           str.str());
     }
 
-    /* Matrix4 functionality */
-
-    BOOST_AUTO_TEST_CASE(Matrix4_Init_Empty)
-    {
-      Matrix4 m;
-      std::stringstream str;
-      str << m;
-      BOOST_CHECK_EQUAL("[1, 0, 0, 0,\n 0, 1, 0, 0,\n 0, 0, 1, 0,\n 0, 0, 0, 1]", str.str());
-    }
-
     BOOST_AUTO_TEST_CASE(Matrix4_Stream_Out_Column)
     {
       Matrix4 m;
@@ -80,6 +72,16 @@ namespace Maths
       BOOST_CHECK_EQUAL(
           "[1.1, 1.2, 1.3, 1.4,\n 2.1, 2.2, 2.3, 2.4,\n 3.1, 3.2, 3.3, 3.4,\n 4.1, 4.2, 4.3, 4.4]",
           str.str());
+    }
+
+    /* Matrix4 functionality */
+
+    BOOST_AUTO_TEST_CASE(Matrix4_Init_Empty)
+    {
+      Matrix4 m;
+      std::stringstream str;
+      str << m;
+      BOOST_CHECK_EQUAL("[1, 0, 0, 0,\n 0, 1, 0, 0,\n 0, 0, 1, 0,\n 0, 0, 0, 1]", str.str());
     }
   }
 }

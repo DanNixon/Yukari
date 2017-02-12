@@ -19,6 +19,8 @@ namespace Maths
 {
   namespace Test
   {
+    /* Boost provided functionality */
+
     BOOST_AUTO_TEST_CASE(Vector3_Addition)
     {
       Vector3 v1(1.1f, 2.2f, 3.3f);
@@ -163,20 +165,6 @@ namespace Maths
       BOOST_CHECK_EQUAL(v2.y(), 2.2f);
       BOOST_CHECK_EQUAL(v2.z(), 3.3f);
     }
-
-    /* BOOST_AUTO_TEST_CASE(Vector3_Distance) */
-    /* { */
-    /*   Vector3 v1(2.0f, 5.0f, 7.0f); */
-    /*   Vector3 v2(4.0f, 8.0f, 11.0f); */
-    /*   BOOST_CHECK_CLOSE(v1.distance(v2), 5.385f, 0.01f); */
-    /* } */
-
-    /* BOOST_AUTO_TEST_CASE(Vector3_Distance2) */
-    /* { */
-    /*   Vector3 v1(2.0f, 5.0f, 7.0f); */
-    /*   Vector3 v2(4.0f, 8.0f, 11.0f); */
-    /*   BOOST_CHECK_CLOSE(v1.distance2(v2), 29.0f, TOL); */
-    /* } */
 
     /* BaseMathType functionality */
 

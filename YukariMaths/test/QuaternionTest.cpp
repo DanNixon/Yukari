@@ -21,6 +21,8 @@ namespace Maths
 {
   namespace Test
   {
+    /* Boost provided functionality */
+
     BOOST_AUTO_TEST_CASE(Quaternion_Inverse)
     {
       Quaternion q(5.0, 2.0, 4.5, 8.9);

@@ -18,6 +18,8 @@ namespace Maths
 {
   namespace Test
   {
+    /* Boost provided functionality */
+
     BOOST_AUTO_TEST_CASE(Matrix3_Set_Row_Get_Column)
     {
       Matrix3 m;
@@ -51,16 +53,6 @@ namespace Maths
       BOOST_CHECK_EQUAL("[1.1, 1.2, 1.3,\n 2.1, 2.2, 2.3,\n 3.1, 3.2, 3.3]", str.str());
     }
 
-    /* Matrix3 functionality */
-
-    BOOST_AUTO_TEST_CASE(Matrix3_Init_Empty)
-    {
-      Matrix3 m;
-      std::stringstream str;
-      str << m;
-      BOOST_CHECK_EQUAL("[1, 0, 0,\n 0, 1, 0,\n 0, 0, 1]", str.str());
-    }
-
     BOOST_AUTO_TEST_CASE(Matrix3_Stream_Out_Column)
     {
       Matrix3 m;
@@ -70,6 +62,16 @@ namespace Maths
       std::stringstream str;
       str << m;
       BOOST_CHECK_EQUAL("[1.1, 1.2, 1.3,\n 2.1, 2.2, 2.3,\n 3.1, 3.2, 3.3]", str.str());
+    }
+
+    /* Matrix3 functionality */
+
+    BOOST_AUTO_TEST_CASE(Matrix3_Init_Empty)
+    {
+      Matrix3 m;
+      std::stringstream str;
+      str << m;
+      BOOST_CHECK_EQUAL("[1, 0, 0,\n 0, 1, 0,\n 0, 0, 1]", str.str());
     }
   }
 }
