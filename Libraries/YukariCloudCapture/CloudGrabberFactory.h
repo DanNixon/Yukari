@@ -16,10 +16,6 @@ namespace CloudCapture
   class CloudGrabberFactory
   {
   public:
-    static ICloudGrabber_sptr Create(const std::string &name)
-    {
-    }
-
     template <class... Args>
     static ICloudGrabber_sptr Create(const std::string &type, Args &&... args)
     {

@@ -44,29 +44,29 @@ if(UNIX)
 endif()
 
 # Includes
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-                    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/boost_qvm
-                    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/spdlog
-                    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/serial/include
-                    ${Boost_INCLUDE_DIRS}
-                    ${VTK_INCLUDE_DIRS}
-                    ${PCL_INCLUDE_DIRS})
+include_directories(Libraries
+  ThirdParty/boost_qvm
+  ThirdParty/serial/include
+  ThirdParty/spdlog
+  ${Boost_INCLUDE_DIRS}
+  ${VTK_INCLUDE_DIRS}
+  ${PCL_INCLUDE_DIRS})
 
 # Third party libraries
 add_subdirectory(ThirdParty/serial)
 
 # Libraries
-add_subdirectory(YukariCloudCapture)
-add_subdirectory(YukariCommon)
-add_subdirectory(YukariIMU)
-add_subdirectory(YukariMaths)
-add_subdirectory(YukariProcessing)
+add_subdirectory(Libraries/YukariCloudCapture)
+add_subdirectory(Libraries/YukariCommon)
+add_subdirectory(Libraries/YukariIMU)
+add_subdirectory(Libraries/YukariMaths)
+add_subdirectory(Libraries/YukariProcessing)
 
 # Executables
-add_subdirectory(CloudGrabberTestApp)
-add_subdirectory(IMUDeviceTestApp)
-add_subdirectory(KinectTestApp)
-add_subdirectory(YukariCaptureApp)
+add_subdirectory(Executables/CloudGrabberTestApp)
+add_subdirectory(Executables/IMUDeviceTestApp)
+add_subdirectory(Executables/KinectTestApp)
+add_subdirectory(Executables/YukariCaptureApp)
 
 # Docs
 add_doxygen(
