@@ -63,6 +63,7 @@ add_subdirectory(YukariMaths)
 add_subdirectory(YukariProcessing)
 
 # Executables
+add_subdirectory(CloudGrabberTestApp)
 add_subdirectory(IMUDeviceTestApp)
 add_subdirectory(KinectTestApp)
 add_subdirectory(YukariCaptureApp)

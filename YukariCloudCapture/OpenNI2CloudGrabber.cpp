@@ -6,33 +6,55 @@ namespace Yukari
 {
 namespace CloudCapture
 {
-  OpenNI2CloudGrabber::OpenNI2CloudGrabber()
+  OpenNI2CloudGrabber::OpenNI2CloudGrabber(const std::string deviceID,
+                                           const pcl::io::OpenNI2Grabber::Mode depthMode,
+                                           const pcl::io::OpenNI2Grabber::Mode imageMode)
+      : m_grabber(deviceID, depthMode, imageMode)
   {
+    boost::function<void(const ICloudGrabber::Cloud::ConstPtr &)> cloudCB =
+        boost::bind(&OpenNI2CloudGrabber::cloudCallback, this, _1);
+    m_cloudCBConnection = m_grabber.registerCallback(cloudCB);
   }
 
   OpenNI2CloudGrabber::~OpenNI2CloudGrabber()
   {
+    close();
+    m_cloudCBConnection.disconnect();
   }
 
-  virtual void OpenNI2CloudGrabber::open()
+  void OpenNI2CloudGrabber::open()
   {
-    /* TODO */
+    m_grabber.start();
   }
 
-  virtual void OpenNI2CloudGrabber::close()
+  void OpenNI2CloudGrabber::close()
   {
-    /* TODO */
+    m_grabber.stop();
   }
 
-  virtual bool OpenNI2CloudGrabber::isOpen() const
+  bool OpenNI2CloudGrabber::isOpen() const
   {
-    /* TODO */
-    return false;
+    return m_grabber.isRunning();
   }
 
-  virtual CloudConstPtr OpenNI2CloudGrabber::getCloud()
+  ICloudGrabber::Cloud::ConstPtr OpenNI2CloudGrabber::getCloud()
   {
-    /* TODO */
+    if (m_cloudMutex.try_lock())
+    {
+      ICloudGrabber::Cloud::ConstPtr cloud;
+      m_cloud.swap(cloud);
+      m_cloudMutex.unlock();
+
+      return cloud;
+    }
+
+    return nullptr;
+  }
+
+  void OpenNI2CloudGrabber::cloudCallback(ICloudGrabber::Cloud::ConstPtr cloud)
+  {
+    std::lock_guard<std::mutex> lock(m_cloudMutex);
+    m_cloud = cloud;
   }
 }
 }

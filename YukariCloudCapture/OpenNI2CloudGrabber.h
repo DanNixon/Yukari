@@ -4,6 +4,11 @@
 
 #include "ICloudGrabber.h"
 
+#include <mutex>
+
+#include <pcl/io/openni2/openni.h>
+#include <pcl/io/openni2_grabber.h>
+
 namespace Yukari
 {
 namespace CloudCapture
@@ -11,14 +16,27 @@ namespace CloudCapture
   class OpenNI2CloudGrabber
   {
   public:
-    OpenNI2CloudGrabber();
+    OpenNI2CloudGrabber(const std::string deviceID = "",
+                        const pcl::io::OpenNI2Grabber::Mode depthMode =
+                            pcl::io::OpenNI2Grabber::OpenNI_Default_Mode,
+                        const pcl::io::OpenNI2Grabber::Mode imageMode =
+                            pcl::io::OpenNI2Grabber::OpenNI_Default_Mode);
     virtual ~OpenNI2CloudGrabber();
 
     virtual void open();
     virtual void close();
     virtual bool isOpen() const;
 
-    virtual CloudConstPtr getCloud();
+    virtual ICloudGrabber::Cloud::ConstPtr getCloud();
+
+  private:
+    void cloudCallback(ICloudGrabber::Cloud::ConstPtr cloud);
+
+  private:
+    pcl::io::OpenNI2Grabber m_grabber;
+    boost::signals2::connection m_cloudCBConnection;
+    std::mutex m_cloudMutex;
+    ICloudGrabber::Cloud::ConstPtr m_cloud;
   };
 }
 }
