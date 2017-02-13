@@ -14,7 +14,7 @@ namespace IMU
     MSPGrabberAttitude(const std::string &port, unsigned int baud = 115200);
     virtual ~MSPGrabberAttitude();
 
-    virtual IMUFrame_sptr grabFrame();
+    virtual IMUFrame_sptr grabFrame() override;
 
     /* protected: */
     float m_attitude[3];

@@ -13,7 +13,7 @@ namespace Yukari
 {
 namespace CloudCapture
 {
-  class OpenNI2CloudGrabber
+  class OpenNI2CloudGrabber : public ICloudGrabber
   {
   public:
     OpenNI2CloudGrabber(const std::string deviceID = "",
@@ -23,11 +23,11 @@ namespace CloudCapture
                             pcl::io::OpenNI2Grabber::OpenNI_Default_Mode);
     virtual ~OpenNI2CloudGrabber();
 
-    virtual void open();
-    virtual void close();
-    virtual bool isOpen() const;
+    virtual void open() override;
+    virtual void close() override;
+    virtual bool isOpen() const override;
 
-    virtual ICloudGrabber::Cloud::ConstPtr getCloud();
+    virtual ICloudGrabber::Cloud::ConstPtr getCloud() override;
 
   private:
     void cloudCallback(ICloudGrabber::Cloud::ConstPtr cloud);

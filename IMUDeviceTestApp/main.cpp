@@ -27,8 +27,7 @@
 
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/MSPClient.h>
-#include <YukariIMU/MSPGrabberAttitude.h>
-#include <YukariIMU/MSPGrabberIMU.h>
+#include <YukariIMU/IMUGrabberFactory.h>
 
 #include "VTKIMUActorCallback.h"
 #include "VTKIMUCalibrationInteractionStyle.h"
@@ -74,12 +73,8 @@ int main(int argc, char **argv)
   const std::string mode(argv[1]);
   if (mode == "raw")
     return runRawData(portName, baud);
-  else if (mode == "attitude")
-    return runFrameGrabber(std::make_shared<MSPGrabberAttitude>(portName, baud));
-  else if (mode == "imu")
-    return runFrameGrabber(std::make_shared<MSPGrabberIMU>(portName, baud));
   else
-    return 2;
+    return runFrameGrabber(IMUGrabberFactory::Create(mode, portName, baud));
 }
 
 int runRawData(const std::string &portName, unsigned int baud)

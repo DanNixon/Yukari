@@ -20,11 +20,11 @@ namespace IMU
     MSPGrabber(const std::string &port, unsigned int baud = 115200);
     virtual ~MSPGrabber();
 
-    virtual void open();
-    virtual void close();
-    virtual bool isOpen() const;
+    virtual void open() override;
+    virtual void close() override;
+    virtual bool isOpen() const override;
 
-    virtual IMUFrame_sptr grabFrame() = 0;
+    virtual IMUFrame_sptr grabFrame() override = 0;
 
     bool calibrateAccelerometer();
     bool calibrateMagnetometer();

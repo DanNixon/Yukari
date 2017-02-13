@@ -1,7 +1,7 @@
 project(YukariCloudCapture)
 
 add_library(${PROJECT_NAME}
-  ${CMAKE_CURRENT_SOURCE_DIR}/ OpenNI2CloudGrabber.cpp)
+  ${CMAKE_CURRENT_SOURCE_DIR}/OpenNI2CloudGrabber.cpp)
 
 target_link_libraries(${PROJECT_NAME}
   YukariCommon

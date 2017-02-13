@@ -14,7 +14,7 @@ namespace IMU
     MSPGrabberIMU(const std::string &port, unsigned int baud = 115200);
     virtual ~MSPGrabberIMU();
 
-    virtual IMUFrame_sptr grabFrame();
+    virtual IMUFrame_sptr grabFrame() override;
 
   protected:
     int16_t m_gyro[3];
