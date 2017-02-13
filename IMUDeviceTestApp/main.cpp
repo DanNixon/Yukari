@@ -26,8 +26,8 @@
 #include <vtkSmartPointer.h>
 
 #include <YukariCommon/LoggingService.h>
-#include <YukariIMU/MSPClient.h>
 #include <YukariIMU/IMUGrabberFactory.h>
+#include <YukariIMU/MSPClient.h>
 
 #include "VTKIMUActorCallback.h"
 #include "VTKIMUCalibrationInteractionStyle.h"
