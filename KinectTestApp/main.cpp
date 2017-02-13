@@ -37,7 +37,7 @@
 
 #define MEASURE_FUNCTION_TIME
 #include <pcl/common/angles.h>
-#include <pcl/common/time.h> //fps calculations
+#include <pcl/common/time.h>
 #include <pcl/console/parse.h>
 #include <pcl/console/print.h>
 #include <pcl/console/time.h>
@@ -115,7 +115,6 @@ void printHelp(int, char **argv)
 #endif
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template <typename PointType> class OpenNI2Viewer
 {
 public:
@@ -286,11 +285,6 @@ public:
   unsigned rgb_data_size_;
 };
 
-// Create the PCLVisualizer object
-boost::shared_ptr<pcl::visualization::PCLVisualizer> cld;
-boost::shared_ptr<pcl::visualization::ImageViewer> img;
-
-/* ---[ */
 int main(int argc, char **argv)
 {
   std::string device_id("");
@@ -372,4 +366,3 @@ int main(int argc, char **argv)
 
   return (0);
 }
-/* ]--- */

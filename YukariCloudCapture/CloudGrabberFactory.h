@@ -23,7 +23,7 @@ namespace CloudCapture
     template <class... Args>
     static ICloudGrabber_sptr Create(const std::string &type, Args &&... args)
     {
-      if (name == "openni2")
+      if (type == "openni2")
         return std::make_shared<OpenNI2CloudGrabber>(std::forward<Args>(args)...);
 
       return {};
