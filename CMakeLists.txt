@@ -64,8 +64,7 @@ add_subdirectory(Libraries/YukariProcessing)
 
 # Executables
 add_subdirectory(Executables/CloudGrabberTestApp)
-add_subdirectory(Executables/IMUDeviceTestApp)
-add_subdirectory(Executables/KinectTestApp)
+add_subdirectory(Executables/IMUGrabberTestApp)
 add_subdirectory(Executables/YukariCaptureApp)
 
 # Docs

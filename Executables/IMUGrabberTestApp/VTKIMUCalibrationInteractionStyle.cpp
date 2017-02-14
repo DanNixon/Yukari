@@ -7,7 +7,7 @@ using namespace Yukari::IMU;
 
 namespace Yukari
 {
-namespace IMUDeviceTestApp
+namespace IMUGrabberTestApp
 {
 VTKIMUCalibrationInteractionStyle *VTKIMUCalibrationInteractionStyle::New()
 {

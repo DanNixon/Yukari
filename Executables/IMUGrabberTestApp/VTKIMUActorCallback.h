@@ -15,7 +15,7 @@
 
 namespace Yukari
 {
-namespace IMUDeviceTestApp
+namespace IMUGrabberTestApp
 {
 class VTKIMUActorCallback : public vtkCommand
 {
