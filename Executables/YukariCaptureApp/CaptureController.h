@@ -5,9 +5,13 @@
 #include <memory>
 #include <vector>
 
+#include <boost/filesystem/path.hpp>
+
 #include <YukariCommon/LoggingService.h>
 #include <YukariCloudCapture/ICloudGrabber.h>
 #include <YukariIMU/IIMUGrabber.h>
+
+#include "ITrigger.h"
 
 namespace Yukari
 {
@@ -18,10 +22,44 @@ namespace CaptureApp
   public:
     CaptureController();
 
-    int run();
+	int run();
+
+    bool start();
+    bool stop();
+
+    inline bool isRunning() const
+    {
+      return m_isRunning;
+    }
+
+    void triggerCapture();
+
+    inline void setCloudGrabber(CloudCapture::ICloudGrabber_sptr grabber)
+    {
+      m_cloudGrabber = grabber;
+    }
+
+    inline void setIMUGrabber(IMU::IIMUGrabber_sptr grabber)
+    {
+      m_imuGrabber = grabber;
+    }
+
+    inline void addCaptureTrigger(ITrigger_sptr trigger)
+    {
+      m_captureTriggers.push_back(trigger);
+    }
+
+    inline void addExitTrigger(ITrigger_sptr trigger)
+    {
+      m_exitTriggers.push_back(trigger);
+    }
 
   private:
     Common::LoggingService::Logger m_logger;
+
+    bool m_isRunning;
+
+	boost::filesystem::path m_outputRootPath;
 
     CloudCapture::ICloudGrabber_sptr m_cloudGrabber;
     IMU::IIMUGrabber_sptr m_imuGrabber;

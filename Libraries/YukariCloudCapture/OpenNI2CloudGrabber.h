@@ -27,7 +27,7 @@ namespace CloudCapture
     virtual void close() override;
     virtual bool isOpen() const override;
 
-    virtual ICloudGrabber::Cloud::ConstPtr getCloud() override;
+    virtual ICloudGrabber::Cloud::ConstPtr grabCloud() override;
 
   private:
     void cloudCallback(ICloudGrabber::Cloud::ConstPtr cloud);

@@ -22,7 +22,7 @@ namespace CloudGrabberTestApp
     {
       m_cloudViewer->spinOnce();
 
-      Yukari::CloudCapture::ICloudGrabber::Cloud::ConstPtr cloud = m_grabber->getCloud();
+      Yukari::CloudCapture::ICloudGrabber::Cloud::ConstPtr cloud = m_grabber->grabCloud();
       if (cloud)
       {
         if (!cloudInit)

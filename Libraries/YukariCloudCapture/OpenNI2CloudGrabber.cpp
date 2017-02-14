@@ -37,7 +37,7 @@ namespace CloudCapture
     return m_grabber.isRunning();
   }
 
-  ICloudGrabber::Cloud::ConstPtr OpenNI2CloudGrabber::getCloud()
+  ICloudGrabber::Cloud::ConstPtr OpenNI2CloudGrabber::grabCloud()
   {
     if (m_cloudMutex.try_lock())
     {

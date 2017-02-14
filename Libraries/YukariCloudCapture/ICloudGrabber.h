@@ -30,7 +30,7 @@ namespace CloudCapture
       return true;
     }
 
-    virtual Cloud::ConstPtr getCloud() = 0;
+    virtual Cloud::ConstPtr grabCloud() = 0;
   };
 
   typedef std::shared_ptr<ICloudGrabber> ICloudGrabber_sptr;
