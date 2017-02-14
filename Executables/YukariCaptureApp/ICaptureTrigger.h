@@ -12,6 +12,6 @@ namespace CaptureApp
   {
   };
 
-  typedef std::shared_ptr<IIMUGrabber> ICaptureTrigger_sptr;
+  typedef std::shared_ptr<ICaptureTrigger> ICaptureTrigger_sptr;
 }
 }

@@ -1,7 +1,12 @@
 project(YukariProcessing)
 
-add_library(${PROJECT_NAME}
-  ${CMAKE_CURRENT_SOURCE_DIR}/IAlgorithm.cpp)
+set(HEADERS
+  IAlgorithm.h)
+
+set(SOURCES
+  IAlgorithm.cpp)
+
+add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
   YukariCommon

@@ -1,7 +1,18 @@
 project(YukariCaptureApp)
 
-add_executable(${PROJECT_NAME}
-  ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+set(HEADERS
+  CaptureController.h
+  CaptureFactory.h
+  ICaptureTrigger.h
+  TimelapseCaptureTrigger.h)
+
+set(SOURCES
+  CaptureController.cpp
+  CaptureFactory.cpp
+  TimelapseCaptureTrigger.cpp
+  main.cpp)
+
+add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
   YukariCommon

@@ -1,8 +1,14 @@
 project(YukariCommon)
 
-add_library(${PROJECT_NAME}
-  ${CMAKE_CURRENT_SOURCE_DIR}/ConfigurationManager.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/LoggingService.cpp)
+set(HEADERS
+  ConfigurationManager.h
+  LoggingService.h)
+
+set(SOURCES
+  ConfigurationManager.cpp
+  LoggingService.cpp)
+
+add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
   ${Boost_LIBRARIES})

@@ -1,12 +1,24 @@
 project(YukariIMU)
 
-add_library(${PROJECT_NAME}
-  ${CMAKE_CURRENT_SOURCE_DIR}/IMUFrame.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/ExtendedIMUFrame.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/MSPGrabber.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/MSPGrabberIMU.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/MSPGrabberAttitude.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/MSPClient.cpp)
+set(HEADERS
+  IIMUGrabber.h
+  IMUFrame.h
+  IMUGrabberFactory.h
+  ExtendedIMUFrame.h
+  MSPGrabber.h
+  MSPGrabberIMU.h
+  MSPGrabberAttitude.h
+  MSPClient.h)
+
+set(SOURCES
+  IMUFrame.cpp
+  ExtendedIMUFrame.cpp
+  MSPGrabber.cpp
+  MSPGrabberIMU.cpp
+  MSPGrabberAttitude.cpp
+  MSPClient.cpp)
+
+add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
   YukariMaths

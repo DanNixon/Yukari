@@ -1,8 +1,13 @@
 project(CloudGrabberTestApp)
 
-add_executable(${PROJECT_NAME}
-  main.cpp
-  CloudGrabberVisualisation.cpp)
+set(HEADERS
+  CloudGrabberVisualisation.h)
+
+set(SOURCES
+  CloudGrabberVisualisation.cpp
+  main.cpp)
+
+add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
   YukariCommon

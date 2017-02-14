@@ -1,9 +1,15 @@
 project(IMUGrabberTestApp)
 
-add_executable(${PROJECT_NAME}
-  ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/VTKIMUActorCallback.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/VTKIMUCalibrationInteractionStyle.cpp)
+set(HEADERS
+  VTKIMUActorCallback.h
+  VTKIMUCalibrationInteractionStyle.h)
+
+set(SOURCES
+  VTKIMUActorCallback.cpp
+  VTKIMUCalibrationInteractionStyle.cpp
+  main.cpp)
+
+add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
   YukariCommon

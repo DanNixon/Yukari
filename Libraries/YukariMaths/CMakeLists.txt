@@ -1,11 +1,22 @@
 project(YukariMaths)
 
-add_library(${PROJECT_NAME}
-  ${CMAKE_CURRENT_SOURCE_DIR}/Matrix3.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/Matrix4.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/Quaternion.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/Vector3.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/Vector4.cpp)
+set(HEADERS
+  BaseMathType.h
+  Matrix3.h
+  Matrix4.h
+  Quaternion.h
+  Units.h
+  Vector3.h
+  Vector4.h)
+
+set(SOURCES
+  Matrix3.cpp
+  Matrix4.cpp
+  Quaternion.cpp
+  Vector3.cpp
+  Vector4.cpp)
+
+add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 include(AddTests)
 AddTests(${PROJECT_NAME})
