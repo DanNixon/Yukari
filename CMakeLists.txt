@@ -35,7 +35,7 @@ set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost REQUIRED
-  COMPONENTS system filesystem unit_test_framework serialization thread date_time iostreams chrono)
+  COMPONENTS system filesystem unit_test_framework serialization thread date_time iostreams chrono program_options)
 
 if(UNIX)
   list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
