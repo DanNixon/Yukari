@@ -3,7 +3,7 @@ project(YukariCaptureApp)
 set(HEADERS
   CaptureController.h
   CaptureFactory.h
-  ICaptureTrigger.h
+  ITrigger.h
   TimelapseCaptureTrigger.h)
 
 set(SOURCES

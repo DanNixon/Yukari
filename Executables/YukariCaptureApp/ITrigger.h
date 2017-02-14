@@ -8,10 +8,10 @@ namespace Yukari
 {
 namespace CaptureApp
 {
-  class ICaptureTrigger
+  class ITrigger
   {
   };
 
-  typedef std::shared_ptr<ICaptureTrigger> ICaptureTrigger_sptr;
+  typedef std::shared_ptr<ITrigger> ITrigger_sptr;
 }
 }

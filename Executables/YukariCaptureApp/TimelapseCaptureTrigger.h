@@ -2,13 +2,13 @@
 
 #pragma once
 
-#include "ICaptureTrigger.h"
+#include "ITrigger.h"
 
 namespace Yukari
 {
 namespace CaptureApp
 {
-  class TimelapseCaptureTrigger: public ICaptureTrigger
+  class TimelapseCaptureTrigger: public ITrigger
   {
   };
 }
