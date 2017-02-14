@@ -4,11 +4,13 @@ set(HEADERS
   CaptureController.h
   CaptureFactory.h
   ITrigger.h
+  SignalTrigger.h
   TimelapseCaptureTrigger.h)
 
 set(SOURCES
   CaptureController.cpp
   CaptureFactory.cpp
+  SignalTrigger.cpp
   TimelapseCaptureTrigger.cpp
   main.cpp)
 

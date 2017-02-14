@@ -10,6 +10,9 @@
 
 #include "CaptureFactory.h"
 
+#include "SignalTrigger.h"
+#include <unistd.h>
+
 using namespace Yukari::Common;
 using namespace Yukari::Maths;
 using namespace Yukari::CaptureApp;
@@ -18,17 +21,16 @@ namespace po = boost::program_options;
 
 int main(int argc, char **argv)
 {
-  // Init command line
+  /* Init command line */
   po::options_description desc("Allowed options");
   po::variables_map args;
 
-  //clang-format off
-  desc.add_options()
-    ("help", "Show brief usage message")
-    ("config", po::value<std::string>(), "Configuration file to use");
-  //clang-format on
+  // clang-format off
+  desc.add_options()("help", "Show brief usage message")("config", po::value<std::string>(),
+                                                         "Configuration file to use");
+  // clang-format on
 
-  // Parse command line args
+  /* Parse command line args */
   try
   {
     po::store(po::parse_command_line(argc, argv, desc), args);
@@ -39,24 +41,31 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  // Show usage
-  if (args.count("help")) {
+  /* Show usage */
+  if (args.count("help"))
+  {
     std::cout << desc << "\n";
     return 1;
   }
 
-  // Load configuration
+  ITrigger *trig = new SignalTrigger(SIGINT);
+  trig->setHandler([]() { std::cout << "sigint caught\n"; });
+  trig->enable();
+  while (1)
+    usleep(10 * 1000);
+
+  /* Load configuration */
   ConfigurationManager::Config config;
   if (args.count("config"))
     config = ConfigurationManager::Load(args["config"].as<std::string>());
   else
     config = ConfigurationManager::LoadFromAppDataDirectory("yukari", "capture_config.json");
 
-  // Configure logging
+  /* Configure logging */
   LoggingService::Configure(config);
   auto logger = LoggingService::GetLogger("YukariCaptureApp");
 
-  // Create capture controller
+  /* Create capture controller */
   CaptureController_sptr captureController = CaptureFactory::Create(config);
   if (!captureController)
   {
@@ -64,6 +73,7 @@ int main(int argc, char **argv)
     return 2;
   }
 
-  // Run capture
-  return captureController->run();
+  /* Run capture */
+  /* return captureController->run(); */
+  return 0;
 }

@@ -7,8 +7,8 @@
 
 #include <boost/filesystem/path.hpp>
 
-#include <YukariCommon/LoggingService.h>
 #include <YukariCloudCapture/ICloudGrabber.h>
+#include <YukariCommon/LoggingService.h>
 #include <YukariIMU/IIMUGrabber.h>
 
 #include "ITrigger.h"
@@ -22,7 +22,7 @@ namespace CaptureApp
   public:
     CaptureController();
 
-	int run();
+    int run();
 
     bool start();
     bool stop();
@@ -59,7 +59,7 @@ namespace CaptureApp
 
     bool m_isRunning;
 
-	boost::filesystem::path m_outputRootPath;
+    boost::filesystem::path m_outputRootPath;
 
     CloudCapture::ICloudGrabber_sptr m_cloudGrabber;
     IMU::IIMUGrabber_sptr m_imuGrabber;

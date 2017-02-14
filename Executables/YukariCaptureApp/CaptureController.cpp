@@ -81,9 +81,12 @@ namespace CaptureApp
 
   void CaptureController::triggerCapture()
   {
+    if (!m_isRunning)
+      return;
+
     /* TODO */
-	boost::filesystem::path cloudFile;
-	boost::filesystem::path imuFile;
+    boost::filesystem::path cloudFile;
+    boost::filesystem::path imuFile;
 
     /* Grab data */
     auto cloud = m_cloudGrabber->grabCloud();
@@ -91,7 +94,7 @@ namespace CaptureApp
 
     /* Save cloud */
     /* TODO */
-	//pcl::io::savePCDFileASCII(cloudFilename, cloud);
+    // pcl::io::savePCDFileASCII(cloudFilename, cloud);
 
     /* Save IMU frame */
     /* TODO */

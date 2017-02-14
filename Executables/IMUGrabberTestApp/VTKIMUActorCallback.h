@@ -17,28 +17,28 @@ namespace Yukari
 {
 namespace IMUGrabberTestApp
 {
-class VTKIMUActorCallback : public vtkCommand
-{
-public:
-  static VTKIMUActorCallback *New();
-
-  virtual void Execute(vtkObject *caller, unsigned long vtkNotUsed(eventId),
-                       void *vtkNotUsed(callData));
-
-  inline void setGrabber(Yukari::IMU::IIMUGrabber_sptr grabber)
+  class VTKIMUActorCallback : public vtkCommand
   {
-    m_grabber = grabber;
-  }
+  public:
+    static VTKIMUActorCallback *New();
 
-  inline void setActor(vtkSmartPointer<vtkActor> actor)
-  {
-    m_actor = actor;
-  }
+    virtual void Execute(vtkObject *caller, unsigned long vtkNotUsed(eventId),
+                         void *vtkNotUsed(callData));
 
-private:
-  Yukari::IMU::IIMUGrabber_sptr m_grabber;
-  vtkSmartPointer<vtkActor> m_actor;
-  Yukari::Common::LoggingService::Logger m_logger;
-};
+    inline void setGrabber(Yukari::IMU::IIMUGrabber_sptr grabber)
+    {
+      m_grabber = grabber;
+    }
+
+    inline void setActor(vtkSmartPointer<vtkActor> actor)
+    {
+      m_actor = actor;
+    }
+
+  private:
+    Yukari::IMU::IIMUGrabber_sptr m_grabber;
+    vtkSmartPointer<vtkActor> m_actor;
+    Yukari::Common::LoggingService::Logger m_logger;
+  };
 }
 }

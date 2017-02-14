@@ -8,7 +8,7 @@ namespace Yukari
 {
 namespace CaptureApp
 {
-  class TimelapseCaptureTrigger: public ITrigger
+  class TimelapseCaptureTrigger : public ITrigger
   {
   };
 }
