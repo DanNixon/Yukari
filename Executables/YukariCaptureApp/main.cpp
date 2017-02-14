@@ -10,9 +10,6 @@
 
 #include "CaptureFactory.h"
 
-#include "SignalTrigger.h"
-#include <unistd.h>
-
 using namespace Yukari::Common;
 using namespace Yukari::Maths;
 using namespace Yukari::CaptureApp;
@@ -47,12 +44,6 @@ int main(int argc, char **argv)
     std::cout << desc << "\n";
     return 1;
   }
-
-  ITrigger *trig = new SignalTrigger(SIGINT);
-  trig->setHandler([]() { std::cout << "sigint caught\n"; });
-  trig->enable();
-  while (1)
-    usleep(10 * 1000);
 
   /* Load configuration */
   ConfigurationManager::Config config;

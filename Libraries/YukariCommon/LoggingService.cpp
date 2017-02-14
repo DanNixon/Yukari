@@ -20,9 +20,10 @@ namespace Common
       m_sink = std::make_shared<spdlog::sinks::dist_sink_st>();
 
     auto sinks = config.get_child_optional("logging.sinks");
+    bool haveUserDefinedSinks = sinks && !sinks->empty();
 
     /* Create and add sinks */
-    if (sinks && !sinks->empty())
+    if (haveUserDefinedSinks)
     {
       for (auto it = sinks->begin(); it != sinks->end(); ++it)
       {
@@ -58,13 +59,17 @@ namespace Common
     }
     else
     {
-      std::cerr << "No log sinks defined, no logs will be available!\n";
+      auto sink = std::make_shared<spdlog::sinks::stdout_sink_st>();
+      sink->set_level(spdlog::level::debug);
+      m_sink->add_sink(sink);
     }
 
     spdlog::apply_all([&](Logger l) { l->flush(); });
     spdlog::drop_all();
 
-    GetLogger("LoggingService")->info("Logger configured.");
+    auto logger = GetLogger("LoggingService");
+    logger->warn("No log sinks defined, used default console logger.");
+    logger->info("Logger configured.");
   }
 
   LoggingService::Logger LoggingService::GetLogger(const std::string &name)

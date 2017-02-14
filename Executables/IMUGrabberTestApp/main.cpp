@@ -1,13 +1,9 @@
+#include <chrono>
 #include <cstdio>
 #include <iomanip>
 #include <iostream>
 #include <string>
-
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <unistd.h>
-#endif
+#include <thread>
 
 #include <boost/qvm/all.hpp>
 #include <serial/serial.h>
@@ -37,15 +33,6 @@ using namespace Yukari::Common;
 using namespace Yukari::IMU;
 using namespace Yukari::Maths;
 using namespace Yukari::IMUGrabberTestApp;
-
-void doSleep(unsigned long milliseconds)
-{
-#ifdef _WIN32
-  Sleep(milliseconds);
-#else
-  usleep(milliseconds * 1000);
-#endif
-}
 
 int runRawData(const std::string &portName, unsigned int baud);
 int runFrameGrabber(IIMUGrabber_sptr grabber);
@@ -96,7 +83,7 @@ int runRawData(const std::string &portName, unsigned int baud)
   }
 
   logger->info("Wait for board to wake...");
-  doSleep(1000);
+  std::this_thread::sleep_for(std::chrono::seconds(1));
   logger->info("ok.");
 
   int16_t gyro[3];
@@ -130,7 +117,7 @@ int runRawData(const std::string &portName, unsigned int baud)
     p1.clear();
     p2.clear();
 
-    doSleep(10);
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 
   return 0;
@@ -234,7 +221,7 @@ int runFrameGrabber(IIMUGrabber_sptr grabber)
   renderWindow->Render();
 
   logger->info("Wait for device to wake...");
-  doSleep(2000);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
   logger->info("ok.");
 
   rendererInteractor->Start();
