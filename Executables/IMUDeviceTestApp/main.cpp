@@ -36,6 +36,7 @@ using namespace boost::qvm;
 using namespace Yukari::Common;
 using namespace Yukari::IMU;
 using namespace Yukari::Maths;
+using namespace Yukari::IMUDeviceTestApp;
 
 void doSleep(unsigned long milliseconds)
 {

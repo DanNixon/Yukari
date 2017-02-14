@@ -4,6 +4,8 @@
 #include <YukariCloudCapture/CloudGrabberFactory.h>
 #include <YukariCloudCapture/ICloudGrabber.h>
 
+#include "CloudGrabberVisualisation.h"
+
 int main(int argc, char **argv)
 {
   unsigned mode;
@@ -16,8 +18,9 @@ int main(int argc, char **argv)
   if (pcl::console::parse(argc, argv, "-imagemode", mode) != -1)
     imageMode = pcl::io::OpenNI2Grabber::Mode(mode);
 
-  Yukari::CloudCapture::ICloudGrabber_sptr grabber = Yukari::CloudCapture::CloudGrabberFactory::Create("openni2", "", depthMode, imageMode);
-  CloudGrabberVisualisation viewer(grabber);
+  Yukari::CloudCapture::ICloudGrabber_sptr grabber =
+      Yukari::CloudCapture::CloudGrabberFactory::Create("openni2", "", depthMode, imageMode);
+  Yukari::CloudGrabberTestApp::CloudGrabberVisualisation viewer(grabber);
 
   viewer.run();
 

@@ -13,6 +13,10 @@
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/IIMUGrabber.h>
 
+namespace Yukari
+{
+namespace IMUDeviceTestApp
+{
 class VTKIMUActorCallback : public vtkCommand
 {
 public:
@@ -36,3 +40,5 @@ private:
   vtkSmartPointer<vtkActor> m_actor;
   Yukari::Common::LoggingService::Logger m_logger;
 };
+}
+}

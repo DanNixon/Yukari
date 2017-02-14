@@ -5,6 +5,10 @@
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/MSPGrabber.h>
 
+namespace Yukari
+{
+namespace IMUDeviceTestApp
+{
 class VTKIMUCalibrationInteractionStyle : public vtkInteractorStyleTrackballCamera
 {
 public:
@@ -22,3 +26,5 @@ private:
   Yukari::IMU::MSPGrabber_sptr m_grabber;
   Yukari::Common::LoggingService::Logger m_logger;
 };
+}
+}

@@ -5,6 +5,10 @@
 using namespace Yukari::Common;
 using namespace Yukari::IMU;
 
+namespace Yukari
+{
+namespace IMUDeviceTestApp
+{
 VTKIMUCalibrationInteractionStyle *VTKIMUCalibrationInteractionStyle::New()
 {
   VTKIMUCalibrationInteractionStyle *o = new VTKIMUCalibrationInteractionStyle();
@@ -48,4 +52,6 @@ void VTKIMUCalibrationInteractionStyle::OnKeyPress()
   }
 
   vtkInteractorStyleTrackballCamera::OnKeyPress();
+}
+}
 }

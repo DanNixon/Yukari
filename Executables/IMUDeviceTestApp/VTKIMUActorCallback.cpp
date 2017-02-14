@@ -4,6 +4,10 @@ using namespace Yukari::Common;
 using namespace Yukari::IMU;
 using namespace Yukari::Maths;
 
+namespace Yukari
+{
+namespace IMUDeviceTestApp
+{
 VTKIMUActorCallback *VTKIMUActorCallback::New()
 {
   VTKIMUActorCallback *o = new VTKIMUActorCallback;
@@ -35,4 +39,6 @@ void VTKIMUActorCallback::Execute(vtkObject *caller, unsigned long vtkNotUsed(ev
 
   vtkRenderWindowInteractor *rendererInteractor = vtkRenderWindowInteractor::SafeDownCast(caller);
   rendererInteractor->GetRenderWindow()->Render();
+}
+}
 }
