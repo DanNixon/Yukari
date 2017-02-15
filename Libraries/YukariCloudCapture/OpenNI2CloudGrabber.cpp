@@ -30,7 +30,7 @@ namespace CloudCapture
   {
     m_cloudMutex.try_lock();
     m_grabber.stop();
-	m_cloudMutex.unlock();
+    m_cloudMutex.unlock();
   }
 
   bool OpenNI2CloudGrabber::isOpen() const
