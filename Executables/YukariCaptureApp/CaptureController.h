@@ -54,6 +54,8 @@ namespace CaptureApp
     void triggerCapture();
     void markShouldStop();
 
+    friend std::ostream &operator<<(std::ostream &s, const CaptureController &o);
+
   private:
     Common::LoggingService::Logger m_logger;
 

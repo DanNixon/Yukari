@@ -2,6 +2,8 @@
 
 #include "CaptureController.h"
 
+#include <typeinfo>
+
 #include <pcl/io/pcd_io.h>
 
 using namespace Yukari::Common;
@@ -19,12 +21,14 @@ namespace CaptureApp
 
   int CaptureController::run()
   {
+    /* Start capture */
     if (!start())
     {
       m_logger->error("Failed to start capture");
       return 1;
     }
 
+    /* Wait for termination signal */
     while (m_isRunning)
     {
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -195,6 +199,33 @@ namespace CaptureApp
   void CaptureController::markShouldStop()
   {
     m_shouldStop = true;
+  }
+
+  std::ostream &operator<<(std::ostream &s, const CaptureController &o)
+  {
+    s << "CloudCapture[out dir = " << o.m_outputRootPath
+      << ", cloud grabber = " << typeid(*(o.m_cloudGrabber)).name()
+      << ", IMU grabber = " << typeid(*(o.m_imuGrabber)).name() << ", capture triggers = [";
+
+    for (auto it = o.m_captureTriggers.begin(); it != o.m_captureTriggers.end();)
+    {
+      s << typeid(*(*(it++))).name();
+      if (it != o.m_captureTriggers.end())
+        s << ", ";
+    }
+
+    s << "], exit triggers = [";
+
+    for (auto it = o.m_exitTriggers.begin(); it != o.m_exitTriggers.end();)
+    {
+      s << typeid(*(*(it++))).name();
+      if (it != o.m_exitTriggers.end())
+        s << ", ";
+    }
+
+    s << "]]";
+
+    return s;
   }
 }
 }

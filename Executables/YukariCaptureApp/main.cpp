@@ -24,8 +24,9 @@ int main(int argc, char **argv)
   po::variables_map args;
 
   // clang-format off
-  desc.add_options()("help", "Show brief usage message")("config", po::value<std::string>(),
-                                                         "Configuration file to use");
+  desc.add_options()
+	  ("help", "Show brief usage message")
+	  ("config", po::value<std::string>(), "Configuration file to use");
   // clang-format on
 
   /* Parse command line args */

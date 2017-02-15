@@ -29,6 +29,7 @@ namespace Common
       {
         std::shared_ptr<spdlog::sinks::sink> sink;
 
+        /* Create sink */
         const std::string type = it->second.get<std::string>("type");
         if (type == "console")
         {
@@ -45,6 +46,7 @@ namespace Common
           throw std::runtime_error("Unknown log sink type: \"" + type + "\"");
         }
 
+        /* Common sink actions */
         if (sink)
         {
           /* Set level */
