@@ -32,7 +32,10 @@ namespace CaptureApp
       return m_isRunning;
     }
 
-    void triggerCapture();
+    inline void setRootOutputDirectory(const boost::filesystem::path &root)
+    {
+      m_outputRootPath = root;
+    }
 
     inline void setCloudGrabber(CloudCapture::ICloudGrabber_sptr grabber)
     {
@@ -44,22 +47,22 @@ namespace CaptureApp
       m_imuGrabber = grabber;
     }
 
-    inline void addCaptureTrigger(ITrigger_sptr trigger)
-    {
-      m_captureTriggers.push_back(trigger);
-    }
+    void addCaptureTrigger(ITrigger_sptr trigger);
+    void addExitTrigger(ITrigger_sptr trigger);
 
-    inline void addExitTrigger(ITrigger_sptr trigger)
-    {
-      m_exitTriggers.push_back(trigger);
-    }
+  private:
+    void triggerCapture();
+    void markShouldStop();
 
   private:
     Common::LoggingService::Logger m_logger;
 
     bool m_isRunning;
+    bool m_shouldStop;
+    size_t m_currentFrameCount;
 
     boost::filesystem::path m_outputRootPath;
+    boost::filesystem::path m_currentCaptureRootPath;
 
     CloudCapture::ICloudGrabber_sptr m_cloudGrabber;
     IMU::IIMUGrabber_sptr m_imuGrabber;

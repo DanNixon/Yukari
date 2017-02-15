@@ -2,11 +2,12 @@
 
 #include <iostream>
 
+#include <boost/program_options.hpp>
+#include <boost/qvm/all.hpp>
+
 #include <YukariCommon/ConfigurationManager.h>
 #include <YukariCommon/LoggingService.h>
 #include <YukariMaths/Quaternion.h>
-#include <boost/program_options.hpp>
-#include <boost/qvm/all.hpp>
 
 #include "CaptureFactory.h"
 
@@ -65,6 +66,5 @@ int main(int argc, char **argv)
   }
 
   /* Run capture */
-  /* return captureController->run(); */
-  return 0;
+  return captureController->run();
 }

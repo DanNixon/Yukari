@@ -19,7 +19,6 @@ namespace CloudCapture
   OpenNI2CloudGrabber::~OpenNI2CloudGrabber()
   {
     close();
-    m_cloudCBConnection.disconnect();
   }
 
   void OpenNI2CloudGrabber::open()
@@ -29,7 +28,9 @@ namespace CloudCapture
 
   void OpenNI2CloudGrabber::close()
   {
+    m_cloudMutex.try_lock();
     m_grabber.stop();
+	m_cloudMutex.unlock();
   }
 
   bool OpenNI2CloudGrabber::isOpen() const
