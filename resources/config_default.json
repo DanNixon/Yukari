@@ -12,5 +12,36 @@
         "filename": "logs/test.log"
       }
     ]
+  },
+  "capture":
+  {
+    "output_root_directory": ".",
+    "cloud":
+    {
+      "grabber": "openni2"
+    },
+    "imu":
+    {
+      "grabber": "attitude",
+      "port": "/dev/ttyUSB0",
+      "baud": 115200
+    },
+    "triggers":
+    {
+      "exit":
+      [
+        {
+          "type": "signal",
+          "signal": 2
+        }
+      ],
+      "capture":
+      [
+        {
+          "type": "timelapse",
+          "seconds": 5
+        }
+      ]
+    }
   }
 }

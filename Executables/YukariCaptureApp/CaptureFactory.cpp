@@ -31,9 +31,9 @@ namespace CaptureApp
     {
       std::string type = config.get<std::string>("capture.cloud.grabber");
 
-      if (type == "openni")
+      if (type == "openni2")
       {
-        // TODO: add devcie ID and modes
+        // TODO: add modes
         std::string deviceID = config.get<std::string>("capture.cloud.device", "");
         retVal->setCloudGrabber(CloudGrabberFactory::Create(
             type, deviceID, pcl::io::OpenNI2Grabber::OpenNI_Default_Mode,
