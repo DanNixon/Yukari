@@ -100,6 +100,11 @@ namespace Common
     return logger;
   }
 
+  void LoggingService::Flush()
+  {
+    m_sink->flush();
+  }
+
   spdlog::level::level_enum LoggingService::GetLogLevelFromStr(const std::string &levelStr)
   {
     auto end = spdlog::level::level_names + 7;

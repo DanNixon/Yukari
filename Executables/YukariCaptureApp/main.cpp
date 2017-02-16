@@ -66,6 +66,8 @@ int main(int argc, char **argv)
     return 2;
   }
 
+  LoggingService::Flush();
+
   /* Run capture */
   return captureController->run();
 }

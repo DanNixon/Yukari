@@ -25,6 +25,7 @@ namespace CaptureApp
     if (!start())
     {
       m_logger->error("Failed to start capture");
+      LoggingService::Flush();
       return 1;
     }
 
@@ -34,7 +35,10 @@ namespace CaptureApp
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
       if (m_shouldStop)
+      {
         stop();
+        LoggingService::Flush();
+      }
     }
 
     return 0;
@@ -75,7 +79,7 @@ namespace CaptureApp
     /* Generate capture root path name */
     auto time = boost::posix_time::second_clock::local_time();
     boost::posix_time::time_facet *facet = new boost::posix_time::time_facet();
-    facet->format("%H%M%s");
+    facet->format("%Y-%m-%dT%H_%M_%S");
 
     std::stringstream stream;
     stream.imbue(std::locale(std::locale::classic(), facet));
@@ -158,6 +162,7 @@ namespace CaptureApp
     }
 
     m_logger->trace("Capture triggered");
+    LoggingService::Flush();
 
     /* Generate output filenames */
     boost::filesystem::path cloudFilename =
@@ -194,6 +199,8 @@ namespace CaptureApp
 
     /* Increment frame counter */
     m_currentFrameCount++;
+
+    LoggingService::Flush();
   }
 
   void CaptureController::markShouldStop()

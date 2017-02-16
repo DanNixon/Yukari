@@ -149,7 +149,7 @@ namespace CaptureApp
       }
     }
 
-    logger->info("Created: {}", retVal);
+    logger->info("Created: {}", *retVal);
 
     return retVal;
   }

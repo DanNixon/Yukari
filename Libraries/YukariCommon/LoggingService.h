@@ -24,6 +24,8 @@ namespace Common
 
     static Logger GetLogger(const std::string &name);
 
+    static void Flush();
+
   private:
     static spdlog::level::level_enum GetLogLevelFromStr(const std::string &levelStr);
     static void EnsureLogDirectoryExists(const std::string &filename);
