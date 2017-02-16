@@ -35,7 +35,7 @@ using namespace Yukari::Maths;
 using namespace Yukari::IMUGrabberTestApp;
 
 int runRawData(const std::string &portName, unsigned int baud);
-int runFrameGrabber(IIMUGrabber_sptr grabber);
+int runGrabber(IIMUGrabber_sptr grabber);
 
 int main(int argc, char **argv)
 {
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
   if (mode == "raw")
     return runRawData(portName, baud);
   else
-    return runFrameGrabber(IMUGrabberFactory::Create(mode, portName, baud));
+    return runGrabber(IMUGrabberFactory::Create(mode, portName, baud));
 }
 
 int runRawData(const std::string &portName, unsigned int baud)
@@ -157,18 +157,24 @@ vtkPolyData *generateCube(Vector3 d)
   return cube;
 }
 
-int runFrameGrabber(IIMUGrabber_sptr grabber)
+int runGrabber(IIMUGrabber_sptr grabber)
 {
-  auto logger = LoggingService::GetLogger("runFrameGrabber");
+  auto logger = LoggingService::GetLogger("runGrabber");
+
+  if (!grabber)
+  {
+    logger->error("No IMU grabber created");
+    return 2;
+  }
 
   grabber->open();
   if (grabber->isOpen())
   {
-    logger->info("Grabber is open.");
+    logger->info("Grabber is open");
   }
   else
   {
-    logger->error("Grabber failed to open.");
+    logger->error("Grabber failed to open");
     return 2;
   }
 

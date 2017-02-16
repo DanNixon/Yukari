@@ -4,6 +4,8 @@
 
 #include "MSPGrabber.h"
 
+#include <YukariCommon/LoggingService.h>
+
 namespace Yukari
 {
 namespace IMU
@@ -16,8 +18,11 @@ namespace IMU
 
     virtual IMUFrame_sptr grabFrame() override;
 
-    /* protected: */
+  protected:
     float m_attitude[3];
+
+  private:
+    Yukari::Common::LoggingService::Logger m_logger;
   };
 }
 }
