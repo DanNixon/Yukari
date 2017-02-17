@@ -47,12 +47,13 @@ namespace CaptureApp
       m_imuGrabber = grabber;
     }
 
+	void addStartTrigger(ITrigger_sptr trigger);
+	void addStopTrigger(ITrigger_sptr trigger);
     void addCaptureTrigger(ITrigger_sptr trigger);
     void addExitTrigger(ITrigger_sptr trigger);
 
   private:
     void triggerCapture();
-    void markShouldStop();
 
     friend std::ostream &operator<<(std::ostream &s, const CaptureController &o);
 
@@ -61,6 +62,7 @@ namespace CaptureApp
 
     bool m_isRunning;
     bool m_shouldStop;
+	bool m_shouldExit;
     size_t m_currentFrameCount;
 
     boost::filesystem::path m_outputRootPath;
@@ -69,6 +71,8 @@ namespace CaptureApp
     CloudCapture::ICloudGrabber_sptr m_cloudGrabber;
     IMU::IIMUGrabber_sptr m_imuGrabber;
 
+	std::vector<ITrigger_sptr> m_startTriggers;
+	std::vector<ITrigger_sptr> m_stopTriggers;
     std::vector<ITrigger_sptr> m_captureTriggers;
     std::vector<ITrigger_sptr> m_exitTriggers;
   };

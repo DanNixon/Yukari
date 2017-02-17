@@ -48,15 +48,14 @@ namespace CaptureApp
 
     /* Get IMU grabber */
     {
-      std::string type = config.get<std::string>("capture.imu.grabber");
-      std::string port = config.get<std::string>("capture.imu.port");
+      std::string type = config.get<std::string>("capture.imu.grabber", "");
+      std::string port = config.get<std::string>("capture.imu.port", "");
       int baud = config.get<int>("capture.imu.baud", 115200);
 
       auto imu = IMUGrabberFactory::Create(type, port, baud);
       if (!imu)
       {
-        logger->error("Failed to create IMU grabber");
-        return nullptr;
+        logger->warn("Failed to create IMU grabber");
       }
 
       retVal->setIMUGrabber(imu);

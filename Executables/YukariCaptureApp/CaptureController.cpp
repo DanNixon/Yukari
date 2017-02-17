@@ -6,7 +6,10 @@
 
 #include <pcl/io/pcd_io.h>
 
+#include <YukariIMU/IMUFrame.h>
+
 using namespace Yukari::Common;
+using namespace Yukari::IMU;
 
 namespace Yukari
 {
@@ -16,21 +19,19 @@ namespace CaptureApp
       : m_logger(LoggingService::GetLogger("CaptureController"))
       , m_isRunning(false)
       , m_shouldStop(false)
+      , m_shouldExit(false)
   {
   }
 
   int CaptureController::run()
   {
-    /* Start capture */
-    if (!start())
-    {
-      m_logger->error("Failed to start capture");
-      LoggingService::Flush();
-      return 1;
-    }
+    /* Enable exit triggers */
+    m_logger->info("Enabling exit triggers");
+    for (auto it = m_exitTriggers.begin(); it != m_exitTriggers.end(); ++it)
+      (*it)->enable();
 
     /* Wait for termination signal */
-    while (m_isRunning)
+    while (!m_shouldExit)
     {
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
@@ -41,6 +42,13 @@ namespace CaptureApp
       }
     }
 
+    /* Ensure capture is stopped before exit */
+    if (m_isRunning)
+      stop();
+
+    /* Ensure log is flushed before exiting */
+    LoggingService::Flush();
+
     return 0;
   }
 
@@ -48,13 +56,20 @@ namespace CaptureApp
   {
     /* Open IMU grabber */
     m_logger->info("Opening IMU grabber");
-    m_imuGrabber->open();
-    if (!m_imuGrabber->isOpen())
+    if (m_imuGrabber)
     {
-      m_logger->error("Failed to open IMU grabber!");
-      return false;
+      m_imuGrabber->open();
+      if (!m_imuGrabber->isOpen())
+      {
+        m_logger->error("Failed to open IMU grabber!");
+        return false;
+      }
+      m_logger->debug("IMU grabber opened");
     }
-    m_logger->debug("IMU grabber opened");
+    else
+    {
+      m_logger->info("No IMU grabber defined");
+    }
 
     /* Open cloud grabber */
     m_logger->info("Opening cloud grabber");
@@ -65,11 +80,6 @@ namespace CaptureApp
       return false;
     }
     m_logger->debug("Cloud grabber opened");
-
-    /* Enable exit triggers */
-    m_logger->info("Enabling exit triggers");
-    for (auto it = m_exitTriggers.begin(); it != m_exitTriggers.end(); ++it)
-      (*it)->enable();
 
     /* Enable capture triggers */
     m_logger->info("Enabling capture triggers");
@@ -107,11 +117,6 @@ namespace CaptureApp
     /* Clear running flag */
     m_isRunning = false;
 
-    /* Disable exit triggers */
-    m_logger->info("Disabling exit triggers");
-    for (auto it = m_exitTriggers.begin(); it != m_exitTriggers.end(); ++it)
-      (*it)->disable();
-
     /* Disable capture triggers */
     m_logger->info("Disabling capture triggers");
     for (auto it = m_captureTriggers.begin(); it != m_captureTriggers.end(); ++it)
@@ -119,11 +124,18 @@ namespace CaptureApp
 
     /* Close IMU grabber */
     m_logger->info("Closing IMU grabber");
-    m_imuGrabber->close();
-    if (m_imuGrabber->isOpen())
+    if (m_imuGrabber)
     {
-      m_logger->error("Failed to close IMU grabber!");
-      return false;
+      m_imuGrabber->close();
+      if (m_imuGrabber->isOpen())
+      {
+        m_logger->error("Failed to close IMU grabber!");
+        return false;
+      }
+    }
+    else
+    {
+      m_logger->info("No IMU grabber defined");
     }
 
     /* Close cloud grabber */
@@ -138,6 +150,26 @@ namespace CaptureApp
     return true;
   }
 
+  void CaptureController::addStartTrigger(ITrigger_sptr trigger)
+  {
+    trigger->setHandler([this]() {
+      if (!start())
+      {
+        m_logger->error("Failed to start capture");
+        LoggingService::Flush();
+      }
+    });
+    m_startTriggers.push_back(trigger);
+    m_logger->debug("Added start trigger");
+  }
+
+  void CaptureController::addStopTrigger(ITrigger_sptr trigger)
+  {
+    trigger->setHandler([this]() { m_shouldStop = true; });
+    m_stopTriggers.push_back(trigger);
+    m_logger->debug("Added stop trigger");
+  }
+
   void CaptureController::addCaptureTrigger(ITrigger_sptr trigger)
   {
     trigger->setHandler([this]() { triggerCapture(); });
@@ -147,7 +179,7 @@ namespace CaptureApp
 
   void CaptureController::addExitTrigger(ITrigger_sptr trigger)
   {
-    trigger->setHandler([this]() { markShouldStop(); });
+    trigger->setHandler([this]() { m_shouldExit = true; });
     m_exitTriggers.push_back(trigger);
     m_logger->debug("Added exit trigger");
   }
@@ -179,11 +211,19 @@ namespace CaptureApp
     }
 
     /* Grab IMU frame */
-    auto imu = m_imuGrabber->grabFrame();
-    if (!imu)
+    IMUFrame_sptr imu;
+    if (m_imuGrabber)
     {
-      m_logger->error("Failed to grab IMU frame, frame will be skipped!");
-      return;
+      imu = m_imuGrabber->grabFrame();
+      if (!imu)
+      {
+        m_logger->error("Failed to grab IMU frame, frame will be skipped!");
+        return;
+      }
+    }
+    else
+    {
+      m_logger->info("No IMU grabber defined");
     }
 
     /* Save cloud */
@@ -203,16 +243,12 @@ namespace CaptureApp
     LoggingService::Flush();
   }
 
-  void CaptureController::markShouldStop()
-  {
-    m_shouldStop = true;
-  }
-
   std::ostream &operator<<(std::ostream &s, const CaptureController &o)
   {
     s << "CloudCapture[out dir = " << o.m_outputRootPath
       << ", cloud grabber = " << typeid(*(o.m_cloudGrabber)).name()
-      << ", IMU grabber = " << typeid(*(o.m_imuGrabber)).name() << ", capture triggers = [";
+      << ", IMU grabber = " << (o.m_imuGrabber ? typeid(*(o.m_imuGrabber)).name() : "none")
+      << ", capture triggers = [";
 
     for (auto it = o.m_captureTriggers.begin(); it != o.m_captureTriggers.end();)
     {
