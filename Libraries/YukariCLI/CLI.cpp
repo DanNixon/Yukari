@@ -4,6 +4,8 @@
 
 #include <string>
 
+#include <boost/algorithm/string.hpp>
+
 namespace Yukari
 {
 namespace CLI
@@ -55,7 +57,8 @@ namespace CLI
       std::string command;
       std::getline(m_in, command);
 
-      std::vector<std::string> tokens = Utility::Split(command, ' ');
+      std::vector<std::string> tokens;
+      boost::algorithm::split(tokens, command, boost::algorithm::is_any_of(" "));
 
       int retVal = handle(m_in, m_out, tokens);
 

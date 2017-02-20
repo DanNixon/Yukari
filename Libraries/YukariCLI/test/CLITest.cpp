@@ -7,9 +7,9 @@
 #include <sstream>
 #include <string>
 
-#include <CLI.h>
-#include <Command.h>
-#include <SubCommand.h>
+#include <YukariCLI/CLI.h>
+#include <YukariCLI/Command.h>
+#include <YukariCLI/SubCommand.h>
 
 namespace Yukari
 {
@@ -68,7 +68,7 @@ namespace CLI
 
       c.registerCommand(Command_ptr(
           new Command("test",
-                      [](std::istream &in, std::ostream &out, std::vector<std::string> &argv) {
+                      [](std::istream &, std::ostream &out, std::vector<std::string> &) {
                         out << "Test command.\n";
                         return 0;
                       },
@@ -94,7 +94,7 @@ namespace CLI
 
       c.registerCommand(Command_ptr(
           new Command("test",
-                      [](std::istream &in, std::ostream &out, std::vector<std::string> &argv) {
+                      [](std::istream &, std::ostream &out, std::vector<std::string> &) {
                         out << "Test command.\n";
                         return 0;
                       },
@@ -104,7 +104,7 @@ namespace CLI
 
       sub1->registerCommand(Command_ptr(
           new Command("list",
-                      [](std::istream &in, std::ostream &out, std::vector<std::string> &argv) {
+                      [](std::istream &, std::ostream &out, std::vector<std::string> &) {
                         out << "Test command => list.\n";
                         return 0;
                       },
@@ -128,4 +128,5 @@ namespace CLI
   };
 }
 }
-}
+
+#endif
