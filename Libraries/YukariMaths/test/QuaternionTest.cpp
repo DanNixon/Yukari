@@ -25,7 +25,7 @@ namespace Maths
 
     BOOST_AUTO_TEST_CASE(Quaternion_Inverse)
     {
-      Quaternion q(5.0, 2.0, 4.5, 8.9);
+      Quaternion q(5.0f, 2.0f, 4.5f, 8.9f);
       Quaternion inv = inverse(q);
       Quaternion r = q * inv;
       BOOST_CHECK_CLOSE(r.w(), 1.0f, TOL);

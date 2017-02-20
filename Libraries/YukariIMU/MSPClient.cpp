@@ -14,8 +14,8 @@ namespace IMU
     payload.push_back('$');
     payload.push_back('M');
     payload.push_back('<');
-    payload.push_back(data.size());
-    payload.push_back(command);
+    payload.push_back((uint8_t)data.size());
+    payload.push_back((uint8_t)command);
     payload.insert(payload.end(), data.cbegin(), data.cend());
 
     /* Generate checksum */
