@@ -56,6 +56,7 @@ include_directories(Libraries
 add_subdirectory(ThirdParty/serial)
 
 # Libraries
+add_subdirectory(Libraries/YukariCLI)
 add_subdirectory(Libraries/YukariCloudCapture)
 add_subdirectory(Libraries/YukariCommon)
 add_subdirectory(Libraries/YukariIMU)
