@@ -128,7 +128,7 @@ namespace CLI
     BOOST_AUTO_TEST_CASE(CLI_SubCommand_Disabled)
     {
       // Simulated input
-      std::stringstream in("test\nsub1 help\nsub1 list\nexit\n");
+      std::stringstream in("help\ntest\nsub1 help\nsub1 list\nexit\n");
 
       // Capture output
       std::stringstream out;
@@ -160,6 +160,12 @@ namespace CLI
 
       // sub1 command (and its sub commands) should never work
       const std::string expected = "> "
+                                   "Command usage:\n"
+                                   " help                : Shows command usage.\n"
+
+                                   " exit                : Exit the application.\n"
+                                   " test                : Is a test.\n"
+                                   "> "
                                    "Test command.\n"
                                    "> "
                                    "Command \"sub1\" not found.\n"
