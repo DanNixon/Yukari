@@ -31,7 +31,7 @@ namespace CLI
     /* Add exit command */
     m_commands.push_back(std::make_shared<Command>(
         "exit",
-        [this](std::istream &in, std::ostream &out, std::vector<std::string> &argv) {
+        [this](std::istream &, std::ostream &, std::vector<std::string> &) {
           this->exit();
           return 0;
         },

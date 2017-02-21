@@ -24,7 +24,7 @@ namespace CLI
     /* Add help command */
     m_commands.push_back(std::make_shared<Command>(
         "help",
-        [this](std::istream &in, std::ostream &out, std::vector<std::string> argv) {
+        [this](std::istream &, std::ostream &out, std::vector<std::string>) {
           this->help(out);
           return 0;
         },
