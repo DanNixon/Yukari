@@ -1,11 +1,12 @@
 project(YukariCloudCapture)
 
 set(HEADERS
-  CloudGrabberFactory.h
+  DummyCloudGrabber.h
   ICloudGrabber.h
   OpenNI2CloudGrabber.h)
 
 set(SOURCES
+  DummyCloudGrabber.cpp
   OpenNI2CloudGrabber.cpp)
 
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})

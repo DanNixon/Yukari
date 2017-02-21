@@ -2,9 +2,14 @@
 
 #include "CaptureFactory.h"
 
-#include <YukariCloudCapture/CloudGrabberFactory.h>
+#include <memory>
+
+#include <YukariCloudCapture/DummyCloudGrabber.h>
+#include <YukariCloudCapture/OpenNI2CloudGrabber.h>
 #include <YukariCommon/LoggingService.h>
-#include <YukariIMU/IMUGrabberFactory.h>
+#include <YukariIMU/DummyIMUGrabber.h>
+#include <YukariIMU/MSPGrabberAttitude.h>
+#include <YukariIMU/MSPGrabberIMU.h>
 
 #include "SignalTrigger.h"
 #include "TimelapseCaptureTrigger.h"
@@ -29,34 +34,56 @@ namespace CaptureApp
 
     /* Get cloud grabber */
     {
-      std::string type = config.get<std::string>("capture.cloud.grabber");
+      std::string type = config.get<std::string>("capture.cloud.grabber", "dummy");
 
-      if (type == "openni2")
+      /* Create cloud grabber */
+      ICloudGrabber_sptr grabber;
+      if (type == "dummy")
+      {
+        grabber = std::make_shared<DummyCloudGrabber>();
+      }
+      else if (type == "openni2")
       {
         // TODO: add modes
         std::string deviceID = config.get<std::string>("capture.cloud.device", "");
-        retVal->setCloudGrabber(CloudGrabberFactory::Create(
-            type, deviceID, pcl::io::OpenNI2Grabber::OpenNI_Default_Mode,
-            pcl::io::OpenNI2Grabber::OpenNI_Default_Mode));
+        grabber = std::make_shared<OpenNI2CloudGrabber>(
+            deviceID, pcl::io::OpenNI2Grabber::OpenNI_Default_Mode,
+            pcl::io::OpenNI2Grabber::OpenNI_Default_Mode);
       }
       else
       {
-        logger->error("Unknown cloud grabber type");
+        logger->warn("Unknown cloud grabber type");
+      }
+
+      if (!grabber)
+      {
+        logger->error("Failed to create cloud grabber");
         return nullptr;
       }
+
+      retVal->setCloudGrabber(grabber);
     }
 
     /* Get IMU grabber */
     {
-      std::string type = config.get<std::string>("capture.imu.grabber", "");
+      /* Get data */
+      std::string type = config.get<std::string>("capture.imu.grabber", "dummy");
       std::string port = config.get<std::string>("capture.imu.port", "");
       int baud = config.get<int>("capture.imu.baud", 115200);
 
-      auto imu = IMUGrabberFactory::Create(type, port, baud);
+      /* Create IMU grabber */
+      IIMUGrabber_sptr imu;
+      if (type == "dummy")
+        imu = std::make_shared<DummyIMUGrabber>();
+      else if (type == "attitude")
+        imu = std::make_shared<MSPGrabberAttitude>(port, baud);
+      else if (type == "imu")
+        imu = std::make_shared<MSPGrabberIMU>(port, baud);
+      else
+        logger->warn("Unknown IMU grabber type");
+
       if (!imu)
-      {
-        logger->warn("Failed to create IMU grabber");
-      }
+        logger->error("Failed to create IMU grabber");
 
       retVal->setIMUGrabber(imu);
     }

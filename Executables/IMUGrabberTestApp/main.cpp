@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <thread>
 
@@ -22,8 +23,10 @@
 #include <vtkSmartPointer.h>
 
 #include <YukariCommon/LoggingService.h>
-#include <YukariIMU/IMUGrabberFactory.h>
+#include <YukariIMU/DummyIMUGrabber.h>
 #include <YukariIMU/MSPClient.h>
+#include <YukariIMU/MSPGrabberAttitude.h>
+#include <YukariIMU/MSPGrabberIMU.h>
 
 #include "VTKIMUActorCallback.h"
 #include "VTKIMUCalibrationInteractionStyle.h"
@@ -61,8 +64,14 @@ int main(int argc, char **argv)
   const std::string mode(argv[1]);
   if (mode == "raw")
     return runRawData(portName, baud);
+  else if (mode == "dummy")
+    return runGrabber(std::make_shared<DummyIMUGrabber>());
+  else if (mode == "attitude")
+    return runGrabber(std::make_shared<MSPGrabberAttitude>(portName, baud));
+  else if (mode == "imu")
+    return runGrabber(std::make_shared<MSPGrabberIMU>(portName, baud));
   else
-    return runGrabber(IMUGrabberFactory::Create(mode, portName, baud));
+    return 2;
 }
 
 int runRawData(const std::string &portName, unsigned int baud)

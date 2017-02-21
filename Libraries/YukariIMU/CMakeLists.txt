@@ -1,9 +1,9 @@
 project(YukariIMU)
 
 set(HEADERS
+  DummyIMUGrabber.h
   IIMUGrabber.h
   IMUFrame.h
-  IMUGrabberFactory.h
   ExtendedIMUFrame.h
   MSPGrabber.h
   MSPGrabberIMU.h
@@ -11,6 +11,7 @@ set(HEADERS
   MSPClient.h)
 
 set(SOURCES
+  DummyIMUGrabber.cpp
   IMUFrame.cpp
   ExtendedIMUFrame.cpp
   MSPGrabber.cpp
