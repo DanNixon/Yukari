@@ -67,7 +67,8 @@ namespace CLI
     auto it = std::find_if(m_commands.begin(), m_commands.end(),
                            [tokens](Command_ptr c) { return c->commandName() == tokens[0]; });
 
-    if (it == m_commands.end())
+    /* If command was not found or is disabled */
+    if (it == m_commands.end() || !((*it)->isEnabled()))
     {
       out << "Command \"" << tokens[0] << "\" not found.\n";
       return COMMAND_EXIT_SUBCOMMANDNOTFOUND;
@@ -86,8 +87,13 @@ namespace CLI
     out << "Command usage:\n";
 
     for (auto it = m_commands.begin(); it != m_commands.end(); ++it)
-      out << ' ' << std::left << std::setw(HELP_CMD_WIDTH) << (*it)->commandName() << ": "
-          << (*it)->description() << '\n';
+    {
+      if ((*it)->isEnabled())
+      {
+        out << ' ' << std::left << std::setw(HELP_CMD_WIDTH) << (*it)->commandName() << ": "
+            << (*it)->description() << '\n';
+      }
+    }
   }
 }
 }

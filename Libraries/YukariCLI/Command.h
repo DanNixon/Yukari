@@ -3,10 +3,10 @@
 #pragma once
 
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
-#include <iostream>
 
 namespace Yukari
 {
@@ -55,7 +55,8 @@ namespace CLI
      */
     Command(const std::string &commandName, CMDHandlerFunc func, size_t numArguments = 0,
             const std::string &desc = "")
-        : m_commandName(commandName)
+        : m_enabled(true)
+        , m_commandName(commandName)
         , m_handlerFunc(func)
         , m_numArguments(numArguments)
         , m_description(desc)
@@ -64,6 +65,24 @@ namespace CLI
 
     virtual ~Command()
     {
+    }
+
+    /**
+     * @brief Returns if this command is currently enabled.
+     * @return True if command is enabled
+     */
+    const bool isEnabled() const
+    {
+      return m_enabled;
+    }
+
+    /**
+     * @brief Enables or disables this command
+     * @param enabled True if command is enabled
+     */
+    void setEnabled(bool enabled)
+    {
+      m_enabled = enabled;
     }
 
     /**
@@ -121,6 +140,7 @@ namespace CLI
     }
 
   private:
+    bool m_enabled;
     const std::string m_commandName;
     const CMDHandlerFunc m_handlerFunc;
     const size_t m_numArguments;
