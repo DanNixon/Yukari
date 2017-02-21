@@ -65,7 +65,7 @@ namespace CLI
 
       CLI c(in, out);
 
-      c.registerCommand(Command_ptr(
+      c.registerCommand(Command_sptr(
           new Command("test",
                       [](std::istream &, std::ostream &out, std::vector<std::string> &) {
                         out << "Test command.\n";
@@ -91,7 +91,7 @@ namespace CLI
 
       CLI c(in, out);
 
-      c.registerCommand(Command_ptr(
+      c.registerCommand(Command_sptr(
           new Command("test",
                       [](std::istream &, std::ostream &out, std::vector<std::string> &) {
                         out << "Test command.\n";
@@ -99,9 +99,9 @@ namespace CLI
                       },
                       0, "Is a test.")));
 
-      SubCommand_ptr sub1(new SubCommand("sub1", "Test subcommand."));
+      SubCommand_sptr sub1(new SubCommand("sub1", "Test subcommand."));
 
-      sub1->registerCommand(Command_ptr(
+      sub1->registerCommand(Command_sptr(
           new Command("list",
                       [](std::istream &, std::ostream &out, std::vector<std::string> &) {
                         out << "Test command => list.\n";
@@ -135,7 +135,7 @@ namespace CLI
 
       CLI c(in, out);
 
-      c.registerCommand(Command_ptr(
+      c.registerCommand(Command_sptr(
           new Command("test",
                       [](std::istream &, std::ostream &out, std::vector<std::string> &) {
                         out << "Test command.\n";
@@ -143,12 +143,12 @@ namespace CLI
                       },
                       0, "Is a test.")));
 
-      SubCommand_ptr sub1(new SubCommand("sub1", "Test subcommand."));
+      SubCommand_sptr sub1(new SubCommand("sub1", "Test subcommand."));
 
       // Disable sub1 command
       sub1->setEnabled(false);
 
-      sub1->registerCommand(Command_ptr(
+      sub1->registerCommand(Command_sptr(
           new Command("list",
                       [](std::istream &, std::ostream &out, std::vector<std::string> &) {
                         out << "Test command => list.\n";

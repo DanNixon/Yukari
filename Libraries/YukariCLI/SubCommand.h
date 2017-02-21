@@ -43,11 +43,6 @@ namespace CLI
   /**
    * @brief Shared pointer to a SubCommand.
    */
-  typedef std::shared_ptr<SubCommand> SubCommand_ptr;
-
-  /**
-   * @brief Shared pointer to a const SubCommand.
-   */
-  typedef std::shared_ptr<const SubCommand> SubCommand_const_ptr;
+  typedef std::shared_ptr<SubCommand> SubCommand_sptr;
 }
 }

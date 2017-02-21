@@ -150,11 +150,6 @@ namespace CLI
   /**
    * @brief Shared pointer to a Command.
    */
-  typedef std::shared_ptr<Command> Command_ptr;
-
-  /**
-   * @brief Shared pointer to a const Command.
-   */
-  typedef std::shared_ptr<const Command> Command_const_ptr;
+  typedef std::shared_ptr<Command> Command_sptr;
 }
 }

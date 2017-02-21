@@ -40,7 +40,7 @@ namespace CLI
    * @brief Adds a new command to the container.
    * @param command Pointer to command
    */
-  void CommandContainer::registerCommand(Command_ptr command)
+  void CommandContainer::registerCommand(Command_sptr command)
   {
     m_commands.push_back(command);
   }
@@ -65,7 +65,7 @@ namespace CLI
     }
 
     auto it = std::find_if(m_commands.begin(), m_commands.end(),
-                           [tokens](Command_ptr c) { return c->commandName() == tokens[0]; });
+                           [tokens](Command_sptr c) { return c->commandName() == tokens[0]; });
 
     /* If command was not found or is disabled */
     if (it == m_commands.end() || !((*it)->isEnabled()))

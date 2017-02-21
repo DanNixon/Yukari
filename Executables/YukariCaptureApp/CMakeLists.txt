@@ -1,15 +1,19 @@
 project(YukariCaptureApp)
 
 set(HEADERS
+  CaptureCLI.h
   CaptureController.h
   CaptureFactory.h
+  CLITrigger.h
   ITrigger.h
   SignalTrigger.h
   TimelapseCaptureTrigger.h)
 
 set(SOURCES
+  CaptureCLI.cpp
   CaptureController.cpp
   CaptureFactory.cpp
+  CLITrigger.cpp
   SignalTrigger.cpp
   TimelapseCaptureTrigger.cpp
   main.cpp)
@@ -17,6 +21,7 @@ set(SOURCES
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
+  YukariCLI
   YukariCloudCapture
   YukariCommon
   YukariIMU

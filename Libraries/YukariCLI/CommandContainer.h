@@ -24,13 +24,13 @@ namespace CLI
     CommandContainer();
     virtual ~CommandContainer();
 
-    void registerCommand(Command_ptr command);
+    void registerCommand(Command_sptr command);
 
     int handle(std::istream &in, std::ostream &out, std::vector<std::string> &tokens);
     void help(std::ostream &out);
 
   protected:
-    std::vector<Command_ptr> m_commands; //!< Commands in this container
+    std::vector<Command_sptr> m_commands; //!< Commands in this container
   };
 }
 }

@@ -1,11 +1,9 @@
 {
-  "logging":
-  {
-    "sinks":
-    [
+  "logging": {
+    "sinks": [
       {
         "type": "console",
-		"level": "trace"
+        "level": "trace"
       },
       {
         "type": "file_simple",
@@ -14,30 +12,27 @@
       }
     ]
   },
-  "capture":
-  {
+  "capture": {
     "output_root_directory": ".",
-    "cloud":
-    {
+    "use_cli": true,
+    "cloud": {
       "grabber": "openni2"
     },
-    "imu":
-    {
+    "imu": {
       "grabber": "attitude",
       "port": "/dev/ttyUSB0",
       "baud": 115200
     },
-    "triggers":
-    {
-      "exit":
-      [
+    "triggers": {
+      "exit": [
         {
           "type": "signal",
           "signal": 2
         }
       ],
-      "capture":
-      [
+      "start": [],
+      "stop": [],
+      "capture": [
         {
           "type": "timelapse",
           "seconds": 5
