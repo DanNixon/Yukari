@@ -1,8 +1,8 @@
 /** @file */
 
+#include <boost/program_options.hpp>
 #include <pcl/console/parse.h>
 #include <pcl/console/print.h>
-#include <boost/program_options.hpp>
 
 #include <YukariCloudCapture/DummyCloudGrabber.h>
 #include <YukariCloudCapture/ICloudGrabber.h>
@@ -55,10 +55,13 @@ int main(int argc, char **argv)
   }
   else if (source == "openni2")
   {
-    pcl::io::OpenNI2Grabber::Mode depthMode = pcl::io::OpenNI2Grabber::Mode(args["depthmode"].as<int>());
-    pcl::io::OpenNI2Grabber::Mode imageMode = pcl::io::OpenNI2Grabber::Mode(args["imagemode"].as<int>());
+    pcl::io::OpenNI2Grabber::Mode depthMode =
+        pcl::io::OpenNI2Grabber::Mode(args["depthmode"].as<int>());
+    pcl::io::OpenNI2Grabber::Mode imageMode =
+        pcl::io::OpenNI2Grabber::Mode(args["imagemode"].as<int>());
 
-    grabber = std::make_shared<OpenNI2CloudGrabber>(args["device"].as<std::string>(), depthMode, imageMode);
+    grabber = std::make_shared<OpenNI2CloudGrabber>(args["device"].as<std::string>(), depthMode,
+                                                    imageMode);
   }
 
   if (!grabber)

@@ -8,8 +8,8 @@
 #include <string>
 #include <thread>
 
-#include <boost/qvm/all.hpp>
 #include <boost/program_options.hpp>
+#include <boost/qvm/all.hpp>
 #include <serial/serial.h>
 #include <vtkActor.h>
 #include <vtkAxes.h>
@@ -89,9 +89,11 @@ int main(int argc, char **argv)
   else if (mode == "dummy")
     return runGrabber(std::make_shared<DummyIMUGrabber>());
   else if (mode == "attitude")
-    return runGrabber(std::make_shared<MSPGrabberAttitude>(args["port"].as<std::string>(), args["baud"].as<int>()));
+    return runGrabber(std::make_shared<MSPGrabberAttitude>(args["port"].as<std::string>(),
+                                                           args["baud"].as<int>()));
   else if (mode == "imu")
-    return runGrabber(std::make_shared<MSPGrabberIMU>(args["port"].as<std::string>(), args["baud"].as<int>()));
+    return runGrabber(
+        std::make_shared<MSPGrabberIMU>(args["port"].as<std::string>(), args["baud"].as<int>()));
   else
     return 2;
 }
