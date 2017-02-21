@@ -1,3 +1,5 @@
+/** @file */
+
 #include <chrono>
 #include <cstdio>
 #include <iomanip>
@@ -7,6 +9,7 @@
 #include <thread>
 
 #include <boost/qvm/all.hpp>
+#include <boost/program_options.hpp>
 #include <serial/serial.h>
 #include <vtkActor.h>
 #include <vtkAxes.h>
@@ -36,6 +39,7 @@ using namespace Yukari::Common;
 using namespace Yukari::IMU;
 using namespace Yukari::Maths;
 using namespace Yukari::IMUGrabberTestApp;
+namespace po = boost::program_options;
 
 int runRawData(const std::string &portName, unsigned int baud);
 int runGrabber(IIMUGrabber_sptr grabber);
@@ -44,32 +48,50 @@ int main(int argc, char **argv)
 {
   auto logger = LoggingService::GetLogger("main");
 
+  /* Init command line */
+  po::options_description desc("Allowed options");
+  po::variables_map args;
+
+  // clang-format off
+  desc.add_options()
+    ("help", "Show brief usage message")
+    ("grabber", po::value<std::string>()->default_value("dummy"), "IMU grabber type")
+    ("port", po::value<std::string>(), "Serial port for IMU device")
+    ("config", po::value<int>()->default_value(115200), "Baud rate used for serial communication");
+  // clang-format on
+
+  /* Parse command line args */
+  try
+  {
+    po::store(po::parse_command_line(argc, argv, desc), args);
+  }
+  catch (po::error const &e)
+  {
+    std::cerr << e.what() << '\n';
+    return 1;
+  }
+
+  /* Show usage */
+  if (args.count("help"))
+  {
+    std::cout << desc << "\n";
+    return 1;
+  }
+
   /* List all ports */
   std::vector<serial::PortInfo> ports = serial::list_ports();
   for (auto it = ports.begin(); it != ports.end(); ++it)
     printf("(%s, %s, %s)\n", it->port.c_str(), it->description.c_str(), it->hardware_id.c_str());
 
-  if (argc != 4)
-    return 1;
-
-  const std::string portName(argv[2]);
-
-  unsigned long baud = 0;
-#if defined(WIN32) && !defined(__MINGW32__)
-  sscanf_s(argv[3], "%lu", &baud);
-#else
-  sscanf(argv[3], "%lu", &baud);
-#endif
-
-  const std::string mode(argv[1]);
+  const std::string mode = args["grabber"].as<std::string>();
   if (mode == "raw")
-    return runRawData(portName, baud);
+    return runRawData(args["port"].as<std::string>(), args["baud"].as<int>());
   else if (mode == "dummy")
     return runGrabber(std::make_shared<DummyIMUGrabber>());
   else if (mode == "attitude")
-    return runGrabber(std::make_shared<MSPGrabberAttitude>(portName, baud));
+    return runGrabber(std::make_shared<MSPGrabberAttitude>(args["port"].as<std::string>(), args["baud"].as<int>()));
   else if (mode == "imu")
-    return runGrabber(std::make_shared<MSPGrabberIMU>(portName, baud));
+    return runGrabber(std::make_shared<MSPGrabberIMU>(args["port"].as<std::string>(), args["baud"].as<int>()));
   else
     return 2;
 }
