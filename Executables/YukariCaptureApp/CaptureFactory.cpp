@@ -102,6 +102,88 @@ namespace CaptureApp
       }
     }
 
+    /* Get start triggers */
+    {
+      auto triggers = config.get_child_optional("capture.triggers.start");
+
+      if (triggers && !triggers->empty())
+      {
+        for (auto it = triggers->begin(); it != triggers->end(); ++it)
+        {
+          ITrigger_sptr trigger;
+
+          /* Create trigger */
+          std::string type = it->second.get<std::string>("type");
+          if (type == "signal")
+          {
+            int signal = it->second.get<int>("signal");
+            trigger = std::make_shared<SignalTrigger>(signal);
+          }
+          else
+          {
+            logger->warn("Unknown or unsupported trigger type");
+          }
+
+          /* Add trigger */
+          if (trigger)
+          {
+            retVal->addStartTrigger(trigger);
+            logger->trace("Added start trigger");
+          }
+          else
+          {
+            logger->warn("Failed to create start trigger");
+          }
+        }
+      }
+      else
+      {
+        logger->error("No exit triggers defined (at least one must be defined)");
+        return nullptr;
+      }
+    }
+
+    /* Get stop triggers */
+    {
+      auto triggers = config.get_child_optional("capture.triggers.stop");
+
+      if (triggers && !triggers->empty())
+      {
+        for (auto it = triggers->begin(); it != triggers->end(); ++it)
+        {
+          ITrigger_sptr trigger;
+
+          /* Create trigger */
+          std::string type = it->second.get<std::string>("type");
+          if (type == "signal")
+          {
+            int signal = it->second.get<int>("signal");
+            trigger = std::make_shared<SignalTrigger>(signal);
+          }
+          else
+          {
+            logger->warn("Unknown or unsupported trigger type");
+          }
+
+          /* Add trigger */
+          if (trigger)
+          {
+            retVal->addStopTrigger(trigger);
+            logger->trace("Added stop trigger");
+          }
+          else
+          {
+            logger->warn("Failed to create stop trigger");
+          }
+        }
+      }
+      else
+      {
+        logger->error("No exit triggers defined (at least one must be defined)");
+        return nullptr;
+      }
+    }
+
     /* Get capture triggers */
     {
       auto triggers = config.get_child_optional("capture.triggers.capture");
@@ -141,14 +223,9 @@ namespace CaptureApp
           }
         }
       }
-      else
-      {
-        logger->error("No capture triggers defined (at least one must be defined)");
-        return nullptr;
-      }
     }
 
-    logger->info("Created: {}", *retVal);
+    logger->debug("Created: {}", *retVal);
 
     return retVal;
   }

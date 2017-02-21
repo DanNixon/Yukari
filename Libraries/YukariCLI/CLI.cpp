@@ -19,23 +19,27 @@ namespace CLI
    * @brief Create a new command line on given streams.
    * @param in Input stream
    * @param out Output stream
+   * @param addDefaultExit If the default exit command should be added (defaults to true)
    *
    * Implicitly adds the "exit" command to exit the application.
    */
-  CLI::CLI(std::istream &in, std::ostream &out)
+  CLI::CLI(std::istream &in, std::ostream &out, bool addDefaultExit)
       : CommandContainer()
       , m_in(in)
       , m_out(out)
       , m_exitCode(CLI_RUN)
   {
-    /* Add exit command */
-    m_commands.push_back(std::make_shared<Command>(
-        "exit",
-        [this](std::istream &, std::ostream &, std::vector<std::string> &) {
-          this->exit();
-          return 0;
-        },
-        0, "Exit the application."));
+    if (addDefaultExit)
+    {
+      /* Add exit command */
+      m_commands.push_back(std::make_shared<Command>(
+          "exit",
+          [this](std::istream &, std::ostream &, std::vector<std::string> &) {
+            exit();
+            return 0;
+          },
+          0, "Exit the application."));
+    }
   }
 
   CLI::~CLI()
@@ -67,6 +71,23 @@ namespace CLI
     }
 
     return (int)m_exitCode;
+  }
+
+  /**
+   * @brief Starts the CLI in a new thread.
+   */
+  void CLI::runAsync()
+  {
+    m_cliThread = std::thread(&CLI::run, this);
+  }
+
+  /**
+   * @brief Joins the CLI async thread.
+   */
+  void CLI::join()
+  {
+    if (m_cliThread.joinable())
+      m_cliThread.join();
   }
 
   /**

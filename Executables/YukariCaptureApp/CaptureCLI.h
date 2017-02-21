@@ -5,6 +5,7 @@
 #include <YukariCLI/CLI.h>
 
 #include "CLITrigger.h"
+#include "CaptureController.h"
 
 namespace Yukari
 {
@@ -15,11 +16,14 @@ namespace CaptureApp
   public:
     CaptureCLI(std::istream &in, std::ostream &out);
 
+    void init(CaptureController_sptr controller);
+
   private:
-    CLITrigger m_startTrigger;
-    CLITrigger m_stopTrigger;
-    CLITrigger m_captureTrigger;
-    CLITrigger m_exitTrigger;
+    bool m_hasInit;
+    CLITrigger_sptr m_startTrigger;
+    CLITrigger_sptr m_stopTrigger;
+    CLITrigger_sptr m_captureTrigger;
+    CLITrigger_sptr m_exitTrigger;
   };
 }
 }

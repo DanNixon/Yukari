@@ -116,6 +116,7 @@ namespace CaptureApp
   {
     /* Clear running flag */
     m_isRunning = false;
+    m_shouldStop = false;
 
     /* Disable capture triggers */
     m_logger->info("Disabling capture triggers");
@@ -196,12 +197,6 @@ namespace CaptureApp
     m_logger->trace("Capture triggered");
     LoggingService::Flush();
 
-    /* Generate output filenames */
-    boost::filesystem::path cloudFilename =
-        m_currentCaptureRootPath / (std::to_string(m_currentFrameCount) + "_cloud.pcd");
-    boost::filesystem::path imuFilename =
-        m_currentCaptureRootPath / (std::to_string(m_currentFrameCount) + "_imu.txt");
-
     /* Grab point cloud */
     auto cloud = m_cloudGrabber->grabCloud();
     if (!cloud)
@@ -227,15 +222,25 @@ namespace CaptureApp
     }
 
     /* Save cloud */
+    boost::filesystem::path cloudFilename =
+        m_currentCaptureRootPath / (std::to_string(m_currentFrameCount) + "_cloud.pcd");
+
     m_logger->trace("Saving point cloud for frame {}: {}", m_currentFrameCount, cloudFilename);
     pcl::io::savePCDFileASCII(cloudFilename.string(), *cloud);
 
     /* Save IMU frame */
-    m_logger->trace("Saving IMU frame for frame {}: {}", m_currentFrameCount, imuFilename);
-    std::ofstream imuFile;
-    imuFile.open(imuFilename.string());
-    imuFile << *imu << '\n';
-    imuFile.close();
+    if (m_imuGrabber)
+    {
+      boost::filesystem::path imuFilename =
+          m_currentCaptureRootPath / (std::to_string(m_currentFrameCount) + "_imu.txt");
+
+      m_logger->trace("Saving IMU frame for frame {}: {}", m_currentFrameCount, imuFilename);
+
+      std::ofstream imuFile;
+      imuFile.open(imuFilename.string());
+      imuFile << *imu << '\n';
+      imuFile.close();
+    }
 
     /* Increment frame counter */
     m_currentFrameCount++;

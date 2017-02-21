@@ -58,11 +58,16 @@ namespace CLI
   int CommandContainer::handle(std::istream &in, std::ostream &out,
                                std::vector<std::string> &tokens)
   {
+    /* Print help if no commands specified */
     if (tokens.size() == 0)
     {
       help(out);
       return -1;
     }
+
+    /* Ignore empty commands */
+    if (tokens[0].empty())
+      return COMMAND_EXIT_CLEAN;
 
     auto it = std::find_if(m_commands.begin(), m_commands.end(),
                            [tokens](Command_sptr c) { return c->commandName() == tokens[0]; });

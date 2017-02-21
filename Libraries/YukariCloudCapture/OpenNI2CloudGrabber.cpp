@@ -18,7 +18,6 @@ namespace CloudCapture
 
   OpenNI2CloudGrabber::~OpenNI2CloudGrabber()
   {
-    close();
   }
 
   void OpenNI2CloudGrabber::open()

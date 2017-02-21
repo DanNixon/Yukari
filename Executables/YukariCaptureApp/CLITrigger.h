@@ -28,5 +28,7 @@ namespace CaptureApp
   private:
     CLI::Command_sptr m_cliCommand;
   };
+
+  typedef std::shared_ptr<CLITrigger> CLITrigger_sptr;
 }
 }

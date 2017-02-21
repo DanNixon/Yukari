@@ -9,6 +9,7 @@
 #include <YukariCommon/LoggingService.h>
 #include <YukariMaths/Quaternion.h>
 
+#include "CaptureCLI.h"
 #include "CaptureFactory.h"
 
 using namespace Yukari::Common;
@@ -26,6 +27,7 @@ int main(int argc, char **argv)
   // clang-format off
   desc.add_options()
 	  ("help", "Show brief usage message")
+	  ("cli", "Start with CLI enabled")
 	  ("config", po::value<std::string>(), "Configuration file to use");
   // clang-format on
 
@@ -66,8 +68,28 @@ int main(int argc, char **argv)
     return 2;
   }
 
+  /* Add CLI if required */
+  std::shared_ptr<CaptureCLI> cli;
+  if (args.count("cli") || config.get<bool>("capture.cli", false))
+  {
+    logger->info("Adding CLI");
+    cli = std::make_shared<CaptureCLI>(std::cin, std::cout);
+    cli->init(captureController);
+    cli->runAsync();
+  }
+
+  logger->info("Capture controller: {}", *captureController);
   LoggingService::Flush();
 
   /* Run capture */
-  return captureController->run();
+  int exitCode = captureController->run();
+
+  /* Exit */
+  if (cli)
+  {
+    cli->exit();
+    cli->join();
+  }
+  LoggingService::Flush();
+  return exitCode;
 }
