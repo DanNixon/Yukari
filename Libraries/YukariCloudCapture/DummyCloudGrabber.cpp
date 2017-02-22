@@ -6,8 +6,10 @@ namespace Yukari
 {
 namespace CloudCapture
 {
-  DummyCloudGrabber::DummyCloudGrabber()
-      : m_open(false)
+  DummyCloudGrabber::DummyCloudGrabber(size_t width, size_t height)
+      : m_width(width)
+      , m_height(height)
+      , m_open(false)
   {
   }
 
@@ -30,8 +32,8 @@ namespace CloudCapture
   {
     auto retVal = new ICloudGrabber::Cloud();
 
-    retVal->width = 250;
-    retVal->height = 250;
+    retVal->width = m_width;
+    retVal->height = m_height;
     retVal->is_dense = false;
     retVal->points.resize(retVal->width * retVal->height);
 

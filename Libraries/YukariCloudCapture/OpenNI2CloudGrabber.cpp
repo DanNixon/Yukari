@@ -2,6 +2,8 @@
 
 #include "OpenNI2CloudGrabber.h"
 
+#include <thread>
+
 namespace Yukari
 {
 namespace CloudCapture
@@ -27,9 +29,8 @@ namespace CloudCapture
 
   void OpenNI2CloudGrabber::close()
   {
-    m_cloudMutex.try_lock();
+    std::lock_guard<std::mutex> lock(m_cloudMutex);
     m_grabber.stop();
-    m_cloudMutex.unlock();
   }
 
   bool OpenNI2CloudGrabber::isOpen() const

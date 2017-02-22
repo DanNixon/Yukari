@@ -11,7 +11,7 @@ namespace CloudCapture
   class DummyCloudGrabber : public ICloudGrabber
   {
   public:
-    DummyCloudGrabber();
+    DummyCloudGrabber(size_t width = 25, size_t height = 25);
 
     virtual void open() override;
     virtual void close() override;
@@ -20,6 +20,9 @@ namespace CloudCapture
     virtual ICloudGrabber::Cloud::ConstPtr grabCloud() override;
 
   private:
+    const size_t m_width;
+    const size_t m_height;
+
     bool m_open;
   };
 }

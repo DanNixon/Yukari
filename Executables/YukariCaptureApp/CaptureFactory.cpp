@@ -163,11 +163,6 @@ namespace CaptureApp
           }
         }
       }
-      else
-      {
-        logger->error("No exit triggers defined (at least one must be defined)");
-        return nullptr;
-      }
     }
 
     /* Get stop triggers */
@@ -203,11 +198,6 @@ namespace CaptureApp
             logger->warn("Failed to create stop trigger");
           }
         }
-      }
-      else
-      {
-        logger->error("No exit triggers defined (at least one must be defined)");
-        return nullptr;
       }
     }
 
