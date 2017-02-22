@@ -36,9 +36,6 @@ namespace CloudGrabberTestApp
         {
           m_cloudViewer->addPointCloud(cloud, "OpenNICloud");
           m_cloudViewer->resetCameraViewpoint("OpenNICloud");
-          m_cloudViewer->setCameraPosition(0, 0, 0,   // Position
-                                           0, 0, 1,   // Viewpoint
-                                           0, -1, 0); // Up
         }
       }
     }

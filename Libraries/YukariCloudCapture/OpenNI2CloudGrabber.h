@@ -33,10 +33,13 @@ namespace CloudCapture
     void cloudCallback(ICloudGrabber::Cloud::ConstPtr cloud);
 
   private:
+    Eigen::Matrix4f m_cloudTransform;
+
     pcl::io::OpenNI2Grabber m_grabber;
     boost::signals2::connection m_cloudCBConnection;
-    std::mutex m_cloudMutex;
-    ICloudGrabber::Cloud::ConstPtr m_cloud;
+
+    std::mutex m_rawCloudMutex;
+    ICloudGrabber::Cloud::ConstPtr m_rawCloud;
   };
 }
 }
