@@ -46,6 +46,10 @@ int runGrabber(IIMUGrabber_sptr grabber);
 
 int main(int argc, char **argv)
 {
+  // LoggingService::Disable();
+
+  LoggingService::GetLogger("MSPGrabberIMU")->set_level(spdlog::level::trace);
+
   auto logger = LoggingService::GetLogger("main");
 
   /* Init command line */
@@ -57,7 +61,7 @@ int main(int argc, char **argv)
     ("help", "Show brief usage message")
     ("grabber", po::value<std::string>()->default_value("dummy"), "IMU grabber type")
     ("port", po::value<std::string>(), "Serial port for IMU device")
-    ("config", po::value<int>()->default_value(115200), "Baud rate used for serial communication");
+    ("baud", po::value<int>()->default_value(115200), "Baud rate used for serial communication");
   // clang-format on
 
   /* Parse command line args */
@@ -83,6 +87,7 @@ int main(int argc, char **argv)
   for (auto it = ports.begin(); it != ports.end(); ++it)
     printf("(%s, %s, %s)\n", it->port.c_str(), it->description.c_str(), it->hardware_id.c_str());
 
+  /* Start IMU test */
   const std::string mode = args["grabber"].as<std::string>();
   if (mode == "raw")
     return runRawData(args["port"].as<std::string>(), args["baud"].as<int>());

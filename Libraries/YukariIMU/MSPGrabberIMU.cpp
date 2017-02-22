@@ -15,19 +15,26 @@ namespace Yukari
 {
 namespace IMU
 {
-  MSPGrabberIMU::MSPGrabberIMU(const std::string &port, unsigned int baud)
+  MSPGrabberIMU::MSPGrabberIMU(const std::string &port, unsigned int baud, float accScale,
+                               float gyroScale, float magScale)
       : MSPGrabber(port, baud)
+      , m_accScale(accScale)
+      , m_gyroScale(gyroScale)
+      , m_magScale(magScale)
       , m_logger(LoggingService::GetLogger("MSPGrabberIMU"))
   {
     m_mspPayload.reserve(6);
     m_mspPayloadIMU.reserve(9);
-
-    /* TODO */
-    m_y = 0.0f;
   }
 
   MSPGrabberIMU::~MSPGrabberIMU()
   {
+  }
+
+  void MSPGrabberIMU::open()
+  {
+    set_zero(m_positionAccum);
+    MSPGrabber::open();
   }
 
   IMUFrame_sptr MSPGrabberIMU::grabFrame()
@@ -62,9 +69,12 @@ namespace IMU
     retVal->orientation() = x * y * z;
 
     /* Position */
-    /* TODO */
-    retVal->position() = Vector3(0, m_y, 0);
-    m_y += 0.001f;
+    Vector3 accMS = Vector3(m_acc[0], m_acc[1], m_acc[2]) * m_accScale;
+    float dts = (float)frameDuration.count() * 1e-9f; // Convert from nanoseconds to seconds
+    Vector3 displacement = accMS * dts;
+    m_logger->trace("Displacement: {}", displacement);
+    m_positionAccum += displacement;
+    retVal->position() = m_positionAccum;
 
     return retVal;
   }

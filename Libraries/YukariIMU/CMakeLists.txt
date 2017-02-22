@@ -3,6 +3,7 @@ project(YukariIMU)
 set(HEADERS
   DummyIMUGrabber.h
   IIMUGrabber.h
+  IMUConstants.h
   IMUFrame.h
   ExtendedIMUFrame.h
   MSPGrabber.h

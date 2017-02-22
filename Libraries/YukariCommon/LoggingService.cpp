@@ -12,6 +12,7 @@ namespace Yukari
 {
 namespace Common
 {
+  LoggingService::DefaultSinkPtr LoggingService::m_defaultSink;
   std::shared_ptr<spdlog::sinks::dist_sink_st> LoggingService::m_sink;
 
   void LoggingService::Configure(ConfigurationManager::Config &config)
@@ -74,21 +75,28 @@ namespace Common
     logger->info("Logger configured.");
   }
 
+  void LoggingService::Disable()
+  {
+    GetDefaultSink()->set_level(spdlog::level::off);
+
+    if (m_sink)
+      m_sink->set_level(spdlog::level::off);
+  }
+
+  void LoggingService::Flush()
+  {
+    m_sink->flush();
+  }
+
   LoggingService::Logger LoggingService::GetLogger(const std::string &name)
   {
     auto logger = spdlog::get(name);
     if (!logger)
     {
       if (m_sink)
-      {
         logger = std::make_shared<spdlog::logger>(name, m_sink);
-      }
       else
-      {
-        auto sink = std::make_shared<spdlog::sinks::stdout_sink_st>();
-        sink->set_level(spdlog::level::trace);
-        logger = std::make_shared<spdlog::logger>(name, sink);
-      }
+        logger = std::make_shared<spdlog::logger>(name, GetDefaultSink());
 
       /* Default to trace level for all loggers */
       logger->set_level(spdlog::level::trace);
@@ -100,9 +108,12 @@ namespace Common
     return logger;
   }
 
-  void LoggingService::Flush()
+  LoggingService::DefaultSinkPtr LoggingService::GetDefaultSink()
   {
-    m_sink->flush();
+    if (!m_defaultSink)
+      m_defaultSink = std::make_shared<DefaultSink>();
+
+    return m_defaultSink;
   }
 
   spdlog::level::level_enum LoggingService::GetLogLevelFromStr(const std::string &levelStr)
