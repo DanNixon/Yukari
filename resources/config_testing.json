@@ -14,14 +14,12 @@
   },
   "capture": {
     "output_root_directory": ".",
-    "cli": false,
+    "cli": true,
     "cloud": {
       "grabber": "openni2"
     },
     "imu": {
-      "grabber": "attitude",
-      "port": "/dev/ttyUSB0",
-      "baud": 115200
+      "grabber": "dummy"
     },
     "triggers": {
       "exit": [
@@ -30,8 +28,6 @@
           "signal": 2
         }
       ],
-      "start": [],
-      "stop": [],
       "capture": [
         {
           "type": "timelapse",
