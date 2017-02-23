@@ -71,7 +71,7 @@ namespace CLI
      * @brief Returns if this command is currently enabled.
      * @return True if command is enabled
      */
-    const bool isEnabled() const
+    bool isEnabled() const
     {
       return m_enabled;
     }
