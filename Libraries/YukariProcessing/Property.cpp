@@ -2,6 +2,8 @@
 
 #include "Property.h"
 
+#include <iostream>
+
 namespace Yukari
 {
 namespace Processing
