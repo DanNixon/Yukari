@@ -5,8 +5,7 @@ set(HEADERS
   Property.h)
 
 set(SOURCES
-  IAlgorithm.cpp
-  Property.cpp)
+  IAlgorithm.cpp)
 
 set(LIB_DEPS
   YukariCommon
