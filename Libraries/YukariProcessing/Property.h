@@ -55,6 +55,14 @@ namespace Processing
       return (m_validator ? m_validator(m_values) : true);
     }
 
+    template <typename T> bool isA(size_t idx = 0) const
+    {
+      if (idx >= m_values.size())
+        throw std::runtime_error("Property index out of range");
+
+      return (boost::any_cast<T>(m_values[idx]));
+    }
+
     template <typename T> T value(size_t idx = 0) const
     {
       if (idx >= m_values.size())
