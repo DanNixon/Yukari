@@ -20,15 +20,19 @@ set(SOURCES
   MSPGrabberAttitude.cpp
   MSPClient.cpp)
 
-add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
-
-target_link_libraries(${PROJECT_NAME}
+set(LIB_DEPS
   YukariMaths
   serial)
+
+set(TESTS
+  test/ExtendedIMUFrameTest.cpp
+  test/IMUFrameTest.cpp
+  test/MSPClientTest.cpp)
+
+add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
+target_link_libraries(${PROJECT_NAME} ${LIB_DEPS})
 
 include(AddTests)
-AddTests(${PROJECT_NAME}
-  YukariMaths
-  serial)
+AddTests(${PROJECT_NAME} TESTS LIB_DEPS)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Libraries)

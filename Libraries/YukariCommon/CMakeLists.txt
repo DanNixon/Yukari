@@ -10,9 +10,10 @@ set(SOURCES
   LoggingService.cpp
   SignalBroker.cpp)
 
-add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
-
-target_link_libraries(${PROJECT_NAME}
+set(LIB_DEPS
   ${Boost_LIBRARIES})
+
+add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
+target_link_libraries(${PROJECT_NAME} ${LIB_DEPS})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Libraries)

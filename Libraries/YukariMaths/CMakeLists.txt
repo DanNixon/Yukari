@@ -16,9 +16,16 @@ set(SOURCES
   Vector3.cpp
   Vector4.cpp)
 
+set(TESTS
+  test/Matrix3Test.cpp
+  test/Matrix4Test.cpp
+  test/QuaternionTest.cpp
+  test/Vector3Test.cpp
+  test/Vector4Test.cpp)
+
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 include(AddTests)
-AddTests(${PROJECT_NAME})
+AddTests(${PROJECT_NAME} TESTS "")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Libraries)
