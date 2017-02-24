@@ -1,10 +1,12 @@
 project(YukariProcessing)
 
 set(HEADERS
+  DataStore.h
   IAlgorithm.h
   Property.h)
 
 set(SOURCES
+  DataStore.cpp
   IAlgorithm.cpp)
 
 set(LIB_DEPS
@@ -13,6 +15,7 @@ set(LIB_DEPS
   ${PCL_LIBRARIES})
 
 set(TESTS
+  test/DataStoreTest.cpp
   test/IAlgorithmTest.cpp
   test/PropertyTest.cpp)
 
