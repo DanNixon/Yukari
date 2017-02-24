@@ -20,8 +20,8 @@ namespace Algorithms
     {
       Add alg;
 
-      alg.setProperty(INPUT, "a", Property({2, 4, 6, 8, 10}));
-      alg.setProperty(INPUT, "b", Property({20, 21, 22, 23, 24}));
+      alg.setProperty(Processing::INPUT, "a", Property({2, 4, 6, 8, 10}));
+      alg.setProperty(Processing::INPUT, "b", Property({20, 21, 22, 23, 24}));
 
       BOOST_CHECK(alg.isValid());
 
