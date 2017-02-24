@@ -19,7 +19,7 @@ namespace Common
   public:
     typedef std::shared_ptr<spdlog::logger> Logger;
     typedef spdlog::sinks::stdout_sink_st DefaultSink;
-	typedef std::shared_ptr<DefaultSink> DefaultSinkPtr;
+    typedef std::shared_ptr<DefaultSink> DefaultSinkPtr;
 
   public:
     static void Configure(ConfigurationManager::Config &config);

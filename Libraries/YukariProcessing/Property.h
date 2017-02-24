@@ -17,7 +17,7 @@ namespace Processing
   {
   public:
     typedef std::vector<boost::any> ValueStorageType;
-    typedef std::function<bool(const ValueStorageType &)> Validator;
+    typedef std::function<std::string(const ValueStorageType &props)> Validator;
 
   public:
     Property(size_t size = 1)
@@ -30,9 +30,20 @@ namespace Processing
     {
     }
 
+    Property(const Property &other)
+        : m_values(other.m_values)
+        , m_validator(other.m_validator)
+    {
+    }
+
     virtual ~Property()
     {
       m_values.clear();
+    }
+
+    inline void resize(size_t size)
+    {
+      m_values.resize(size);
     }
 
     inline size_t size() const
@@ -40,19 +51,24 @@ namespace Processing
       return m_values.size();
     }
 
-    void setValidator(Validator validator)
+    inline void setValidator(Validator validator)
     {
       m_validator = validator;
     }
 
-    void removeValidator()
+    inline void removeValidator()
     {
       m_validator = Validator();
     }
 
-    bool validate() const
+    inline std::string validate() const
     {
-      return (m_validator ? m_validator(m_values) : true);
+      return (m_validator ? m_validator(m_values) : "");
+    }
+
+    inline bool isValid() const
+    {
+      return validate().empty();
     }
 
     template <typename T> bool isA(size_t idx = 0) const
@@ -71,7 +87,7 @@ namespace Processing
       return boost::any_cast<T>(m_values[idx]);
     }
 
-    boost::any operator[](size_t idx) const
+    inline boost::any operator[](size_t idx) const
     {
       if (idx >= m_values.size())
         throw std::runtime_error("Property index out of range");
@@ -79,7 +95,7 @@ namespace Processing
       return m_values[idx];
     }
 
-    boost::any &operator[](size_t idx)
+    inline boost::any &operator[](size_t idx)
     {
       if (idx >= m_values.size())
         throw std::runtime_error("Property index out of range");
@@ -107,17 +123,17 @@ namespace Processing
       return m_values.cend();
     }
 
+    friend std::ostream &operator<<(std::ostream &s, Property &o)
+    {
+      s << "Property[size=" << o.size() << "]";
+      return s;
+    }
+
   protected:
     ValueStorageType m_values;
     Validator m_validator;
   };
 
   typedef std::shared_ptr<Property> Property_sptr;
-
-  std::ostream &operator<<(std::ostream &s, Property &o)
-  {
-    s << "Property[size=" << o.size() << "]";
-    return s;
-  }
 }
 }

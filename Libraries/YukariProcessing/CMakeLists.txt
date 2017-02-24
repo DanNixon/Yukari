@@ -13,6 +13,7 @@ set(LIB_DEPS
   ${PCL_LIBRARIES})
 
 set(TESTS
+  test/IAlgorithmTest.cpp
   test/PropertyTest.cpp)
 
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
