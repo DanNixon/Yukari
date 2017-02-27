@@ -43,9 +43,7 @@ namespace CloudCapture
       retVal->points[i].y = 10 * rand() / (RAND_MAX + 1.0f);
       retVal->points[i].z = 10 * rand() / (RAND_MAX + 1.0f);
 
-      retVal->points[i].r = 1.0f;
-      retVal->points[i].g = 1.0f;
-      retVal->points[i].b = 1.0f;
+      retVal->points[i].rgba = 0xFFFFFFFF;
     }
 
     return ICloudGrabber::Cloud::ConstPtr(retVal);

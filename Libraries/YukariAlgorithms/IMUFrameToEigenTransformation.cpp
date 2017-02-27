@@ -34,7 +34,7 @@ namespace Algorithms
 
   void IMUFrameToEigenTransformation::execute()
   {
-    Property frames = getProperty(INPUT, "frames");
+    Property frames = getProperty(Processing::INPUT, "frames");
     size_t len = frames.size();
     Property out(len);
     m_logger->debug("Created output property with length {}", len);

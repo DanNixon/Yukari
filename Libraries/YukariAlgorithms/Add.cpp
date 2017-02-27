@@ -32,12 +32,15 @@ namespace Algorithms
 
   void Add::execute()
   {
-    size_t num = m_inputProperties["a"].size();
-    m_outputProperties["z"] = Property(num);
+    Property a = getProperty(Processing::INPUT, "a");
+    Property b = getProperty(Processing::INPUT, "b");
+    size_t len = a.size();
+    Property z(len);
 
-    for (size_t i = 0; i < num; i++)
-      m_outputProperties["z"][i] =
-          m_inputProperties["a"].value<int>(i) + m_inputProperties["b"].value<int>(i);
+    for (size_t i = 0; i < len; i++)
+      z[i] = a.value<int>(i) + b.value<int>(i);
+
+    setProperty(Processing::OUTPUT, "z", z);
   }
 }
 }

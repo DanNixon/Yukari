@@ -24,21 +24,21 @@ namespace Algorithms
       IMUFrameToEigenTransformation alg;
 
       Property inputIMUFrames(5);
-      inputIMUFrames[0] = std::make_shared<IMUFrame>(IMUFrame::Duration(20.0f),
-                                                     Quaternion(Vector3(0.5f, 0.6f, 0.5f), 20.0f, DEGREES),
-                                                     Vector3(1.0f, 2.0f, 3.0f));
-      inputIMUFrames[1] = std::make_shared<IMUFrame>(IMUFrame::Duration(21.0f),
-                                                     Quaternion(Vector3(0.5f, 0.6f, 0.4f), 20.0f, DEGREES),
-                                                     Vector3(4.0f, 5.0f, 6.0f));
-      inputIMUFrames[2] = std::make_shared<IMUFrame>(IMUFrame::Duration(22.0f),
-                                                     Quaternion(Vector3(0.5f, 0.6f, 0.3f), 20.0f, DEGREES),
-                                                     Vector3(7.0f, 8.0f, 9.0f));
-      inputIMUFrames[3] = std::make_shared<IMUFrame>(IMUFrame::Duration(19.0f),
-                                                     Quaternion(Vector3(0.5f, 0.6f, 0.3f), 15.0f, DEGREES),
-                                                     Vector3(10.0f, 11.0f, 12.0f));
-      inputIMUFrames[4] = std::make_shared<IMUFrame>(IMUFrame::Duration(23.0f),
-                                                     Quaternion(Vector3(0.8f, 0.6f, 0.5f), 30.0f, DEGREES),
-                                                     Vector3(13.0f, 14.0f, 15.0f));
+      inputIMUFrames[0] = std::make_shared<IMUFrame>(
+          IMUFrame::Duration(20.0f), Quaternion(Vector3(0.5f, 0.6f, 0.5f), 20.0f, DEGREES),
+          Vector3(1.0f, 2.0f, 3.0f));
+      inputIMUFrames[1] = std::make_shared<IMUFrame>(
+          IMUFrame::Duration(21.0f), Quaternion(Vector3(0.5f, 0.6f, 0.4f), 20.0f, DEGREES),
+          Vector3(4.0f, 5.0f, 6.0f));
+      inputIMUFrames[2] = std::make_shared<IMUFrame>(
+          IMUFrame::Duration(22.0f), Quaternion(Vector3(0.5f, 0.6f, 0.3f), 20.0f, DEGREES),
+          Vector3(7.0f, 8.0f, 9.0f));
+      inputIMUFrames[3] = std::make_shared<IMUFrame>(
+          IMUFrame::Duration(19.0f), Quaternion(Vector3(0.5f, 0.6f, 0.3f), 15.0f, DEGREES),
+          Vector3(10.0f, 11.0f, 12.0f));
+      inputIMUFrames[4] = std::make_shared<IMUFrame>(
+          IMUFrame::Duration(23.0f), Quaternion(Vector3(0.8f, 0.6f, 0.5f), 30.0f, DEGREES),
+          Vector3(13.0f, 14.0f, 15.0f));
 
       alg.setProperty(Processing::INPUT, "frames", inputIMUFrames);
 
