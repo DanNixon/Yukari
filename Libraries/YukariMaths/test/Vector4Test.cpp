@@ -179,6 +179,16 @@ namespace Maths
       BOOST_CHECK_EQUAL(v2.w(), 4.4f);
     }
 
+    BOOST_AUTO_TEST_CASE(Vector4_ToEigen)
+    {
+      Vector4 v1(1.1f, 2.2f, 3.3f, 4.4f);
+      Eigen::Vector4f v2 = v1.toEigen();
+      BOOST_CHECK_EQUAL(v2.x(), 1.1f);
+      BOOST_CHECK_EQUAL(v2.y(), 2.2f);
+      BOOST_CHECK_EQUAL(v2.z(), 3.3f);
+      BOOST_CHECK_EQUAL(v2.w(), 4.4f);
+    }
+
     /* BaseMathType functionality */
 
     BOOST_AUTO_TEST_CASE(Vector4_Stream_Out)

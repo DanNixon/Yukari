@@ -19,7 +19,9 @@ namespace IMU
     typedef std::chrono::duration<float, std::milli> Duration;
 
   public:
-    IMUFrame(Duration frameDuration = Duration(0.0f));
+    IMUFrame(Duration frameDuration = Duration(0.0f),
+             const Maths::Quaternion &orientation = Maths::Quaternion(),
+             const Maths::Vector3 &position = Maths::Vector3());
 
     inline Duration duration() const
     {

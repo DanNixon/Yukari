@@ -166,6 +166,15 @@ namespace Maths
       BOOST_CHECK_EQUAL(v2.z(), 3.3f);
     }
 
+    BOOST_AUTO_TEST_CASE(Vector3_ToEigen)
+    {
+      Vector3 v1(1.1f, 2.2f, 3.3f);
+      Eigen::Vector3f v2 = v1.toEigen();
+      BOOST_CHECK_EQUAL(v2.x(), 1.1f);
+      BOOST_CHECK_EQUAL(v2.y(), 2.2f);
+      BOOST_CHECK_EQUAL(v2.z(), 3.3f);
+    }
+
     /* BaseMathType functionality */
 
     BOOST_AUTO_TEST_CASE(Vector3_Stream_Out)

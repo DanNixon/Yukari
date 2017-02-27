@@ -4,6 +4,7 @@
 
 #include "BaseMathType.h"
 
+#include <Eigen/Geometry>
 #include <boost/qvm/quat_traits.hpp>
 
 #include "Units.h"
@@ -68,6 +69,11 @@ namespace Maths
     inline float &w()
     {
       return m_values[0];
+    }
+
+    inline Eigen::Quaternion<float> toEigen() const
+    {
+      return Eigen::Quaternion<float>(m_values[0], m_values[1], m_values[2], m_values[3]);
     }
 
     float getAngle(AngleUnit unit = RADIANS) const;

@@ -4,6 +4,7 @@
 
 #include "BaseMathType.h"
 
+#include <Eigen/Geometry>
 #include <boost/qvm/vec_traits.hpp>
 
 namespace Yukari
@@ -53,6 +54,11 @@ namespace Maths
     inline float &w()
     {
       return m_values[3];
+    }
+
+    inline Eigen::Vector4f toEigen() const
+    {
+      return Eigen::Vector4f(m_values[0], m_values[1], m_values[2], m_values[3]);
     }
 
     friend struct boost::qvm::vec_traits<Yukari::Maths::Vector4>;

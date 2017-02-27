@@ -161,6 +161,16 @@ namespace Maths
       BOOST_CHECK_CLOSE(v.z(), 0.0f, TOL);
     }
 
+	BOOST_AUTO_TEST_CASE(Quaternion_ToEigen)
+	{
+		Quaternion q1(0.354f, 0.354f, 0.146f, 0.854f);
+		Eigen::Quaternion<float> q2 = q1.toEigen();
+		BOOST_CHECK_EQUAL(q2.w(), 0.354f);
+		BOOST_CHECK_EQUAL(q2.x(), 0.354f);
+		BOOST_CHECK_EQUAL(q2.y(), 0.146f);
+		BOOST_CHECK_EQUAL(q2.z(), 0.854f);
+	}
+
     /* BaseMathType functionality */
 
     BOOST_AUTO_TEST_CASE(Quaternion_Index_Operator)

@@ -6,8 +6,11 @@ namespace Yukari
 {
 namespace IMU
 {
-  IMUFrame::IMUFrame(Duration frameDuration)
+  IMUFrame::IMUFrame(Duration frameDuration, const Maths::Quaternion &orientation,
+                     const Maths::Vector3 &position)
       : m_durationMs(frameDuration)
+      , m_orientation(orientation)
+      , m_position(position)
   {
   }
 

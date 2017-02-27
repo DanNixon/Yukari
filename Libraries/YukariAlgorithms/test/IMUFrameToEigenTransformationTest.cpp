@@ -7,8 +7,11 @@
 #include <boost/test/unit_test.hpp>
 
 #include <YukariAlgorithms/IMUFrameToEigenTransformation.h>
+#include <YukariIMU/IMUFrame.h>
 
 using namespace Yukari::Processing;
+using namespace Yukari::Maths;
+using namespace Yukari::IMU;
 
 namespace Yukari
 {
@@ -20,16 +23,26 @@ namespace Algorithms
     {
       IMUFrameToEigenTransformation alg;
 
-      /* alg.setProperty(INPUT, "a", Property({2, 4, 6, 8, 10})); */
-      /* alg.setProperty(INPUT, "b", Property({20, 21, 22, 23, 24})); */
+      Property inputIMUFrames(5);
+      inputIMUFrames[0] =
+          std::make_shared<IMUFrame>(IMUFrame::Duration(20.0f), Quaternion(), Vector3());
+      inputIMUFrames[1] =
+          std::make_shared<IMUFrame>(IMUFrame::Duration(21.0f), Quaternion(), Vector3());
+      inputIMUFrames[2] =
+          std::make_shared<IMUFrame>(IMUFrame::Duration(22.0f), Quaternion(), Vector3());
+      inputIMUFrames[3] =
+          std::make_shared<IMUFrame>(IMUFrame::Duration(19.0f), Quaternion(), Vector3());
+      inputIMUFrames[4] =
+          std::make_shared<IMUFrame>(IMUFrame::Duration(23.0f), Quaternion(), Vector3());
 
-      /* BOOST_CHECK(alg.isValid()); */
+      alg.setProperty(Processing::INPUT, "frames", inputIMUFrames);
 
-      /* alg.execute(); */
+      BOOST_CHECK(alg.isValid());
 
-      /* Property results = alg.getProperty(OUTPUT, "z"); */
+      alg.execute();
 
-      /* BOOST_CHECK_EQUAL(results.size(), 5); */
+      Property results = alg.getProperty(OUTPUT, "transformation");
+      BOOST_CHECK_EQUAL(results.size(), inputIMUFrames.size());
 
       /* BOOST_CHECK_EQUAL(results.value<int>(0), 31); */
     }
