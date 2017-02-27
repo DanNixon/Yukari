@@ -82,6 +82,8 @@ namespace Processing
 
   Property IAlgorithm::getProperty(PropertyDirection dir, const std::string &name)
   {
+    m_algBaseLogger->trace("Requested property \"{}\"", name);
+
     switch (dir)
     {
     case INPUT:

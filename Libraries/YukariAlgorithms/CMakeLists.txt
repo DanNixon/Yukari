@@ -3,11 +3,13 @@ project(YukariAlgorithms)
 set(HEADERS
   Add.h
   ApplyTransformationToCloud.h
+  ConcatenatePointClouds.h
   IMUFrameToEigenTransformation.h)
 
 set(SOURCES
   Add.cpp
   ApplyTransformationToCloud.cpp
+  ConcatenatePointClouds.cpp
   IMUFrameToEigenTransformation.cpp)
 
 set(LIB_DEPS
@@ -18,6 +20,7 @@ set(LIB_DEPS
 set(TESTS
   test/AddTest.cpp
   test/ApplyTransformationToCloudTest.cpp
+  test/ConcatenatePointCloudsTest.cpp
   test/IMUFrameToEigenTransformationTest.cpp)
 
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
