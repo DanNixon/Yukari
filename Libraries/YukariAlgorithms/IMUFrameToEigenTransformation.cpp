@@ -12,7 +12,7 @@ namespace Algorithms
   {
     Eigen::Matrix4f out = Eigen::Matrix4f::Identity();
     out.block(0, 0, 3, 3) = frame->orientation().toEigen().toRotationMatrix();
-    out.block(3, 3, 3, 1) = frame->position().toEigen();
+    out.block(0, 3, 3, 1) = frame->position().toEigen();
     return out;
   }
 
@@ -34,16 +34,18 @@ namespace Algorithms
 
   void IMUFrameToEigenTransformation::execute()
   {
-    auto frames = m_inputProperties.find("frames")->second;
-
+    Property frames = getProperty(INPUT, "frames");
     size_t len = frames.size();
-    auto out = Property(len);
+    Property out(len);
     m_logger->debug("Created output property with length {}", len);
 
     for (size_t i = 0; i < len; i++)
+    {
+      m_logger->trace("Processed IMU frame {}", i);
       out[i] = Convert(frames.value<IMU::IMUFrame_sptr>(i));
+    }
 
-    m_outputProperties["transformation"] = out;
+    setProperty(OUTPUT, "transformation", out);
   }
 }
 }
