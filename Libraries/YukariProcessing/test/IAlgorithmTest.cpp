@@ -19,17 +19,12 @@ namespace Processing
     public:
       MockAdditionAlgorithm()
       {
-        m_validator = [](const PropertyContainer &inProps, const PropertyContainer &) {
-          auto a = inProps.find("a");
-          if (a == inProps.end())
-            return "Input property \"a\" not found";
+        m_validator = [](const IAlgorithm &alg) {
+          auto a = alg.getProperty(Processing::INPUT, "a");
+          auto b = alg.getProperty(Processing::INPUT, "b");
 
-          auto b = inProps.find("b");
-          if (b == inProps.end())
-            return "Input property \"b\" not found";
-
-          size_t na = a->second.size();
-          size_t nb = b->second.size();
+          size_t na = a.size();
+          size_t nb = b.size();
 
           if (na != nb)
             return "Input property lengths must match";
@@ -87,7 +82,8 @@ namespace Processing
 
         auto result = alg.validate();
         BOOST_CHECK_EQUAL(result.size(), 1);
-        BOOST_CHECK_EQUAL(result["algorithm_validation"], "Input property \"a\" not found");
+        BOOST_CHECK_EQUAL(result["algorithm_validation"],
+                          "Validation exception: Property \"a\" not found");
       }
 
       /* Set input properties */

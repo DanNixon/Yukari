@@ -14,12 +14,10 @@ namespace Algorithms
   ConcatenatePointClouds::ConcatenatePointClouds()
   {
     /* Add default validator */
-    m_validator = [](const PropertyContainer &inProps, const PropertyContainer &) {
-      auto clouds = inProps.find("clouds");
-      if (clouds == inProps.end())
-        return "Input property \"clouds\" not found";
+    m_validator = [](const IAlgorithm &alg) {
+      auto clouds = alg.getProperty(Processing::INPUT, "clouds");
 
-      if (clouds->second.size() == 0)
+      if (clouds.size() == 0)
         return "Must provide at least one point cloud";
 
       return "";

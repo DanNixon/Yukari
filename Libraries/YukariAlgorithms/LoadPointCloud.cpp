@@ -16,12 +16,10 @@ namespace Algorithms
       : m_logger(Common::LoggingService::GetLogger("LoadPointCloud"))
   {
     /* Add default validator */
-    m_validator = [](const PropertyContainer &inProps, const PropertyContainer &) {
-      auto file = inProps.find("file");
-      if (file == inProps.end())
-        return "No file provided";
+    m_validator = [](const IAlgorithm &alg) {
+      auto file = alg.getProperty(Processing::INPUT, "file");
 
-      if (file->second.size() == 0)
+      if (file.size() == 0)
         return "No files provided";
 
       return "";

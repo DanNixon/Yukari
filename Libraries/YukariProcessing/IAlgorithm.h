@@ -24,9 +24,7 @@ namespace Processing
   public:
     typedef std::map<std::string, Property> PropertyContainer;
     typedef std::map<std::string, std::string> ValidationResults;
-    typedef std::function<std::string(const PropertyContainer &inProps,
-                                      const PropertyContainer &outProps)>
-        Validator;
+    typedef std::function<std::string(const IAlgorithm &alg)> Validator;
 
   public:
     IAlgorithm();
@@ -50,7 +48,7 @@ namespace Processing
     }
 
     bool setProperty(PropertyDirection dir, const std::string &name, Property prop);
-    Property getProperty(PropertyDirection dir, const std::string &name);
+    Property getProperty(PropertyDirection dir, const std::string &name) const;
 
     virtual void execute() = 0;
 

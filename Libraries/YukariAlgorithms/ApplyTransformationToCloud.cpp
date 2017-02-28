@@ -16,16 +16,11 @@ namespace Algorithms
   ApplyTransformationToCloud::ApplyTransformationToCloud()
   {
     /* Add default validator */
-    m_validator = [](const PropertyContainer &inProps, const PropertyContainer &) {
-      auto clouds = inProps.find("cloud");
-      if (clouds == inProps.end())
-        return "No point clouds provided";
+    m_validator = [](const IAlgorithm &alg) {
+      auto clouds = alg.getProperty(Processing::INPUT, "cloud");
+      auto transformations = alg.getProperty(Processing::INPUT, "transform");
 
-      auto transformations = inProps.find("transform");
-      if (transformations == inProps.end())
-        return "No transformations provided";
-
-      if (clouds->second.size() != transformations->second.size())
+      if (clouds.size() != transformations.size())
         return "Number of clouds and transformations must match";
 
       return "";

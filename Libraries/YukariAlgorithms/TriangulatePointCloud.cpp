@@ -14,12 +14,10 @@ namespace Algorithms
   TriangulatePointCloud::TriangulatePointCloud()
   {
     /* Add default validator */
-    m_validator = [](const PropertyContainer &inProps, const PropertyContainer &) {
-      auto clouds = inProps.find("cloud");
-      if (clouds == inProps.end())
-        return "No \"clouds\" property set";
+    m_validator = [](const IAlgorithm &alg) {
+      auto clouds = alg.getProperty(Processing::INPUT, "cloud");
 
-      if (clouds->second.size() == 0)
+      if (clouds.size() == 0)
         return "Must provide at least one point cloud";
 
       return "";

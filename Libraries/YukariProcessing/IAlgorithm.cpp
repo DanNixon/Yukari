@@ -40,7 +40,20 @@ namespace Processing
     /* Perform algorithm specific validation */
     if (m_validator)
     {
-      std::string algValidationRes = m_validator(m_inputProperties, m_outputProperties);
+      std::string algValidationRes;
+      try
+      {
+        algValidationRes = m_validator(*this);
+      }
+      catch (std::runtime_error &e)
+      {
+        algValidationRes = "Validation exception: " + std::string(e.what());
+      }
+      catch (...)
+      {
+        algValidationRes = "Unknown validation exception";
+      }
+
       if (!algValidationRes.empty())
       {
         m_algBaseLogger->warn("Algorithm specific validation failed: {}", algValidationRes);
@@ -80,19 +93,39 @@ namespace Processing
     return true;
   }
 
-  Property IAlgorithm::getProperty(PropertyDirection dir, const std::string &name)
+  Property IAlgorithm::getProperty(PropertyDirection dir, const std::string &name) const
   {
     m_algBaseLogger->trace("Requested property \"{}\"", name);
 
+    /* Get property storage */
+    const PropertyContainer *c = nullptr;
     switch (dir)
     {
     case INPUT:
-      return m_inputProperties[name];
+      c = &m_inputProperties;
+      break;
     case OUTPUT:
-      return m_outputProperties[name];
+      c = &m_outputProperties;
+      break;
     default:
-      throw std::runtime_error("Unknown property direction");
+      m_algBaseLogger->error("Unknown property direction");
+      return false;
     }
+
+    if (c == nullptr)
+    {
+      m_algBaseLogger->error("Could not get property storage");
+      return false;
+    }
+
+    /* Check if property was found */
+    auto it = c->find(name);
+    if (it == c->cend())
+    {
+      throw std::runtime_error("Property \"" + name + "\" not found");
+    }
+
+    return it->second;
   }
 }
 }

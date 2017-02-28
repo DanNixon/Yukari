@@ -20,12 +20,10 @@ namespace Algorithms
       : m_logger(Common::LoggingService::GetLogger("IMUFrameToEigenTransformation"))
   {
     /* Add default validator */
-    m_validator = [](const PropertyContainer &inProps, const PropertyContainer &) {
-      auto frames = inProps.find("frames");
-      if (frames == inProps.end())
-        return "Frame property not provided";
+    m_validator = [](const IAlgorithm &alg) {
+      auto frames = alg.getProperty(Processing::INPUT, "frames");
 
-      if (frames->second.size() == 0)
+      if (frames.size() == 0)
         return "Must provide at least one frame";
 
       return "";
