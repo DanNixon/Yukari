@@ -14,6 +14,9 @@ namespace Algorithms
     LoadPointCloud();
 
     virtual void execute() override;
+
+  private:
+    Common::LoggingService::Logger m_logger;
   };
 }
 }
