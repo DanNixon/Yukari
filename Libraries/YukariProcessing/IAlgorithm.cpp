@@ -45,6 +45,10 @@ namespace Processing
       {
         algValidationRes = m_validator(*this);
       }
+      catch (boost::bad_any_cast &e)
+      {
+        algValidationRes = "Bad property conversion: " + std::string(e.what());
+      }
       catch (std::runtime_error &e)
       {
         algValidationRes = "Validation exception: " + std::string(e.what());
@@ -133,6 +137,10 @@ namespace Processing
     try
     {
       doExecute();
+    }
+    catch (boost::bad_any_cast &e)
+    {
+      m_algBaseLogger->error("Bad property conversion: {}", e.what());
     }
     catch (std::runtime_error &e)
     {

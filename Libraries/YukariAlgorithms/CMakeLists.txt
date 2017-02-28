@@ -5,6 +5,7 @@ set(HEADERS
   ConcatenatePointClouds.h
   IMUFrameToEigenTransformation.h
   LoadPointCloud.h
+  RemoveNaNFromPointCloud.h
   TriangulatePointCloud.h)
 
 set(SOURCES
@@ -12,6 +13,7 @@ set(SOURCES
   ConcatenatePointClouds.cpp
   IMUFrameToEigenTransformation.cpp
   LoadPointCloud.cpp
+  RemoveNaNFromPointCloud.cpp
   TriangulatePointCloud.cpp)
 
 set(LIB_DEPS
@@ -24,6 +26,7 @@ set(TESTS
   test/ConcatenatePointCloudsTest.cpp
   test/IMUFrameToEigenTransformationTest.cpp
   test/LoadPointCloudCloudTest.cpp
+  test/RemoveNaNFromPointCloudTest.cpp
   test/TriangulatePointCloudTest.cpp)
 
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
