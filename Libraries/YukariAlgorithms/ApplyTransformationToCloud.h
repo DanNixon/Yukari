@@ -13,7 +13,8 @@ namespace Algorithms
   public:
     ApplyTransformationToCloud();
 
-    virtual void execute() override;
+  protected:
+    virtual void doExecute() override;
   };
 }
 }

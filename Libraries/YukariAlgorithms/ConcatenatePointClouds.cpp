@@ -24,7 +24,7 @@ namespace Algorithms
     };
   }
 
-  void ConcatenatePointClouds::execute()
+  void ConcatenatePointClouds::doExecute()
   {
     Property cloud = getProperty(Processing::INPUT, "clouds");
     size_t len = cloud.size();

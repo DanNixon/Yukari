@@ -50,7 +50,10 @@ namespace Processing
     bool setProperty(PropertyDirection dir, const std::string &name, Property prop);
     Property getProperty(PropertyDirection dir, const std::string &name) const;
 
-    virtual void execute() = 0;
+    void execute();
+
+  protected:
+    virtual void doExecute() = 0;
 
   protected:
     Validator m_validator;

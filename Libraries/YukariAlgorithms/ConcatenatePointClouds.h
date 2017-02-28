@@ -13,7 +13,8 @@ namespace Algorithms
   public:
     ConcatenatePointClouds();
 
-    virtual void execute() override;
+  protected:
+    virtual void doExecute() override;
   };
 }
 }

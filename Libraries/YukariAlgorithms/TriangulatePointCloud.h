@@ -13,7 +13,8 @@ namespace Algorithms
   public:
     TriangulatePointCloud();
 
-    virtual void execute() override;
+  protected:
+    virtual void doExecute() override;
   };
 }
 }

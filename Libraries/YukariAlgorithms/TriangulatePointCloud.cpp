@@ -24,7 +24,7 @@ namespace Algorithms
     };
   }
 
-  void TriangulatePointCloud::execute()
+  void TriangulatePointCloud::doExecute()
   {
     Property cloud = getProperty(Processing::INPUT, "cloud");
 

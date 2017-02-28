@@ -27,7 +27,7 @@ namespace Algorithms
     };
   }
 
-  void ApplyTransformationToCloud::execute()
+  void ApplyTransformationToCloud::doExecute()
   {
     Property cloud = getProperty(Processing::INPUT, "cloud");
     Property transform = getProperty(Processing::INPUT, "transform");

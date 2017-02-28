@@ -30,7 +30,7 @@ namespace Algorithms
     };
   }
 
-  void IMUFrameToEigenTransformation::execute()
+  void IMUFrameToEigenTransformation::doExecute()
   {
     Property frames = getProperty(Processing::INPUT, "frames");
     size_t len = frames.size();

@@ -127,5 +127,21 @@ namespace Processing
 
     return it->second;
   }
+
+  void IAlgorithm::execute()
+  {
+    try
+    {
+      doExecute();
+    }
+    catch (std::runtime_error &e)
+    {
+      m_algBaseLogger->error("Algorithm execution failed with exception: {}", e.what());
+    }
+    catch (...)
+    {
+      m_algBaseLogger->error("Algorithm execution failed with unknown exception");
+    }
+  }
 }
 }

@@ -19,7 +19,8 @@ namespace Algorithms
   public:
     IMUFrameToEigenTransformation();
 
-    virtual void execute() override;
+  protected:
+    virtual void doExecute() override;
 
   private:
     Common::LoggingService::Logger m_logger;

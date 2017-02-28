@@ -26,7 +26,7 @@ namespace Algorithms
     };
   }
 
-  void LoadPointCloud::execute()
+  void LoadPointCloud::doExecute()
   {
     Property file = getProperty(Processing::INPUT, "file");
     size_t len = file.size();

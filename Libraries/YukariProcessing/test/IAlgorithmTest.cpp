@@ -33,7 +33,8 @@ namespace Processing
         };
       }
 
-      virtual void execute() override
+    protected:
+      virtual void doExecute() override
       {
         size_t num = m_inputProperties["a"].size();
         m_outputProperties["z"] = Property(num);
