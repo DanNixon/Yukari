@@ -21,9 +21,9 @@ namespace Algorithms
   {
     /* Add default validator */
     m_validator = [](const IAlgorithm &alg) {
-      auto frames = alg.getProperty(Processing::INPUT, "frames");
+      Property_sptr frames = alg.getProperty(Processing::INPUT, "frames");
 
-      if (frames.size() == 0)
+      if (frames->size() == 0)
         return "Must provide at least one frame";
 
       return "";
@@ -32,15 +32,14 @@ namespace Algorithms
 
   void IMUFrameToEigenTransformation::doExecute()
   {
-    Property frames = getProperty(Processing::INPUT, "frames");
-    size_t len = frames.size();
-    Property out(len);
-    m_logger->debug("Created output property with length {}", len);
+    Property_sptr frames = getProperty(Processing::INPUT, "frames");
+    size_t len = frames->size();
+    Property_sptr out = std::make_shared<Property>(len);
 
     for (size_t i = 0; i < len; i++)
     {
       m_logger->trace("Processed IMU frame {}", i);
-      out[i] = Convert(frames.value<IMU::IMUFrame_sptr>(i));
+      (*out)[i] = Convert(frames->value<IMU::IMUFrame_sptr>(i));
     }
 
     setProperty(OUTPUT, "transformation", out);

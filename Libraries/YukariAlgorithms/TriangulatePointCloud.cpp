@@ -15,9 +15,9 @@ namespace Algorithms
   {
     /* Add default validator */
     m_validator = [](const IAlgorithm &alg) {
-      auto clouds = alg.getProperty(Processing::INPUT, "cloud");
+      Property_sptr clouds = alg.getProperty(Processing::INPUT, "cloud");
 
-      if (clouds.size() == 0)
+      if (clouds->size() == 0)
         return "Must provide at least one point cloud";
 
       return "";
@@ -26,15 +26,15 @@ namespace Algorithms
 
   void TriangulatePointCloud::doExecute()
   {
-    Property cloud = getProperty(Processing::INPUT, "cloud");
+    Property_sptr cloud = getProperty(Processing::INPUT, "cloud");
 
-    size_t len = cloud.size();
+    size_t len = cloud->size();
 
-    Property mesh(len);
+    Property_sptr mesh = std::make_shared<Property>(len);
 
     for (size_t i = 0; i < len; i++)
     {
-      ICloudGrabber::Cloud::Ptr c = cloud.value<ICloudGrabber::Cloud::Ptr>(i);
+      ICloudGrabber::Cloud::Ptr c = cloud->value<ICloudGrabber::Cloud::Ptr>(i);
 
       // TODO
       // mesh[i] = ;

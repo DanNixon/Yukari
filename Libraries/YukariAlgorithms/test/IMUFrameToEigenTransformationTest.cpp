@@ -23,20 +23,20 @@ namespace Algorithms
     {
       IMUFrameToEigenTransformation alg;
 
-      Property inputIMUFrames(5);
-      inputIMUFrames[0] = std::make_shared<IMUFrame>(
+      Property_sptr inputIMUFrames = std::make_shared<Property>(5);
+      (*inputIMUFrames)[0] = std::make_shared<IMUFrame>(
           IMUFrame::Duration(20.0f), Quaternion(Vector3(0.5f, 0.6f, 0.5f), 20.0f, DEGREES),
           Vector3(1.0f, 2.0f, 3.0f));
-      inputIMUFrames[1] = std::make_shared<IMUFrame>(
+      (*inputIMUFrames)[1] = std::make_shared<IMUFrame>(
           IMUFrame::Duration(21.0f), Quaternion(Vector3(0.5f, 0.6f, 0.4f), 20.0f, DEGREES),
           Vector3(4.0f, 5.0f, 6.0f));
-      inputIMUFrames[2] = std::make_shared<IMUFrame>(
+      (*inputIMUFrames)[2] = std::make_shared<IMUFrame>(
           IMUFrame::Duration(22.0f), Quaternion(Vector3(0.5f, 0.6f, 0.3f), 20.0f, DEGREES),
           Vector3(7.0f, 8.0f, 9.0f));
-      inputIMUFrames[3] = std::make_shared<IMUFrame>(
+      (*inputIMUFrames)[3] = std::make_shared<IMUFrame>(
           IMUFrame::Duration(19.0f), Quaternion(Vector3(0.5f, 0.6f, 0.3f), 15.0f, DEGREES),
           Vector3(10.0f, 11.0f, 12.0f));
-      inputIMUFrames[4] = std::make_shared<IMUFrame>(
+      (*inputIMUFrames)[4] = std::make_shared<IMUFrame>(
           IMUFrame::Duration(23.0f), Quaternion(Vector3(0.8f, 0.6f, 0.5f), 30.0f, DEGREES),
           Vector3(13.0f, 14.0f, 15.0f));
 
@@ -46,8 +46,8 @@ namespace Algorithms
 
       alg.execute();
 
-      Property results = alg.getProperty(OUTPUT, "transformation");
-      BOOST_CHECK_EQUAL(results.size(), inputIMUFrames.size());
+      Property_sptr results = alg.getProperty(OUTPUT, "transformation");
+      BOOST_CHECK_EQUAL(results->size(), inputIMUFrames->size());
 
       {
         Eigen::Matrix4f m;
@@ -57,7 +57,7 @@ namespace Algorithms
              -0.20375f,  0.20544f,  0.95722f, 3.0f,
               0.0f    ,  0.0f    ,  0.0f    , 1.0f;
         // clang-format on
-        BOOST_CHECK(results.value<Eigen::Matrix4f>(0).isApprox(m));
+        BOOST_CHECK(results->value<Eigen::Matrix4f>(0).isApprox(m));
       }
 
       {
@@ -68,7 +68,7 @@ namespace Algorithms
              -0.21820f,  0.21368f,  0.95222f, 6.0f,
               0.0f    ,  0.0f    ,  0.0f    , 1.0f;
         // clang-format on
-        BOOST_CHECK(results.value<Eigen::Matrix4f>(1).isApprox(m));
+        BOOST_CHECK(results->value<Eigen::Matrix4f>(1).isApprox(m));
       }
 
       {
@@ -79,7 +79,7 @@ namespace Algorithms
              -0.23235f,  0.21990f,  0.94745f, 9.0f,
               0.0f    ,  0.0f    ,  0.0f    , 1.0f;
         // clang-format on
-        BOOST_CHECK(results.value<Eigen::Matrix4f>(2).isApprox(m));
+        BOOST_CHECK(results->value<Eigen::Matrix4f>(2).isApprox(m));
       }
 
       {
@@ -90,7 +90,7 @@ namespace Algorithms
              -0.17831f,  0.16344f,  0.97031f, 12.0f,
               0.0f    ,  0.0f    ,  0.0f    , 1.0f;
         // clang-format on
-        BOOST_CHECK(results.value<Eigen::Matrix4f>(3).isApprox(m));
+        BOOST_CHECK(results->value<Eigen::Matrix4f>(3).isApprox(m));
       }
 
       {
@@ -101,7 +101,7 @@ namespace Algorithms
              -0.22546f,  0.38992f,  0.89282f, 15.0f,
               0.0f    ,  0.0f    ,  0.0f    , 1.0f;
         // clang-format on
-        BOOST_CHECK(results.value<Eigen::Matrix4f>(4).isApprox(m));
+        BOOST_CHECK(results->value<Eigen::Matrix4f>(4).isApprox(m));
       }
     }
   }

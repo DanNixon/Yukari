@@ -20,7 +20,7 @@ namespace Algorithms
     {
       LoadPointCloud alg;
 
-      Property file({std::string("")});
+      Property_sptr file(new Property({std::string("")}));
 
       alg.setProperty(Processing::INPUT, "file", file);
 
@@ -28,7 +28,7 @@ namespace Algorithms
 
       alg.execute();
 
-      Property results = alg.getProperty(Processing::OUTPUT, "cloud");
+      Property_sptr results = alg.getProperty(Processing::OUTPUT, "cloud");
       // BOOST_CHECK_EQUAL(results.size(), file.size());
 
       // TODO

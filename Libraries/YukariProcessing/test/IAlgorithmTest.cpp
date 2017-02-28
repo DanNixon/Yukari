@@ -20,11 +20,11 @@ namespace Processing
       MockAdditionAlgorithm()
       {
         m_validator = [](const IAlgorithm &alg) {
-          auto a = alg.getProperty(Processing::INPUT, "a");
-          auto b = alg.getProperty(Processing::INPUT, "b");
+          Property_sptr a = alg.getProperty(Processing::INPUT, "a");
+          Property_sptr b = alg.getProperty(Processing::INPUT, "b");
 
-          size_t na = a.size();
-          size_t nb = b.size();
+          size_t na = a->size();
+          size_t nb = b->size();
 
           if (na != nb)
             return "Input property lengths must match";
@@ -36,12 +36,15 @@ namespace Processing
     protected:
       virtual void doExecute() override
       {
-        size_t num = m_inputProperties["a"].size();
-        m_outputProperties["z"] = Property(num);
+        Property_sptr a = getProperty(Processing::INPUT, "a");
+        Property_sptr b = getProperty(Processing::INPUT, "b");
+        size_t num = a->size();
+        Property_sptr z = std::make_shared<Property>(num);
 
         for (size_t i = 0; i < num; i++)
-          m_outputProperties["z"][i] =
-              m_inputProperties["a"].value<int>(i) + m_inputProperties["b"].value<int>(i);
+          (*z)[i] = a->value<int>(i) + b->value<int>(i);
+
+        setProperty(Processing::OUTPUT, "z", z);
       }
     };
 
@@ -55,22 +58,22 @@ namespace Processing
     {
       MockAdditionAlgorithm alg;
 
-      alg.setProperty(INPUT, "a", Property({2, 4, 6, 8, 10}));
-      alg.setProperty(INPUT, "b", Property({20, 21, 22, 23, 24}));
+      alg.setProperty(INPUT, "a", Property_sptr(new Property({2, 4, 6, 8, 10})));
+      alg.setProperty(INPUT, "b", Property_sptr(new Property({20, 21, 22, 23, 24})));
 
       BOOST_CHECK(alg.isValid());
 
       alg.execute();
 
-      Property results = alg.getProperty(OUTPUT, "z");
+      Property_sptr results = alg.getProperty(OUTPUT, "z");
 
-      BOOST_CHECK_EQUAL(results.size(), 5);
+      BOOST_CHECK_EQUAL(results->size(), 5);
 
-      BOOST_CHECK_EQUAL(results.value<int>(0), 22);
-      BOOST_CHECK_EQUAL(results.value<int>(1), 25);
-      BOOST_CHECK_EQUAL(results.value<int>(2), 28);
-      BOOST_CHECK_EQUAL(results.value<int>(3), 31);
-      BOOST_CHECK_EQUAL(results.value<int>(4), 34);
+      BOOST_CHECK_EQUAL(results->value<int>(0), 22);
+      BOOST_CHECK_EQUAL(results->value<int>(1), 25);
+      BOOST_CHECK_EQUAL(results->value<int>(2), 28);
+      BOOST_CHECK_EQUAL(results->value<int>(3), 31);
+      BOOST_CHECK_EQUAL(results->value<int>(4), 34);
     }
 
     BOOST_AUTO_TEST_CASE(IAlgorithm_Validation_Algorithm)
@@ -88,8 +91,8 @@ namespace Processing
       }
 
       /* Set input properties */
-      Property a({2, 4, 6});
-      Property b({20, 21});
+      Property_sptr a = Property_sptr(new Property({2, 4, 6}));
+      Property_sptr b = Property_sptr(new Property({20, 21}));
 
       /* Parameter validators */
       {
@@ -100,8 +103,8 @@ namespace Processing
           return "";
         };
 
-        a.setValidator(validator);
-        b.setValidator(validator);
+        a->setValidator(validator);
+        b->setValidator(validator);
       }
 
       alg.setProperty(INPUT, "a", a);
@@ -120,8 +123,8 @@ namespace Processing
 
       /* Make algorithm valid */
       {
-        b.resize(3);
-        b[2] = 23;
+        b->resize(3);
+        (*b)[2] = 23;
         alg.setProperty(INPUT, "b", b);
       }
 
@@ -137,14 +140,14 @@ namespace Processing
 
       /* Make properties valid */
       {
-        a.resize(5);
-        b.resize(5);
+        a->resize(5);
+        b->resize(5);
 
-        a[3] = 8;
-        a[4] = 10;
+        (*a)[3] = 8;
+        (*a)[4] = 10;
 
-        b[3] = 25;
-        b[4] = 26;
+        (*b)[3] = 25;
+        (*b)[4] = 26;
 
         alg.setProperty(INPUT, "a", a);
         alg.setProperty(INPUT, "b", b);

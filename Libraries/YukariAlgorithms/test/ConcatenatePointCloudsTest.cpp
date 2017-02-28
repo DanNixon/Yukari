@@ -22,9 +22,9 @@ namespace Algorithms
     {
       ConcatenatePointClouds alg;
 
-      Property clouds(5);
+      Property_sptr clouds = std::make_shared<Property>(5);
 
-      for (size_t i = 0; i < clouds.size(); i++)
+      for (size_t i = 0; i < clouds->size(); i++)
       {
         ICloudGrabber::Cloud::Ptr c(new ICloudGrabber::Cloud());
 
@@ -39,7 +39,7 @@ namespace Algorithms
 
         c->points[0].rgba = 0xFFFFFFFF;
 
-        clouds[i] = c;
+        (*clouds)[i] = c;
       }
 
       alg.setProperty(Processing::INPUT, "clouds", clouds);
@@ -48,13 +48,13 @@ namespace Algorithms
 
       alg.execute();
 
-      Property results = alg.getProperty(OUTPUT, "cloud");
-      BOOST_CHECK_EQUAL(results.size(), 1);
+      Property_sptr results = alg.getProperty(OUTPUT, "cloud");
+      BOOST_CHECK_EQUAL(results->size(), 1);
 
-      ICloudGrabber::Cloud::Ptr resultCloud = results.value<ICloudGrabber::Cloud::Ptr>(0);
+      ICloudGrabber::Cloud::Ptr resultCloud = results->value<ICloudGrabber::Cloud::Ptr>(0);
       BOOST_CHECK_EQUAL(resultCloud->width, 5);
       BOOST_CHECK_EQUAL(resultCloud->height, 1);
-      BOOST_CHECK_EQUAL(resultCloud->points.size(), clouds.size());
+      BOOST_CHECK_EQUAL(resultCloud->points.size(), clouds->size());
 
       BOOST_CHECK_EQUAL(resultCloud->points[0].x, 0.0f);
       BOOST_CHECK_EQUAL(resultCloud->points[1].x, 1.0f);

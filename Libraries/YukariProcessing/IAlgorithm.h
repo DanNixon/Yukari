@@ -22,7 +22,7 @@ namespace Processing
   class IAlgorithm
   {
   public:
-    typedef std::map<std::string, Property> PropertyContainer;
+    typedef std::map<std::string, Property_sptr> PropertyContainer;
     typedef std::map<std::string, std::string> ValidationResults;
     typedef std::function<std::string(const IAlgorithm &alg)> Validator;
 
@@ -47,8 +47,8 @@ namespace Processing
       return validate().empty();
     }
 
-    bool setProperty(PropertyDirection dir, const std::string &name, Property prop);
-    Property getProperty(PropertyDirection dir, const std::string &name) const;
+    bool setProperty(PropertyDirection dir, const std::string &name, Property_sptr prop);
+    Property_sptr getProperty(PropertyDirection dir, const std::string &name) const;
 
     void execute();
 

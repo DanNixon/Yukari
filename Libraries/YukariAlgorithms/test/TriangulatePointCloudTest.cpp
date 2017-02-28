@@ -26,7 +26,7 @@ namespace Algorithms
 
       TriangulatePointCloud alg;
 
-      Property cloud(len);
+      Property_sptr cloud = std::make_shared<Property>(len);
 
       for (size_t i = 0; i < len; i++)
       {
@@ -39,7 +39,7 @@ namespace Algorithms
 
         /* TODO */
 
-        cloud[i] = c;
+        (*cloud)[i] = c;
       }
 
       alg.setProperty(Processing::INPUT, "cloud", cloud);
@@ -48,8 +48,8 @@ namespace Algorithms
 
       alg.execute();
 
-      Property results = alg.getProperty(Processing::OUTPUT, "mesh");
-      BOOST_CHECK_EQUAL(results.size(), len);
+      Property_sptr results = alg.getProperty(Processing::OUTPUT, "mesh");
+      BOOST_CHECK_EQUAL(results->size(), len);
 
       /* TODO */
     }

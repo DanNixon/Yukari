@@ -26,8 +26,8 @@ namespace Algorithms
 
       ApplyTransformationToCloud alg;
 
-      Property cloud(len);
-      Property transform(len);
+      Property_sptr cloud = std::make_shared<Property>(len);
+      Property_sptr transform = std::make_shared<Property>(len);
 
       for (size_t i = 0; i < len; i++)
       {
@@ -44,19 +44,19 @@ namespace Algorithms
 
         c->points[0].rgba = 0xFFFFFFFF;
 
-        cloud[i] = c;
+        (*cloud)[i] = c;
       }
 
       {
         Eigen::Matrix4f t = Eigen::Matrix4f::Identity();
         t.col(3) << 2.0f, 8.0f, 5.0f, 1.0f;
-        transform[0] = t;
+        (*transform)[0] = t;
       }
 
       {
         Eigen::Matrix4f t = Eigen::Matrix4f::Identity();
         t.diagonal() << 2.0f, 8.0f, 5.0f, 1.0f;
-        transform[1] = t;
+        (*transform)[1] = t;
       }
 
       {
@@ -64,7 +64,7 @@ namespace Algorithms
         Eigen::AngleAxis<float> rot(boost::math::constants::pi<float>(),
                                     Eigen::Vector3f(1.0f, 0.0f, 0.0f));
         t.block(0, 0, 3, 3) = rot.matrix();
-        transform[2] = t;
+        (*transform)[2] = t;
       }
 
       alg.setProperty(Processing::INPUT, "cloud", cloud);
@@ -74,11 +74,11 @@ namespace Algorithms
 
       alg.execute();
 
-      Property results = alg.getProperty(Processing::OUTPUT, "cloud");
-      BOOST_CHECK_EQUAL(results.size(), len);
+      Property_sptr results = alg.getProperty(Processing::OUTPUT, "cloud");
+      BOOST_CHECK_EQUAL(results->size(), len);
 
       {
-        ICloudGrabber::Cloud::Ptr c = results.value<ICloudGrabber::Cloud::Ptr>(0);
+        ICloudGrabber::Cloud::Ptr c = results->value<ICloudGrabber::Cloud::Ptr>(0);
         auto p = c->points[0];
         BOOST_CHECK_EQUAL(p.x, 3.0f);
         BOOST_CHECK_EQUAL(p.y, 9.0f);
@@ -86,7 +86,7 @@ namespace Algorithms
       }
 
       {
-        ICloudGrabber::Cloud::Ptr c = results.value<ICloudGrabber::Cloud::Ptr>(1);
+        ICloudGrabber::Cloud::Ptr c = results->value<ICloudGrabber::Cloud::Ptr>(1);
         auto p = c->points[0];
         BOOST_CHECK_EQUAL(p.x, 2.0f);
         BOOST_CHECK_EQUAL(p.y, 8.0f);
@@ -94,7 +94,7 @@ namespace Algorithms
       }
 
       {
-        ICloudGrabber::Cloud::Ptr c = results.value<ICloudGrabber::Cloud::Ptr>(2);
+        ICloudGrabber::Cloud::Ptr c = results->value<ICloudGrabber::Cloud::Ptr>(2);
         auto p = c->points[0];
         BOOST_CHECK_EQUAL(p.x, 1.0f);
         BOOST_CHECK_CLOSE(p.y, -1.0f, 0.01f);

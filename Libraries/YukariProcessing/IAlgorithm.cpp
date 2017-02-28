@@ -27,7 +27,7 @@ namespace Processing
       for (auto pIt = (*cIt)->begin(); pIt != (*cIt)->end(); ++pIt)
       {
         /* Validate property */
-        std::string pvRes = pIt->second.validate();
+        std::string pvRes = pIt->second->validate();
         if (!pvRes.empty())
         {
           /* Record validation failure */
@@ -64,7 +64,7 @@ namespace Processing
     return res;
   }
 
-  bool IAlgorithm::setProperty(PropertyDirection dir, const std::string &name, Property prop)
+  bool IAlgorithm::setProperty(PropertyDirection dir, const std::string &name, Property_sptr prop)
   {
     /* Get property storage */
     PropertyContainer *c = nullptr;
@@ -93,7 +93,7 @@ namespace Processing
     return true;
   }
 
-  Property IAlgorithm::getProperty(PropertyDirection dir, const std::string &name) const
+  Property_sptr IAlgorithm::getProperty(PropertyDirection dir, const std::string &name) const
   {
     m_algBaseLogger->trace("Requested property \"{}\"", name);
 

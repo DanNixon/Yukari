@@ -17,9 +17,9 @@ namespace Algorithms
   {
     /* Add default validator */
     m_validator = [](const IAlgorithm &alg) {
-      auto file = alg.getProperty(Processing::INPUT, "file");
+      Property_sptr file = alg.getProperty(Processing::INPUT, "file");
 
-      if (file.size() == 0)
+      if (file->size() == 0)
         return "No files provided";
 
       return "";
@@ -28,13 +28,13 @@ namespace Algorithms
 
   void LoadPointCloud::doExecute()
   {
-    Property file = getProperty(Processing::INPUT, "file");
-    size_t len = file.size();
-    Property cloud(len);
+    Property_sptr file = getProperty(Processing::INPUT, "file");
+    size_t len = file->size();
+    Property_sptr cloud = std::make_shared<Property>(len);
 
     for (size_t i = 0; i < len; i++)
     {
-      const std::string filename = file.value<std::string>(i);
+      const std::string filename = file->value<std::string>(i);
 
       m_logger->trace("Loading point cloud from file \"{}\"", filename);
       pcl::PointCloud<pcl::PointXYZRGBA>::Ptr c(new pcl::PointCloud<pcl::PointXYZRGBA>);
@@ -45,7 +45,7 @@ namespace Algorithms
       else
       {
         m_logger->trace("Loaded point cloud ({})", filename);
-        cloud[i] = c;
+        (*cloud)[i] = c;
       }
     }
 
