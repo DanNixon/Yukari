@@ -69,6 +69,7 @@ add_subdirectory(Executables/CloudGrabberTestApp)
 add_subdirectory(Executables/IMUGrabberTestApp)
 add_subdirectory(Executables/PCDViewer)
 add_subdirectory(Executables/YukariCaptureApp)
+add_subdirectory(Executables/YukariProcessingApp)
 
 # Docs
 add_doxygen(

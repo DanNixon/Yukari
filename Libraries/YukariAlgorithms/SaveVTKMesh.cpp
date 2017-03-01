@@ -40,7 +40,7 @@ namespace Algorithms
       const std::string f = filename->value<std::string>(i);
 
       m_logger->trace("Savng mesh to file \"{}\"", f);
-	  pcl::io::saveVTKFile(f, *m);
+      pcl::io::saveVTKFile(f, *m);
     }
   }
 }
