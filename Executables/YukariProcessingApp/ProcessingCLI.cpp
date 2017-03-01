@@ -36,7 +36,7 @@ namespace ProcessingApp
       data->registerCommand(std::make_shared<Command>(
           "ls",
           [this](std::istream &, std::ostream &out, std::vector<std::string> &) {
-            // TODO
+            m_dataStore.prettyPrint(out);
             return COMMAND_EXIT_CLEAN;
           },
           0, "List contents of the data store."));
@@ -54,7 +54,7 @@ namespace ProcessingApp
       data->registerCommand(std::make_shared<Command>(
           "clear",
           [this](std::istream &, std::ostream &out, std::vector<std::string> &) {
-            // TODO
+            m_dataStore.clear();
             return COMMAND_EXIT_CLEAN;
           },
           0, "Removes all contents of the data store."));
