@@ -3,17 +3,21 @@ project(YukariAlgorithms)
 set(HEADERS
   ApplyTransformationToCloud.h
   ConcatenatePointClouds.h
+  GenerateMeshFromPointCloud.h
   IMUFrameToEigenTransformation.h
   LoadPointCloud.h
   RemoveNaNFromPointCloud.h
+  SaveVTKMesh.h
   TriangulatePointCloud.h)
 
 set(SOURCES
   ApplyTransformationToCloud.cpp
   ConcatenatePointClouds.cpp
+  GenerateMeshFromPointCloud.cpp
   IMUFrameToEigenTransformation.cpp
   LoadPointCloud.cpp
   RemoveNaNFromPointCloud.cpp
+  SaveVTKMesh.cpp
   TriangulatePointCloud.cpp)
 
 set(LIB_DEPS
@@ -25,7 +29,6 @@ set(TESTS
   test/ApplyTransformationToCloudTest.cpp
   test/ConcatenatePointCloudsTest.cpp
   test/IMUFrameToEigenTransformationTest.cpp
-  test/LoadPointCloudCloudTest.cpp
   test/RemoveNaNFromPointCloudTest.cpp
   test/TriangulatePointCloudTest.cpp)
 
