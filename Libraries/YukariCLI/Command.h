@@ -134,7 +134,7 @@ namespace CLI
       }
       catch (...)
       {
-        out << "Unknown exception\n";
+        out << "Unknown exception from CLI command\n";
         return COMMAND_EXIT_EXCEPTION;
       }
     }
