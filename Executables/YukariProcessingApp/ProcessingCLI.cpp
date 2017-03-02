@@ -2,7 +2,11 @@
 
 #include "ProcessingCLI.h"
 
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
+
 #include <YukariCLI/SubCommand.h>
+#include <YukariCommon/StringValueConversion.h>
 
 using namespace Yukari::CLI;
 using namespace Yukari::Common;
@@ -58,8 +62,28 @@ namespace ProcessingApp
       /* Set value */
       data->registerCommand(std::make_shared<Command>(
           "set",
-          [this](std::istream &, std::ostream &, std::vector<std::string> &argv) {
-            // TODO
+          [this](std::istream &, std::ostream &out, std::vector<std::string> &argv) -> int {
+            /* Parse values */
+            std::vector<std::string> valuesStrs;
+            boost::algorithm::split(valuesStrs, argv[3], boost::is_any_of(","));
+            std::vector<boost::any> values = StringValueConversion::Convert(argv[2], valuesStrs);
+
+            /* Get property */
+            DataStore::ItemList properties = m_dataStore.findByRegex(boost::regex(argv[1]));
+            if (properties.size() > 1)
+            {
+              out << "Ambiguous property.\n";
+              return 1;
+            }
+            else if (properties.empty())
+            {
+              out << "No property found.\n";
+              return 1;
+            }
+
+            /* Set values */
+            properties.front().second->set(values);
+
             return COMMAND_EXIT_CLEAN;
           },
           3, "Sets the value of a property [name] [type] [values]."));
@@ -87,7 +111,7 @@ namespace ProcessingApp
       /* Empty */
       data->registerCommand(std::make_shared<Command>(
           "clear",
-          [this](std::istream &, std::ostream &out, std::vector<std::string> &) {
+          [this](std::istream &, std::ostream &, std::vector<std::string> &) {
             m_dataStore.clear();
             return COMMAND_EXIT_CLEAN;
           },

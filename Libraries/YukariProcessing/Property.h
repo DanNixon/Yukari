@@ -123,6 +123,12 @@ namespace Processing
       return m_values.cend();
     }
 
+    inline void set(const ValueStorageType &other)
+    {
+      m_values.clear();
+      m_values = other;
+    }
+
     friend std::ostream &operator<<(std::ostream &s, Property &o)
     {
       s << "Property[size=" << o.size() << "]";

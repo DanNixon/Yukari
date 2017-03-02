@@ -312,6 +312,40 @@ namespace Processing
       BOOST_CHECK_EQUAL(*p1.value<IntType>(3), 44);
       BOOST_CHECK_EQUAL(*p1.value<IntType>(4), 55);
     }
+
+    BOOST_AUTO_TEST_CASE(Property_Set_Vector_1)
+    {
+      Property p(10);
+      BOOST_CHECK_EQUAL(p.size(), 10);
+
+      std::vector<boost::any> values = {3, 8, 7, 6, 9};
+
+      p.set(values);
+      BOOST_CHECK_EQUAL(p.size(), values.size());
+
+      BOOST_CHECK_EQUAL(p.value<int>(0), 3);
+      BOOST_CHECK_EQUAL(p.value<int>(1), 8);
+      BOOST_CHECK_EQUAL(p.value<int>(2), 7);
+      BOOST_CHECK_EQUAL(p.value<int>(3), 6);
+      BOOST_CHECK_EQUAL(p.value<int>(4), 9);
+    }
+
+    BOOST_AUTO_TEST_CASE(Property_Set_Vector_2)
+    {
+      Property p({6, 3, 2, 1, 7, 8, 6, 3, 7, 5});
+      BOOST_CHECK_EQUAL(p.size(), 10);
+
+      std::vector<boost::any> values = {3, 8, 7, 6, 9};
+
+      p.set(values);
+      BOOST_CHECK_EQUAL(p.size(), values.size());
+
+      BOOST_CHECK_EQUAL(p.value<int>(0), 3);
+      BOOST_CHECK_EQUAL(p.value<int>(1), 8);
+      BOOST_CHECK_EQUAL(p.value<int>(2), 7);
+      BOOST_CHECK_EQUAL(p.value<int>(3), 6);
+      BOOST_CHECK_EQUAL(p.value<int>(4), 9);
+    }
   }
 }
 }
