@@ -30,8 +30,11 @@ set(LIB_DEPS
 set(TESTS
   test/ApplyTransformationToCloudTest.cpp
   test/ConcatenatePointCloudsTest.cpp
+  test/GenerateMeshFromPointCloudTest.cpp
   test/IMUFrameToEigenTransformationTest.cpp
+  test/LoadPointCloudTest.cpp
   test/RemoveNaNFromPointCloudTest.cpp
+  test/SaveVTKMeshTest.cpp
   test/TriangulatePointCloudTest.cpp)
 
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
