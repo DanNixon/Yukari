@@ -5,9 +5,11 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 
+#include <YukariAlgorithms/AlgorithmFactory.h>
 #include <YukariCLI/SubCommand.h>
 #include <YukariCommon/StringValueConversion.h>
 
+using namespace Yukari::Algorithms;
 using namespace Yukari::CLI;
 using namespace Yukari::Common;
 using namespace Yukari::Processing;
@@ -124,23 +126,29 @@ namespace ProcessingApp
       SubCommand_sptr alg = std::make_shared<SubCommand>("alg", "Work with algorithms.");
       registerCommand(alg);
 
-      /* List */
-      alg->registerCommand(std::make_shared<Command>(
-          "ls",
-          [this](std::istream &, std::ostream &out, std::vector<std::string> &) {
-            // TODO
-            return COMMAND_EXIT_CLEAN;
-          },
-          0, "List registered algorithms."));
-
       /* Run */
       alg->registerCommand(std::make_shared<Command>(
           "run",
-          [this](std::istream &, std::ostream &out, std::vector<std::string> &) {
+          [this](std::istream &, std::ostream &out, std::vector<std::string> &args) -> int {
+            IAlgorithm_sptr alg = AlgorithmFactory::Create(args[1], args.begin() + 2, args.end());
+
+            auto result = alg->validate();
+            if (!result.empty())
+            {
+              out << "Algorithm validation failed!\n";
+              for (auto it = result.begin(); it != result.end(); ++it)
+                out << it->first << ": " << it->second << '\n';
+
+              return 1;
+            }
+
+            alg->execute();
+
             // TODO
+
             return COMMAND_EXIT_CLEAN;
           },
-          0, "Runs an algorithm."));
+          1, "Runs an algorithm."));
     }
   }
 }

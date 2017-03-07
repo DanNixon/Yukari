@@ -6,6 +6,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <YukariAlgorithms/AlgorithmFactory.h>
 #include <YukariAlgorithms/IMUFrameToEigenTransformation.h>
 #include <YukariIMU/IMUFrame.h>
 
@@ -19,6 +20,12 @@ namespace Algorithms
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_CASE(IMUFrameToEigenTransformation_Create)
+    {
+      IAlgorithm_sptr alg = AlgorithmFactory::Create("IMUFrameToEigenTransformation");
+      BOOST_CHECK(alg);
+    }
+
     BOOST_AUTO_TEST_CASE(IMUFrameToEigenTransformation_Execute)
     {
       IMUFrameToEigenTransformation alg;

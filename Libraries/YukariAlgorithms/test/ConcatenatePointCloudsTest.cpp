@@ -7,6 +7,7 @@
 #include <YukariCloudCapture/ICloudGrabber.h>
 #include <boost/test/unit_test.hpp>
 
+#include <YukariAlgorithms/AlgorithmFactory.h>
 #include <YukariAlgorithms/ConcatenatePointClouds.h>
 
 using namespace Yukari::CloudCapture;
@@ -18,6 +19,12 @@ namespace Algorithms
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_CASE(ConcatenatePointClouds_Create)
+    {
+      IAlgorithm_sptr alg = AlgorithmFactory::Create("ConcatenatePointClouds");
+      BOOST_CHECK(alg);
+    }
+
     BOOST_AUTO_TEST_CASE(ConcatenatePointClouds_Execute)
     {
       ConcatenatePointClouds alg;

@@ -9,6 +9,7 @@
 #include <boost/math/constants/constants.hpp>
 #include <boost/test/unit_test.hpp>
 
+#include <YukariAlgorithms/AlgorithmFactory.h>
 #include <YukariAlgorithms/ApplyTransformationToCloud.h>
 
 using namespace Yukari::CloudCapture;
@@ -20,6 +21,12 @@ namespace Algorithms
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_CASE(ApplyTransformationToCloud_Create)
+    {
+      IAlgorithm_sptr alg = AlgorithmFactory::Create("ApplyTransformationToCloud");
+      BOOST_CHECK(alg);
+    }
+
     BOOST_AUTO_TEST_CASE(ApplyTransformationToCloud_Execute)
     {
       const size_t len = 3;

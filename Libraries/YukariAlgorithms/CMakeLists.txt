@@ -1,6 +1,7 @@
 project(YukariAlgorithms)
 
 set(HEADERS
+  AlgorithmFactory.h
   ApplyTransformationToCloud.h
   ConcatenatePointClouds.h
   GenerateMeshFromPointCloud.h
@@ -11,6 +12,7 @@ set(HEADERS
   TriangulatePointCloud.h)
 
 set(SOURCES
+  AlgorithmFactory.cpp
   ApplyTransformationToCloud.cpp
   ConcatenatePointClouds.cpp
   GenerateMeshFromPointCloud.cpp
