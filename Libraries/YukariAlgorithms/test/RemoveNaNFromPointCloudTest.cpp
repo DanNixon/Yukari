@@ -2,8 +2,6 @@
 
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "RemoveNaNFromPointCloudTest"
-
 #include <YukariCloudCapture/ICloudGrabber.h>
 #include <boost/test/unit_test.hpp>
 
@@ -19,6 +17,8 @@ namespace Algorithms
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_SUITE(RemoveNaNFromPointCloudTest)
+
     BOOST_AUTO_TEST_CASE(RemoveNaNFromPointCloud_Create)
     {
       IAlgorithm_sptr alg = AlgorithmFactory::Create("RemoveNaNFromPointCloud");
@@ -188,6 +188,8 @@ namespace Algorithms
         BOOST_CHECK_EQUAL(c->points.size(), 0);
       }
     }
+
+    BOOST_AUTO_TEST_SUITE_END()
   }
 }
 }

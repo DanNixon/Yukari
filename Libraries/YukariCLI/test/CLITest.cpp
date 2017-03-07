@@ -1,7 +1,5 @@
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "CLITest"
-
 #include <boost/test/unit_test.hpp>
 
 #include <sstream>
@@ -17,6 +15,8 @@ namespace CLI
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_SUITE(CLITest)
+
     BOOST_AUTO_TEST_CASE(CLI_Prompt_Help_Exit)
     {
       // Simulated input
@@ -176,6 +176,8 @@ namespace CLI
       BOOST_CHECK_EQUAL(0, c.run());
       BOOST_CHECK_EQUAL(expected, out.str());
     }
+
+    BOOST_AUTO_TEST_SUITE_END()
   };
 }
 }

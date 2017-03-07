@@ -2,8 +2,6 @@
 
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "TriangulatePointCloudTest"
-
 #include <Eigen/Geometry>
 #include <YukariCloudCapture/ICloudGrabber.h>
 #include <boost/math/constants/constants.hpp>
@@ -21,6 +19,8 @@ namespace Algorithms
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_SUITE(TriangulatePointCloudTest)
+
     BOOST_AUTO_TEST_CASE(TriangulatePointCloud_Create)
     {
       IAlgorithm_sptr alg = AlgorithmFactory::Create("TriangulatePointCloud");
@@ -60,6 +60,8 @@ namespace Algorithms
 
       /* TODO */
     }
+
+    BOOST_AUTO_TEST_SUITE_END()
   }
 }
 }

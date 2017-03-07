@@ -2,8 +2,6 @@
 
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "IMUFrameToEigenTransformationTest"
-
 #include <boost/test/unit_test.hpp>
 
 #include <YukariAlgorithms/AlgorithmFactory.h>
@@ -20,6 +18,8 @@ namespace Algorithms
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_SUITE(IMUFrameToEigenTransformationTest)
+
     BOOST_AUTO_TEST_CASE(IMUFrameToEigenTransformation_Create)
     {
       IAlgorithm_sptr alg = AlgorithmFactory::Create("IMUFrameToEigenTransformation");
@@ -111,6 +111,8 @@ namespace Algorithms
         BOOST_CHECK(results->value<Eigen::Matrix4f>(4).isApprox(m));
       }
     }
+
+    BOOST_AUTO_TEST_SUITE_END()
   }
 }
 }

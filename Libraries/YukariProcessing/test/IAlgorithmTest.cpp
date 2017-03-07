@@ -2,8 +2,6 @@
 
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "IAlgorithmTest"
-
 #include <boost/test/unit_test.hpp>
 
 #include <YukariProcessing/IAlgorithm.h>
@@ -47,6 +45,8 @@ namespace Processing
         setProperty(Processing::OUTPUT, "z", z);
       }
     };
+
+    BOOST_AUTO_TEST_SUITE(IAlgorithmTest)
 
     BOOST_AUTO_TEST_CASE(IAlgorithm_Empty)
     {
@@ -161,6 +161,8 @@ namespace Processing
         BOOST_CHECK_EQUAL(result.size(), 0);
       }
     }
+
+    BOOST_AUTO_TEST_SUITE_END()
   }
 }
 }

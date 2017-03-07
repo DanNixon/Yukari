@@ -2,8 +2,6 @@
 
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "QuaternionTest"
-
 #include <boost/math/constants/constants.hpp>
 #include <boost/qvm/all.hpp>
 #include <boost/test/unit_test.hpp>
@@ -21,6 +19,8 @@ namespace Maths
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_SUITE(QuaternionTest)
+
     /* Boost provided functionality */
 
     BOOST_AUTO_TEST_CASE(Quaternion_Inverse)
@@ -197,6 +197,8 @@ namespace Maths
       str >> q;
       BOOST_CHECK(q == Quaternion(1.1f, 2.2f, 3.3f, 4.4f));
     }
+
+    BOOST_AUTO_TEST_SUITE_END()
   }
 }
 }

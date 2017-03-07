@@ -2,8 +2,6 @@
 
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "PropertyTest"
-
 #include <boost/test/unit_test.hpp>
 
 #include <strstream>
@@ -16,6 +14,8 @@ namespace Processing
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_SUITE(PropertyTest)
+
     BOOST_AUTO_TEST_CASE(Property_Init_Empty)
     {
       Property p;
@@ -346,6 +346,8 @@ namespace Processing
       BOOST_CHECK_EQUAL(p.value<int>(3), 6);
       BOOST_CHECK_EQUAL(p.value<int>(4), 9);
     }
+
+    BOOST_AUTO_TEST_SUITE_END()
   }
 }
 }

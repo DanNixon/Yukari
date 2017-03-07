@@ -2,8 +2,6 @@
 
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "MSPClientTest"
-
 #include <boost/test/unit_test.hpp>
 
 #include <YukariIMU/MSPClient.h>
@@ -14,6 +12,8 @@ namespace IMU
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_SUITE(MSPClientTest)
+
     BOOST_AUTO_TEST_CASE(MSPClient_Build_Payload)
     {
       MSPClient::Payload payload;
@@ -114,6 +114,8 @@ namespace IMU
       BOOST_CHECK_EQUAL(att[1], -2.0f);
       BOOST_CHECK_EQUAL(att[2], 118.0f);
     }
+
+    BOOST_AUTO_TEST_SUITE_END()
   }
 }
 }

@@ -1,7 +1,5 @@
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "StringValueConversionTest"
-
 #include <boost/test/unit_test.hpp>
 
 #include <YukariCommon/StringValueConversion.h>
@@ -12,6 +10,8 @@ namespace Common
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_SUITE(StringValueConversionTest)
+
     BOOST_AUTO_TEST_CASE(StringValueConversion_Valid_Conversions)
     {
       /* Int */
@@ -108,6 +108,8 @@ namespace Common
       BOOST_CHECK_EQUAL(boost::any_cast<int>(result[4]), 17);
       BOOST_CHECK_EQUAL(boost::any_cast<int>(result[5]), -100);
     }
+
+    BOOST_AUTO_TEST_SUITE_END()
   };
 }
 }

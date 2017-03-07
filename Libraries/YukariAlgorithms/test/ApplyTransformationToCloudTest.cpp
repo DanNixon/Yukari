@@ -2,8 +2,6 @@
 
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "ApplyTransformationToCloudTest"
-
 #include <Eigen/Geometry>
 #include <YukariCloudCapture/ICloudGrabber.h>
 #include <boost/math/constants/constants.hpp>
@@ -21,6 +19,8 @@ namespace Algorithms
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_SUITE(ApplyTransformationToCloudTest)
+
     BOOST_AUTO_TEST_CASE(ApplyTransformationToCloud_Create)
     {
       IAlgorithm_sptr alg = AlgorithmFactory::Create("ApplyTransformationToCloud");
@@ -108,6 +108,8 @@ namespace Algorithms
         BOOST_CHECK_CLOSE(p.z, -1.0f, 0.01f);
       }
     }
+
+    BOOST_AUTO_TEST_SUITE_END()
   }
 }
 }

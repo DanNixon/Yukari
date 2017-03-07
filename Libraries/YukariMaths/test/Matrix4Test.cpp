@@ -2,8 +2,6 @@
 
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "Matrix4Test"
-
 #include <boost/qvm/all.hpp>
 #include <boost/test/unit_test.hpp>
 
@@ -18,6 +16,8 @@ namespace Maths
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_SUITE(Matrix4Test)
+
     /* Boost provided functionality */
 
     BOOST_AUTO_TEST_CASE(Matrix4_Set_Row_Get_Column)
@@ -83,6 +83,8 @@ namespace Maths
       str << m;
       BOOST_CHECK_EQUAL("[1, 0, 0, 0,\n 0, 1, 0, 0,\n 0, 0, 1, 0,\n 0, 0, 0, 1]", str.str());
     }
+
+    BOOST_AUTO_TEST_SUITE_END()
   }
 }
 }

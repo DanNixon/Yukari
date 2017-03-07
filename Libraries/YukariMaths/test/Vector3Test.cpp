@@ -2,8 +2,6 @@
 
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "Vector3Test"
-
 #include <boost/qvm/all.hpp>
 #include <boost/test/unit_test.hpp>
 
@@ -19,6 +17,8 @@ namespace Maths
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_SUITE(Vector3Test)
+
     /* Boost provided functionality */
 
     BOOST_AUTO_TEST_CASE(Vector3_Addition)
@@ -192,6 +192,8 @@ namespace Maths
       str >> v;
       BOOST_CHECK(v == Vector3(1.1f, 2.2f, 3.3f));
     }
+
+    BOOST_AUTO_TEST_SUITE_END()
   }
 }
 }

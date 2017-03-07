@@ -2,8 +2,6 @@
 
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "IMUFrameTest"
-
 #include <boost/test/unit_test.hpp>
 #include <sstream>
 
@@ -19,6 +17,8 @@ namespace IMU
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_SUITE(IMUFrameTest)
+
     BOOST_AUTO_TEST_CASE(IMUFrame_Stream_Out_Empty)
     {
       IMUFrame f(IMUFrame::Duration(250.0f));
@@ -41,6 +41,8 @@ namespace IMU
       BOOST_CHECK_EQUAL(str.str(),
                         "(dt=250, o=[0.918559, 0.176777, 0.306186, 0.176777], p=[5.5, 7.8, 2.1])");
     }
+
+    BOOST_AUTO_TEST_SUITE_END()
   }
 }
 }

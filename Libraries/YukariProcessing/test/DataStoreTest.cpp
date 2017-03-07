@@ -2,8 +2,6 @@
 
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "DataStoreTest"
-
 #include <boost/test/unit_test.hpp>
 
 #include <sstream>
@@ -16,6 +14,8 @@ namespace Processing
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_SUITE(DataStoreTest)
+
     BOOST_AUTO_TEST_CASE(DataStore_Init_Empty)
     {
       DataStore ds;
@@ -306,6 +306,8 @@ namespace Processing
 
       BOOST_CHECK_EQUAL(ds.size(), 2);
     }
+
+    BOOST_AUTO_TEST_SUITE_END()
   }
 }
 }

@@ -2,8 +2,6 @@
 
 #ifndef DOXYGEN_SKIP
 
-#define BOOST_TEST_MODULE "ConcatenatePointCloudsTest"
-
 #include <YukariCloudCapture/ICloudGrabber.h>
 #include <boost/test/unit_test.hpp>
 
@@ -19,6 +17,8 @@ namespace Algorithms
 {
   namespace Test
   {
+    BOOST_AUTO_TEST_SUITE(ConcatenatePointCloudsTest)
+
     BOOST_AUTO_TEST_CASE(ConcatenatePointClouds_Create)
     {
       IAlgorithm_sptr alg = AlgorithmFactory::Create("ConcatenatePointClouds");
@@ -69,6 +69,8 @@ namespace Algorithms
       BOOST_CHECK_EQUAL(resultCloud->points[3].x, 3.0f);
       BOOST_CHECK_EQUAL(resultCloud->points[4].x, 4.0f);
     }
+
+    BOOST_AUTO_TEST_SUITE_END()
   }
 }
 }
