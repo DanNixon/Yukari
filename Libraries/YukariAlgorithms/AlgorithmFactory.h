@@ -14,10 +14,6 @@ namespace Algorithms
   {
   public:
     static Processing::IAlgorithm_sptr Create(const std::string &name);
-
-    static Processing::IAlgorithm_sptr Create(const std::string &name,
-                                              std::vector<std::string>::const_iterator begin,
-                                              std::vector<std::string>::const_iterator end);
   };
 }
 }

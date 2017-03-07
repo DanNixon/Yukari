@@ -130,25 +130,34 @@ namespace ProcessingApp
       alg->registerCommand(std::make_shared<Command>(
           "run",
           [this](std::istream &, std::ostream &out, std::vector<std::string> &args) -> int {
-            IAlgorithm_sptr alg = AlgorithmFactory::Create(args[1], args.begin() + 2, args.end());
+            /* Create algorithm */
+            IAlgorithm_sptr alg = AlgorithmFactory::Create(args[1]);
             if (!alg)
             {
               out << "Failed to create algorithm with name \"" << args[1] << "\"\n";
               return 1;
             }
 
+            /* Get properties */
+            // TODO
+
+            /* Validate algorithm */
             auto result = alg->validate();
             if (!result.empty())
             {
               out << "Algorithm validation failed!\n";
               for (auto it = result.begin(); it != result.end(); ++it)
-                out << it->first << ": " << it->second << '\n';
+                out << '[' << it->first << "] " << it->second << '\n';
 
               return 2;
             }
 
+            /* Set algorithm inputs as per mapping */
+            // TODO
+
             alg->execute();
 
+            /* Put results in data store as per mapping */
             // TODO
 
             return COMMAND_EXIT_CLEAN;

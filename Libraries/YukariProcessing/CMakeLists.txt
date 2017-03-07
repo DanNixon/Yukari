@@ -3,11 +3,13 @@ project(YukariProcessing)
 set(HEADERS
   DataStore.h
   IAlgorithm.h
-  Property.h)
+  Property.h
+  PropertyMapping.h)
 
 set(SOURCES
   DataStore.cpp
-  IAlgorithm.cpp)
+  IAlgorithm.cpp
+  PropertyMapping.cpp)
 
 set(LIB_DEPS
   YukariCommon
@@ -17,6 +19,7 @@ set(LIB_DEPS
 set(TESTS
   test/DataStoreTest.cpp
   test/IAlgorithmTest.cpp
+  test/PropertyMappingTest.cpp
   test/PropertyTest.cpp)
 
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})

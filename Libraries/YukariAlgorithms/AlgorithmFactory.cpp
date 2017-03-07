@@ -59,20 +59,5 @@ namespace Algorithms
 
     return alg;
   }
-
-  IAlgorithm_sptr AlgorithmFactory::Create(const std::string &name,
-                                           std::vector<std::string>::const_iterator begin,
-                                           std::vector<std::string>::const_iterator end)
-  {
-    auto logger = LoggingService::GetLogger("AlgorithmFactory");
-
-    /* Create algorithm */
-    IAlgorithm_sptr alg = Create(name);
-
-    /* Set properties */
-    // TODO
-
-    return alg;
-  }
 }
 }

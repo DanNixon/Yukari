@@ -5,7 +5,7 @@
 #include <map>
 #include <memory>
 
-#include "YukariCommon/LoggingService.h"
+#include <YukariCommon/LoggingService.h>
 
 #include "Property.h"
 
