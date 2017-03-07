@@ -131,6 +131,11 @@ namespace ProcessingApp
           "run",
           [this](std::istream &, std::ostream &out, std::vector<std::string> &args) -> int {
             IAlgorithm_sptr alg = AlgorithmFactory::Create(args[1], args.begin() + 2, args.end());
+            if (!alg)
+            {
+              out << "Failed to create algorithm with name \"" << args[1] << "\"\n";
+              return 1;
+            }
 
             auto result = alg->validate();
             if (!result.empty())
@@ -139,7 +144,7 @@ namespace ProcessingApp
               for (auto it = result.begin(); it != result.end(); ++it)
                 out << it->first << ": " << it->second << '\n';
 
-              return 1;
+              return 2;
             }
 
             alg->execute();

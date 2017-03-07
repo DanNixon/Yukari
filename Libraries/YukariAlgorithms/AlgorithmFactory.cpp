@@ -5,6 +5,8 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
+#include <YukariCommon/LoggingService.h>
+
 #include "ApplyTransformationToCloud.h"
 #include "ConcatenatePointClouds.h"
 #include "GenerateMeshFromPointCloud.h"
@@ -14,36 +16,45 @@
 #include "SaveVTKMesh.h"
 #include "TriangulatePointCloud.h"
 
+using namespace Yukari::Common;
 using namespace Yukari::Processing;
 
 namespace Yukari
 {
 namespace Algorithms
 {
-  IAlgorithm_sptr AlgorithmFactory::Create(std::string name)
+  IAlgorithm_sptr AlgorithmFactory::Create(const std::string &name)
   {
+    auto logger = LoggingService::GetLogger("AlgorithmFactory");
+    logger->debug("Creating algorithm with name \"{}\"", name);
+
     /* Clean name */
-    boost::algorithm::trim(name);
-    boost::algorithm::to_lower(name);
+    std::string cleanName(name);
+    boost::algorithm::trim(cleanName);
+    boost::algorithm::to_lower(cleanName);
+    logger->debug("Clean algorithm name: \"{}\"", cleanName);
 
     /* Create algorithm */
     IAlgorithm_sptr alg;
-    if (name == "applytransformationtocloud")
+    if (cleanName == "applytransformationtocloud")
       alg = std::make_shared<ApplyTransformationToCloud>();
-    else if (name == "concatenatepointclouds")
+    else if (cleanName == "concatenatepointclouds")
       alg = std::make_shared<ConcatenatePointClouds>();
-    else if (name == "generatemeshfrompointcloud")
+    else if (cleanName == "generatemeshfrompointcloud")
       alg = std::make_shared<GenerateMeshFromPointCloud>();
-    else if (name == "imuframetoeigentransformation")
+    else if (cleanName == "imuframetoeigentransformation")
       alg = std::make_shared<IMUFrameToEigenTransformation>();
-    else if (name == "loadpointcloud")
+    else if (cleanName == "loadpointcloud")
       alg = std::make_shared<LoadPointCloud>();
-    else if (name == "removenanfrompointcloud")
+    else if (cleanName == "removenanfrompointcloud")
       alg = std::make_shared<RemoveNaNFromPointCloud>();
-    else if (name == "savevtkmesh")
+    else if (cleanName == "savevtkmesh")
       alg = std::make_shared<SaveVTKMesh>();
-    else if (name == "triangulatepointcloud")
+    else if (cleanName == "triangulatepointcloud")
       alg = std::make_shared<TriangulatePointCloud>();
+
+    if (!alg)
+      logger->error("Failed to create algorithm from name \"{}\"", name);
 
     return alg;
   }
@@ -52,8 +63,12 @@ namespace Algorithms
                                            std::vector<std::string>::const_iterator begin,
                                            std::vector<std::string>::const_iterator end)
   {
+    auto logger = LoggingService::GetLogger("AlgorithmFactory");
+
+    /* Create algorithm */
     IAlgorithm_sptr alg = Create(name);
 
+    /* Set properties */
     // TODO
 
     return alg;

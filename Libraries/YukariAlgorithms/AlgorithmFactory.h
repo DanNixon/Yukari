@@ -13,7 +13,7 @@ namespace Algorithms
   class AlgorithmFactory
   {
   public:
-    static Processing::IAlgorithm_sptr Create(std::string name);
+    static Processing::IAlgorithm_sptr Create(const std::string &name);
 
     static Processing::IAlgorithm_sptr Create(const std::string &name,
                                               std::vector<std::string>::const_iterator begin,
