@@ -7,6 +7,7 @@
 
 #include <YukariCommon/LoggingService.h>
 
+/* Algorithm includes */
 #include "ApplyTransformationToCloud.h"
 #include "ConcatenatePointClouds.h"
 #include "GenerateMeshFromPointCloud.h"

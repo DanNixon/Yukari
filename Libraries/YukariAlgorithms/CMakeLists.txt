@@ -28,6 +28,7 @@ set(LIB_DEPS
   ${PCL_LIBRARIES})
 
 set(TESTS
+  test/AlgorithmFactoryTest.cpp
   test/ApplyTransformationToCloudTest.cpp
   test/ConcatenatePointCloudsTest.cpp
   test/GenerateMeshFromPointCloudTest.cpp
