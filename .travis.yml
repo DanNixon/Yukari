@@ -7,6 +7,7 @@ before_install:
   - sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl -y
   - sudo apt-get -qq update
   - sudo apt-get install -y cmake libboost-all-dev libpcl-all libeigen3-dev
+  - pip install -U platformio
   - cmake --version
 
 script:
@@ -15,6 +16,9 @@ script:
   - cmake .. -DCMAKE_BUILD_TYPE=Debug -DBOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu/
   - make -j4
   - ctest -VV
+  - cd ..
+  - cd TeensyIMUDevice
+  - pio run
 
 notifications:
   email:
