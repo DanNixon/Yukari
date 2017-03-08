@@ -51,10 +51,8 @@ namespace CLI
 
       /* Run script command */
       scripting->registerCommand(std::make_shared<Command>(
-          "run",
-          [](std::istream &, std::ostream &, std::vector<std::string> &argv) {
-            return COMMAND_EXIT_CLEAN;
-          },
+          "run", [](std::istream &, std::ostream &,
+                    std::vector<std::string> &argv) { return COMMAND_EXIT_CLEAN; },
           1, "Run a command line script."));
 
       /* Exit scripting command */

@@ -185,7 +185,7 @@ namespace CLI
       // Capture output
       std::stringstream out;
 
-      CLI c(in, out);
+      CLI c(in, out, true, true);
 
       c.registerCommand(std::make_shared<Command>(
           "say",
@@ -212,6 +212,7 @@ namespace CLI
                                    "Input redirected\n"
                                    "> "
                                    "hello2\n"
+                                   "> "
                                    "> "
                                    "hello3\n"
                                    "> ";
