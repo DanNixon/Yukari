@@ -1,6 +1,7 @@
 project(YukariAlgorithms)
 
 set(HEADERS
+  Add.h
   AlgorithmFactory.h
   ApplyTransformationToCloud.h
   ConcatenatePointClouds.h
@@ -12,6 +13,7 @@ set(HEADERS
   TriangulatePointCloud.h)
 
 set(SOURCES
+  Add.cpp
   AlgorithmFactory.cpp
   ApplyTransformationToCloud.cpp
   ConcatenatePointClouds.cpp
@@ -28,6 +30,7 @@ set(LIB_DEPS
   ${PCL_LIBRARIES})
 
 set(TESTS
+  test/AddTest.cpp
   test/AlgorithmFactoryTest.cpp
   test/ApplyTransformationToCloudTest.cpp
   test/ConcatenatePointCloudsTest.cpp
