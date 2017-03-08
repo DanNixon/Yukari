@@ -58,7 +58,7 @@ namespace CLI
     BOOST_AUTO_TEST_CASE(CLI_TooFewArguments)
     {
       // Simulated input
-      std::stringstream in("test 111\nexit\n");
+      std::stringstream in("test 111 222\nexit\n");
 
       // Capture output
       std::stringstream out;

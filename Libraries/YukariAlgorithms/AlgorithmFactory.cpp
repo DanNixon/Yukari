@@ -8,6 +8,7 @@
 #include <YukariCommon/LoggingService.h>
 
 /* Algorithm includes */
+#include "Add.h"
 #include "ApplyTransformationToCloud.h"
 #include "ConcatenatePointClouds.h"
 #include "GenerateMeshFromPointCloud.h"
@@ -37,7 +38,9 @@ namespace Algorithms
 
     /* Create algorithm */
     IAlgorithm_sptr alg;
-    if (cleanName == "applytransformationtocloud")
+    if (cleanName == "add")
+      alg = std::make_shared<Add>();
+    else if (cleanName == "applytransformationtocloud")
       alg = std::make_shared<ApplyTransformationToCloud>();
     else if (cleanName == "concatenatepointclouds")
       alg = std::make_shared<ConcatenatePointClouds>();

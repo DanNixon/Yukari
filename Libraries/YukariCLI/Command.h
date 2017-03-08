@@ -116,9 +116,9 @@ namespace CLI
     inline int handleCmdFunc(std::istream &in, std::ostream &out,
                              std::vector<std::string> &tokens) const
     {
-      if (tokens.size() < m_numArguments)
+      if (tokens.size() - 1 < m_numArguments)
       {
-        out << "Too few arguments (got " << tokens.size() << ", expected " << m_numArguments
+        out << "Too few arguments (got " << tokens.size() - 1 << ", expected " << m_numArguments
             << ").\n";
         return COMMAND_EXIT_TOO_FEW_ARGUMENTS;
       }

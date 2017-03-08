@@ -144,6 +144,9 @@ namespace ProcessingApp
             PropertyMapping pMap;
             pMap.parseString(args.begin() + 2, args.end());
 
+            /* Set algorithm inputs as per mapping */
+            pMap.setInputs(m_dataStore, alg);
+
             /* Validate algorithm */
             auto result = alg->validate();
             if (!result.empty())
@@ -154,9 +157,6 @@ namespace ProcessingApp
 
               return 2;
             }
-
-            /* Set algorithm inputs as per mapping */
-            pMap.setInputs(m_dataStore, alg);
 
             /* Run algorithm */
             alg->execute();

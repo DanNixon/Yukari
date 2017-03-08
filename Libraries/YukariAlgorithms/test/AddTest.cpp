@@ -5,6 +5,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <YukariAlgorithms/Add.h>
+#include <YukariAlgorithms/AlgorithmFactory.h>
 
 using namespace Yukari::Processing;
 
@@ -15,6 +16,12 @@ namespace Algorithms
   namespace Test
   {
     BOOST_AUTO_TEST_SUITE(AddTest)
+
+    BOOST_AUTO_TEST_CASE(Add_Create)
+    {
+      IAlgorithm_sptr alg = AlgorithmFactory::Create("Add");
+      BOOST_CHECK(alg);
+    }
 
     BOOST_AUTO_TEST_CASE(Add_Execute)
     {
