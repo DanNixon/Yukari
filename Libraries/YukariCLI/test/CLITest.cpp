@@ -37,7 +37,7 @@ namespace CLI
       BOOST_CHECK_EQUAL(expected, out.str());
     }
 
-    BOOST_AUTO_TEST_CASE(CLI_MissingCommand)
+    BOOST_AUTO_TEST_CASE(CLI_Missing_Command)
     {
       // Simulated input
       std::stringstream in("nope\nexit\n");
@@ -55,7 +55,7 @@ namespace CLI
       BOOST_CHECK_EQUAL(expected, out.str());
     }
 
-    BOOST_AUTO_TEST_CASE(CLI_TooFewArguments)
+    BOOST_AUTO_TEST_CASE(CLI_Too_Few_Arguments)
     {
       // Simulated input
       std::stringstream in("test 111 222\nexit\n");
@@ -171,6 +171,49 @@ namespace CLI
                                    "Command \"sub1\" not found.\n"
                                    "> "
                                    "Command \"sub1\" not found.\n"
+                                   "> ";
+
+      BOOST_CHECK_EQUAL(0, c.run());
+      BOOST_CHECK_EQUAL(expected, out.str());
+    }
+
+    BOOST_AUTO_TEST_CASE(CLI_Alternate_Input)
+    {
+      // Simulated input
+      std::stringstream in("say hello1\ntest\nsay hello3\nexit\n");
+
+      // Capture output
+      std::stringstream out;
+
+      CLI c(in, out);
+
+      c.registerCommand(std::make_shared<Command>(
+          "say",
+          [&c](std::istream &, std::ostream &out, std::vector<std::string> &argv) {
+            out << argv[1] << '\n';
+            return COMMAND_EXIT_CLEAN;
+          },
+          1));
+
+      c.registerCommand(std::make_shared<Command>(
+          "test",
+          [&c](std::istream &, std::ostream &out, std::vector<std::string> &) {
+            std::shared_ptr<std::istream> s = std::make_shared<std::stringstream>();
+            *std::dynamic_pointer_cast<std::stringstream>(s) << "say hello2\nscript reset\n";
+            c.redirectInput(s);
+            out << "Input redirected\n";
+            return COMMAND_EXIT_CLEAN;
+          },
+          0));
+
+      const std::string expected = "> "
+                                   "hello1\n"
+                                   "> "
+                                   "Input redirected\n"
+                                   "> "
+                                   "hello2\n"
+                                   "> "
+                                   "hello3\n"
                                    "> ";
 
       BOOST_CHECK_EQUAL(0, c.run());

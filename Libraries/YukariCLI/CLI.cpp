@@ -6,6 +6,8 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include "SubCommand.h"
+
 namespace Yukari
 {
 namespace CLI
@@ -23,7 +25,7 @@ namespace CLI
    *
    * Implicitly adds the "exit" command to exit the application.
    */
-  CLI::CLI(std::istream &in, std::ostream &out, bool addDefaultExit)
+  CLI::CLI(std::istream &in, std::ostream &out, bool addDefaultExit, bool addScriptingCommands)
       : CommandContainer()
       , m_in(in)
       , m_out(out)
@@ -36,9 +38,33 @@ namespace CLI
           "exit",
           [this](std::istream &, std::ostream &, std::vector<std::string> &) {
             exit();
-            return 0;
+            return COMMAND_EXIT_CLEAN;
           },
           0, "Exit the application."));
+    }
+
+    if (addScriptingCommands)
+    {
+      /* Add scripting commands */
+      SubCommand_sptr scripting = std::make_shared<SubCommand>("script", "Work with script files");
+      m_commands.push_back(scripting);
+
+      /* Run script command */
+      scripting->registerCommand(std::make_shared<Command>(
+          "run",
+          [](std::istream &, std::ostream &, std::vector<std::string> &argv) {
+            return COMMAND_EXIT_CLEAN;
+          },
+          1, "Run a command line script."));
+
+      /* Exit scripting command */
+      scripting->registerCommand(std::make_shared<Command>(
+          "reset",
+          [this](std::istream &, std::ostream &, std::vector<std::string> &argv) {
+            resetInput();
+            return COMMAND_EXIT_CLEAN;
+          },
+          0, "Resets the input stream (must be called at the end of a script)."));
     }
   }
 
@@ -58,13 +84,15 @@ namespace CLI
     {
       m_out << PROMPT;
 
+      std::istream &in = (m_alternateIn) ? *m_alternateIn : m_in;
+
       std::string command;
-      std::getline(m_in, command);
+      std::getline(in, command);
 
       std::vector<std::string> tokens;
       boost::algorithm::split(tokens, command, boost::algorithm::is_any_of(" "));
 
-      int retVal = handle(m_in, m_out, tokens);
+      int retVal = handle(in, m_out, tokens);
 
       if (retVal > 0)
         m_out << "Command exited with code " << retVal << ".\n";

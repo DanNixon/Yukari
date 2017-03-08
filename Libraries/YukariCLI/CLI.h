@@ -32,7 +32,8 @@ namespace CLI
     static const std::string PROMPT;
 
   public:
-    CLI(std::istream &in, std::ostream &out, bool addDefaultExit = true);
+    CLI(std::istream &in, std::ostream &out, bool addDefaultExit = true,
+        bool addScriptingCommands = false);
     virtual ~CLI();
 
     int run();
@@ -41,6 +42,16 @@ namespace CLI
     void join();
 
     void exit();
+
+    void redirectInput(std::shared_ptr<std::istream> in)
+    {
+      m_alternateIn = in;
+    }
+
+    void resetInput()
+    {
+      m_alternateIn.reset();
+    }
 
     /**
      * @brief Returns the exit code as of the main CLI exiting.
@@ -54,6 +65,8 @@ namespace CLI
   private:
     std::istream &m_in;
     std::ostream &m_out;
+
+    std::shared_ptr<std::istream> m_alternateIn;
 
     CLIExit m_exitCode;
 
