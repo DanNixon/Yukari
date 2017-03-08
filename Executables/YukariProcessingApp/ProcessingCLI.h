@@ -17,7 +17,7 @@ namespace ProcessingApp
 
   private:
     Common::LoggingService::Logger m_logger;
-    Processing::DataStore m_dataStore;
+    Processing::DataStore_sptr m_dataStore;
   };
 }
 }

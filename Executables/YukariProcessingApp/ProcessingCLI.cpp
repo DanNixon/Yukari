@@ -8,6 +8,7 @@
 #include <YukariAlgorithms/AlgorithmFactory.h>
 #include <YukariCLI/SubCommand.h>
 #include <YukariCommon/StringValueConversion.h>
+#include <YukariProcessing/PropertyMapping.h>
 
 using namespace Yukari::Algorithms;
 using namespace Yukari::CLI;
@@ -21,13 +22,14 @@ namespace ProcessingApp
   ProcessingCLI::ProcessingCLI(std::istream &in, std::ostream &out)
       : CLI(in, out, false)
       , m_logger(LoggingService::GetLogger("ProcessingCLI"))
+      , m_dataStore(std::make_shared<DataStore>())
   {
     /* Exit command */
     registerCommand(std::make_shared<Command>(
         "exit",
         [this](std::istream &, std::ostream &, std::vector<std::string> &) {
           m_logger->trace("Clearing data store");
-          m_dataStore.clear();
+          m_dataStore->clear();
           exit();
           return COMMAND_EXIT_CLEAN;
         },
@@ -44,9 +46,9 @@ namespace ProcessingApp
           "ls",
           [this](std::istream &, std::ostream &out, std::vector<std::string> &argv) {
             if (argv.size() > 1)
-              m_dataStore.prettyPrint(out, boost::regex(argv[1]));
+              m_dataStore->prettyPrint(out, boost::regex(argv[1]));
             else
-              m_dataStore.prettyPrint(out);
+              m_dataStore->prettyPrint(out);
 
             return COMMAND_EXIT_CLEAN;
           },
@@ -56,7 +58,7 @@ namespace ProcessingApp
       data->registerCommand(std::make_shared<Command>(
           "add",
           [this](std::istream &, std::ostream &, std::vector<std::string> &argv) {
-            Property_sptr p = m_dataStore.addNewProperty(argv[1], std::stoi(argv[2]));
+            Property_sptr p = m_dataStore->addNewProperty(argv[1], std::stoi(argv[2]));
             return ((p) ? COMMAND_EXIT_CLEAN : 1);
           },
           2, "Adds a new property [name] [size]."));
@@ -71,7 +73,7 @@ namespace ProcessingApp
             std::vector<boost::any> values = StringValueConversion::Convert(argv[2], valuesStrs);
 
             /* Get property */
-            DataStore::ItemList properties = m_dataStore.findByRegex(boost::regex(argv[1]));
+            DataStore::ItemList properties = m_dataStore->findByRegex(boost::regex(argv[1]));
             if (properties.size() > 1)
             {
               out << "Ambiguous property.\n";
@@ -94,7 +96,7 @@ namespace ProcessingApp
       data->registerCommand(std::make_shared<Command>(
           "rm",
           [this](std::istream &, std::ostream &out, std::vector<std::string> &argv) {
-            std::vector<std::string> removed = m_dataStore.deleteByRegex(boost::regex(argv[1]));
+            std::vector<std::string> removed = m_dataStore->deleteByRegex(boost::regex(argv[1]));
             if (!removed.empty())
             {
               out << "Removed " << removed.size() << " items: ";
@@ -114,7 +116,7 @@ namespace ProcessingApp
       data->registerCommand(std::make_shared<Command>(
           "clear",
           [this](std::istream &, std::ostream &, std::vector<std::string> &) {
-            m_dataStore.clear();
+            m_dataStore->clear();
             return COMMAND_EXIT_CLEAN;
           },
           0, "Removes all contents of the data store."));
@@ -139,7 +141,8 @@ namespace ProcessingApp
             }
 
             /* Get properties */
-            // TODO
+            PropertyMapping pMap;
+            pMap.parseString(args.begin() + 2, args.end());
 
             /* Validate algorithm */
             auto result = alg->validate();
@@ -153,12 +156,13 @@ namespace ProcessingApp
             }
 
             /* Set algorithm inputs as per mapping */
-            // TODO
+            pMap.setInputs(m_dataStore, alg);
 
+            /* Run algorithm */
             alg->execute();
 
             /* Put results in data store as per mapping */
-            // TODO
+            pMap.setOutputs(m_dataStore, alg);
 
             return COMMAND_EXIT_CLEAN;
           },
