@@ -17,6 +17,8 @@ namespace Common
     static boost::any Convert(std::string type, const std::string value);
     static std::vector<boost::any> Convert(std::string type,
                                            const std::vector<std::string> &values);
+
+    static std::string Convert(std::string type, const boost::any &value);
   };
 }
 }

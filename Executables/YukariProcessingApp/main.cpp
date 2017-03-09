@@ -22,7 +22,8 @@ int main(int argc, char **argv)
   // clang-format off
   desc.add_options()
     ("help", "Show brief usage message")
-    ("config", po::value<std::string>(), "Configuration file to use");
+    ("config", po::value<std::string>(), "Configuration file to use")
+    ("script", po::value<std::string>(), "Script file to run on load");
   // clang-format on
 
   /* Parse command line args */
@@ -56,6 +57,10 @@ int main(int argc, char **argv)
 
   /* Start CLI */
   ProcessingCLI cli(std::cin, std::cout);
+
+  if (args.count("script"))
+    cli.redirectInput(std::make_shared<std::ifstream>(args["script"].as<std::string>()));
+
   int exitCode = cli.run();
 
   /* Exit */

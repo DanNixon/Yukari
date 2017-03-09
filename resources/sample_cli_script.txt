@@ -5,4 +5,5 @@ data set value_b int 6,5,4
 data ls
 alg run add value_a->[a] value_b->[b] [z]->result
 data ls
+data get result int
 script reset

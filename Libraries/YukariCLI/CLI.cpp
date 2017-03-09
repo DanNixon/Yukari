@@ -53,8 +53,11 @@ namespace CLI
       /* Run script command */
       scripting->registerCommand(std::make_shared<Command>(
           "run",
-          [this](std::istream &, std::ostream &, std::vector<std::string> &argv) {
-            redirectInput(std::make_shared<std::ifstream>(argv[1]));
+          [this](std::istream &, std::ostream &, std::vector<std::string> &argv) -> int {
+            auto s = std::make_shared<std::ifstream>(argv[1]);
+            if (s->fail())
+              return 1;
+            redirectInput(s);
             return COMMAND_EXIT_CLEAN;
           },
           1, "Run a command line script."));

@@ -92,6 +92,39 @@ namespace ProcessingApp
           },
           3, "Sets the value of a property [name] [type] [values]."));
 
+      /* Get value */
+      data->registerCommand(std::make_shared<Command>(
+          "get",
+          [this](std::istream &, std::ostream &out, std::vector<std::string> &argv) -> int {
+            /* Get property */
+            DataStore::ItemList properties = m_dataStore->findByRegex(boost::regex(argv[1]));
+            if (properties.size() > 1)
+            {
+              out << "Ambiguous property.\n";
+              return 1;
+            }
+            else if (properties.empty())
+            {
+              out << "No property found.\n";
+              return 1;
+            }
+
+            Property_sptr p = properties.front().second;
+
+            /* Parse and print values */
+            for (auto it = p->cbegin(); it != p->cend(); ++it)
+            {
+              if (it != p->cbegin())
+                std::cout << ',';
+
+              std::cout << StringValueConversion::Convert(argv[2], *it);
+            }
+            std::cout << '\n';
+
+            return COMMAND_EXIT_CLEAN;
+          },
+          2, "Sets the value of a property [name] [type]."));
+
       /* Delete entry */
       data->registerCommand(std::make_shared<Command>(
           "rm",
