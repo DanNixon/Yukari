@@ -2,6 +2,7 @@
 
 #include "CLI.h"
 
+#include <fstream>
 #include <string>
 
 #include <boost/algorithm/string.hpp>
@@ -51,8 +52,11 @@ namespace CLI
 
       /* Run script command */
       scripting->registerCommand(std::make_shared<Command>(
-          "run", [](std::istream &, std::ostream &,
-                    std::vector<std::string> &argv) { return COMMAND_EXIT_CLEAN; },
+          "run",
+          [this](std::istream &, std::ostream &, std::vector<std::string> &argv) {
+            redirectInput(std::make_shared<std::ifstream>(argv[1]));
+            return COMMAND_EXIT_CLEAN;
+          },
           1, "Run a command line script."));
 
       /* Exit scripting command */

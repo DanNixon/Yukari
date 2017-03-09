@@ -20,7 +20,7 @@ namespace Yukari
 namespace ProcessingApp
 {
   ProcessingCLI::ProcessingCLI(std::istream &in, std::ostream &out)
-      : CLI(in, out, false)
+      : CLI(in, out, false, true)
       , m_logger(LoggingService::GetLogger("ProcessingCLI"))
       , m_dataStore(std::make_shared<DataStore>())
   {
