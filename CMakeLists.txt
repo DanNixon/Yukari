@@ -15,9 +15,6 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # No min/max macros from MSVC
 add_definitions(-DNOMINMAX)
 
-# Fixes issues with PCL/boost on Ubuntu 14.04 when compiled in Debug mode
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O1")
-
 # All warnings
 include(EnableExtraCompilerWarnings)
 globally_enable_extra_compiler_warnings()
@@ -45,6 +42,9 @@ if(UNIX)
   # This fixed an issue, I seem to recall it was a runetime issue
   list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
   list(REMOVE_ITEM VTK_LIBRARIES "vtkproj4")
+
+  # Fixes issues with PCL/boost on Ubuntu 14.04 when compiled in Debug mode
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O1")
 
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x -pthread")
 endif()
