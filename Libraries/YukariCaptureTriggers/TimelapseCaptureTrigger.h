@@ -9,7 +9,7 @@
 
 namespace Yukari
 {
-namespace CaptureApp
+namespace CaptureTriggers
 {
   class TimelapseCaptureTrigger : public ITrigger
   {

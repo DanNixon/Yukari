@@ -6,7 +6,7 @@ using namespace Yukari::CLI;
 
 namespace Yukari
 {
-namespace CaptureApp
+namespace CaptureTriggers
 {
   CLITrigger::CLITrigger(const std::string &cmdName, const std::string &description)
       : m_cliCommand(std::make_shared<Command>(
