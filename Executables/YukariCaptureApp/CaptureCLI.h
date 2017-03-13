@@ -20,10 +20,10 @@ namespace CaptureApp
 
   private:
     bool m_hasInit;
-	CaptureTriggers::CLITrigger_sptr m_startTrigger;
-	CaptureTriggers::CLITrigger_sptr m_stopTrigger;
-	CaptureTriggers::CLITrigger_sptr m_captureTrigger;
-	CaptureTriggers::CLITrigger_sptr m_exitTrigger;
+    CaptureTriggers::CLITrigger_sptr m_startTrigger;
+    CaptureTriggers::CLITrigger_sptr m_stopTrigger;
+    CaptureTriggers::CLITrigger_sptr m_captureTrigger;
+    CaptureTriggers::CLITrigger_sptr m_exitTrigger;
   };
 }
 }
