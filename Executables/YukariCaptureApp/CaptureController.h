@@ -7,11 +7,10 @@
 
 #include <boost/filesystem/path.hpp>
 
+#include <YukariCaptureTriggers/ITrigger.h>
 #include <YukariCloudCapture/ICloudGrabber.h>
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/IIMUGrabber.h>
-
-#include "ITrigger.h"
 
 namespace Yukari
 {
@@ -47,10 +46,10 @@ namespace CaptureApp
       m_imuGrabber = grabber;
     }
 
-    void addStartTrigger(ITrigger_sptr trigger);
-    void addStopTrigger(ITrigger_sptr trigger);
-    void addCaptureTrigger(ITrigger_sptr trigger);
-    void addExitTrigger(ITrigger_sptr trigger);
+    void addStartTrigger(CaptureTriggers::ITrigger_sptr trigger);
+    void addStopTrigger(CaptureTriggers::ITrigger_sptr trigger);
+    void addCaptureTrigger(CaptureTriggers::ITrigger_sptr trigger);
+    void addExitTrigger(CaptureTriggers::ITrigger_sptr trigger);
 
   private:
     void triggerCapture();
@@ -71,10 +70,10 @@ namespace CaptureApp
     CloudCapture::ICloudGrabber_sptr m_cloudGrabber;
     IMU::IIMUGrabber_sptr m_imuGrabber;
 
-    std::vector<ITrigger_sptr> m_startTriggers;
-    std::vector<ITrigger_sptr> m_stopTriggers;
-    std::vector<ITrigger_sptr> m_captureTriggers;
-    std::vector<ITrigger_sptr> m_exitTriggers;
+    std::vector<CaptureTriggers::ITrigger_sptr> m_startTriggers;
+    std::vector<CaptureTriggers::ITrigger_sptr> m_stopTriggers;
+    std::vector<CaptureTriggers::ITrigger_sptr> m_captureTriggers;
+    std::vector<CaptureTriggers::ITrigger_sptr> m_exitTriggers;
   };
 
   typedef std::shared_ptr<CaptureController> CaptureController_sptr;

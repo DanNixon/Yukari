@@ -8,6 +8,7 @@
 
 #include <YukariIMU/IMUFrame.h>
 
+using namespace Yukari::CaptureTriggers;
 using namespace Yukari::Common;
 using namespace Yukari::IMU;
 
