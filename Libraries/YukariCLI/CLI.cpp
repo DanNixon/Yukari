@@ -65,7 +65,7 @@ namespace CLI
       /* Exit scripting command */
       scripting->registerCommand(std::make_shared<Command>(
           "reset",
-          [this](std::istream &, std::ostream &, std::vector<std::string> &argv) {
+          [this](std::istream &, std::ostream &, std::vector<std::string> &) {
             resetInput();
             return COMMAND_EXIT_CLEAN;
           },
