@@ -71,7 +71,7 @@ int main(int argc, char **argv)
   trigger->setHandler([&logger]() { logger->info("Triggered."); });
   trigger->enable();
   while (true)
-    Sleep(1.0f);
+    Sleep(100);
 
   return 0;
 }
