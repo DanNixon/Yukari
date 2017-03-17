@@ -7,6 +7,9 @@
 #include <serial/serial.h>
 
 #include <YukariCaptureTriggers/ITrigger.h>
+#include <YukariCaptureTriggers/MSPAUXTrigger.h>
+#include <YukariCaptureTriggers/SignalTrigger.h>
+#include <YukariCaptureTriggers/TimelapseCaptureTrigger.h>
 #include <YukariCommon/LoggingService.h>
 
 using namespace Yukari::CaptureTriggers;
@@ -24,7 +27,9 @@ int main(int argc, char **argv)
   // clang-format off
   desc.add_options()
 	  ("help", "Show brief usage message")
-	  ("trigger", po::value<std::string>()->default_value(""), "Name of trigger to add");
+	  ("trigger", po::value<std::string>()->default_value(""), "Name of trigger to add")
+	  ("seconds", po::value<int>()->default_value(1), "Timelapse duration in seconds")
+	  ("signal", po::value<int>()->default_value(20), "POSIX signal number");
   // clang-format on
 
   /* Parse command line args */
@@ -45,10 +50,28 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  /* Start trigger test */
-  const std::string mode = args["trigger"].as<std::string>();
-  /* if () */
-  /* ; */
-  /* else */
-  return 2;
+  /* Get trigger */
+  ITrigger_sptr trigger;
+  const std::string triggerName = args["trigger"].as<std::string>();
+  if (triggerName == "timelapse")
+    trigger =
+        std::make_shared<TimelapseCaptureTrigger>(std::chrono::seconds(args["seconds"].as<int>()));
+  else if (triggerName == "signal")
+    trigger = std::make_shared<SignalTrigger>(args["signal"].as<int>());
+  else if (triggerName == "mspaux")
+    trigger = std::make_shared<MSPAUXTrigger>();
+
+  if (!trigger)
+  {
+    logger->error("No trigger!");
+    return 2;
+  }
+
+  /* Run trigger test */
+  trigger->setHandler([&logger]() { logger->info("Triggered."); });
+  trigger->enable();
+  while (true)
+    Sleep(1.0f);
+
+  return 0;
 }
