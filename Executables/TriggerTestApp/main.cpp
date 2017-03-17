@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 	  ("help", "Show brief usage message")
 	  ("trigger", po::value<std::string>()->default_value(""), "Name of trigger to add")
 	  ("seconds", po::value<int>()->default_value(1), "Timelapse duration in seconds")
-	  ("signal", po::value<int>()->default_value(20), "POSIX signal number");
+	  ("signal", po::value<int>()->default_value(2), "POSIX signal number");
   // clang-format on
 
   /* Parse command line args */
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
   trigger->setHandler([&logger]() { logger->info("Triggered."); });
   trigger->enable();
   while (true)
-    Sleep(100);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
   return 0;
 }
