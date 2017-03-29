@@ -30,13 +30,19 @@ public:
   virtual bool init() = 0;
   virtual void sample() = 0;
 
-  const IMUData &data() const
+  const IMUData &rawData() const
   {
-    return m_lastSample;
+    return m_lastRaw;
+  }
+
+  const IMUData &filteredData() const
+  {
+    return m_lastFiltered;
   }
 
 protected:
-  IMUData m_lastSample;
+  IMUData m_lastRaw;
+  IMUData m_lastFiltered;
 
   Filter *m_gyroFilter[3];
   Filter *m_accelFilter[3];

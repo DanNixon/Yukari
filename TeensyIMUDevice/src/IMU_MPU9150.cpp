@@ -21,11 +21,11 @@ bool IMU_MPU9150::init()
   bool filterInitResult = true;
   for (size_t i = 0; i < 3; i++)
   {
-    m_gyroFilter[i] = new Filter(LPF, 20, 4.0, 0.8);
+    m_gyroFilter[i] = new Filter(LPF, 5, 4.0, 0.8);
     if (m_gyroFilter[i]->get_error_flag() != 0)
       filterInitResult = false;
 
-    m_accelFilter[i] = new Filter(LPF, 20, 4.0, 0.5);
+    m_accelFilter[i] = new Filter(LPF, 5, 4.0, 0.5);
     if (m_accelFilter[i]->get_error_flag() != 0)
       filterInitResult = false;
   }
@@ -41,9 +41,14 @@ void IMU_MPU9150::sample()
   static int16_t m[3];
   getMotion9(&a[0], &a[1], &a[2], &g[0], &g[1], &g[2], &m[0], &m[1], &m[2]);
 
-  // Filtering
   for (size_t i = 0; i < 3; i++)
   {
+    // Save raw sample
+    m_lastRaw.gyro[i] = g[i];
+    m_lastRaw.acc[i] = a[i];
+    m_lastRaw.mag[i] = m[i];
+
+    // Apply filtering
     if (m_gyroFilter[i])
       g[i] = m_gyroFilter[i]->do_sample(g[i]);
 
@@ -93,8 +98,8 @@ void IMU_MPU9150::sample()
 
   for (size_t i = 0; i < 3; i++)
   {
-    m_lastSample.gyro[i] = g[i] * gyroCoeff;
-    m_lastSample.acc[i] = a[i] * accCoeff;
-    m_lastSample.mag[i] = m[i] * magCoeff;
+    m_lastFiltered.gyro[i] = g[i] * gyroCoeff;
+    m_lastFiltered.acc[i] = a[i] * accCoeff;
+    m_lastFiltered.mag[i] = m[i] * magCoeff;
   }
 }

@@ -3,9 +3,6 @@
 #include <IMU_MPU9150.h>
 
 #include <MSP.h>
-#include <MSP_Constants.h>
-#include <MSP_Data.h>
-#include <MSP_Processors.h>
 #include <Wire.h>
 #include <helper_3dmath.h>
 
@@ -13,7 +10,7 @@
 
 MSP g_msp(Serial1);
 
-IMU_MPU9150 imu;
+IMU_MPU9150 g_imu;
 
 void setup()
 {
@@ -33,7 +30,7 @@ void setup()
   Wire.begin();
 
   // Init IMU
-  bool imuInitResult = imu.init();
+  bool imuInitResult = g_imu.init();
   Serial.print("IMU init: ");
   Serial.println(imuInitResult);
 
@@ -45,17 +42,15 @@ uint32_t lastSampleTime = 0;
 
 void loop()
 {
-  /* g_msp.loop(); */
+  g_msp.loop();
 
   static uint32_t now;
 
   now = micros();
   if (now - lastSampleTime > 1000 / 250) // 4kHz
-  {
-    imu.sample();
-  }
+    g_imu.sample();
 
-  IMU::IMUData d = imu.data();
+  IMU::IMUData d = g_imu.filteredData();
 
   Serial.print("a/g/m:\t");
   Serial.print(d.acc[0]);
