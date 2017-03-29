@@ -1,5 +1,7 @@
-#include <I2Cdev.h>
-#include <MPU9150.h>
+#include <limits.h>
+
+#include <IMU_MPU9150.h>
+
 #include <MSP.h>
 #include <MSP_Constants.h>
 #include <MSP_Data.h>
@@ -11,11 +13,7 @@
 
 MSP g_msp(Serial1);
 
-MPU9150 accelGyroMag;
-
-int16_t ax, ay, az;
-int16_t gx, gy, gz;
-int16_t mx, my, mz;
+IMU_MPU9150 imu;
 
 void setup()
 {
@@ -27,46 +25,56 @@ void setup()
   Serial1.begin(115200);
   g_msp.begin();
 
+  // Wait for a serial connection
   while (!Serial)
     delay(5);
 
+  // Init i2c bus
   Wire.begin();
 
-  Serial.println("Initializing I2C devices...");
-  accelGyroMag.initialize();
-
-  Serial.println("Testing device connections...");
-  Serial.println(accelGyroMag.testConnection() ? "MPU9150 connection successful"
-                                               : "MPU9150 connection failed");
+  // Init IMU
+  bool imuInitResult = imu.init();
+  Serial.print("IMU init: ");
+  Serial.println(imuInitResult);
 
   Serial.println("Up");
   digitalWrite(LED_PIN, LOW);
 }
 
+uint32_t lastSampleTime = 0;
+
 void loop()
 {
   /* g_msp.loop(); */
 
-  accelGyroMag.getMotion9(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
+  static uint32_t now;
+
+  now = micros();
+  if (now - lastSampleTime > 1000 / 250) // 4kHz
+  {
+    imu.sample();
+  }
+
+  IMU::IMUData d = imu.data();
 
   Serial.print("a/g/m:\t");
-  Serial.print(ax);
+  Serial.print(d.acc[0]);
   Serial.print("\t");
-  Serial.print(ay);
+  Serial.print(d.acc[1]);
   Serial.print("\t");
-  Serial.print(az);
+  Serial.print(d.acc[2]);
   Serial.print("\t");
-  Serial.print(gx);
+  Serial.print(d.gyro[0]);
   Serial.print("\t");
-  Serial.print(gy);
+  Serial.print(d.gyro[1]);
   Serial.print("\t");
-  Serial.print(gz);
+  Serial.print(d.gyro[2]);
   Serial.print("\t");
-  Serial.print(mx);
+  Serial.print(d.mag[0]);
   Serial.print("\t");
-  Serial.print(my);
+  Serial.print(d.mag[1]);
   Serial.print("\t");
-  Serial.print(mz);
+  Serial.print(d.mag[2]);
 
   Serial.print("\n");
 
