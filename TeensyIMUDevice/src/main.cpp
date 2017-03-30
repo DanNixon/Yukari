@@ -13,6 +13,8 @@ Scheduler g_scheduler;
 MSP g_msp(Serial);
 IMU_MPU9150 g_imu;
 
+int8_t imuTask;
+
 void taskIMU()
 {
   g_imu.sample();
@@ -47,6 +49,8 @@ void taskDebugIMU()
   Serial.print(d.mag[2]);
 
   Serial.print("\n");
+
+  Serial.printf("Delta: %d\n", g_scheduler.getDelta(imuTask));
 }
 
 void setup()
@@ -57,8 +61,8 @@ void setup()
   Serial.begin(9600);
 
   // Init scheduler
-  g_scheduler.addTask(&taskIMU, 1000 / 250);
-  // g_scheduler.addTask(&taskMSP, 1000);
+  imuTask = g_scheduler.addTask(&taskIMU, 1000); // 1kHz
+  // g_scheduler.addTask(&taskMSP, 500);
   g_scheduler.addTask(&taskDebugIMU, 50000);
 
   // Init MSP

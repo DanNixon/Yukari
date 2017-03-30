@@ -19,6 +19,7 @@ bool IMU_MPU9150::init()
 
   // Init filters
   bool filterInitResult = true;
+  /*
   for (size_t i = 0; i < 3; i++)
   {
     m_gyroFilter[i] = new Filter(LPF, 5, 4.0, 0.8);
@@ -29,6 +30,7 @@ bool IMU_MPU9150::init()
     if (m_accelFilter[i]->get_error_flag() != 0)
       filterInitResult = false;
   }
+  */
 
   return filterInitResult;
 }
@@ -39,7 +41,9 @@ void IMU_MPU9150::sample()
   static int16_t g[3];
   static int16_t a[3];
   static int16_t m[3];
-  getMotion9(&a[0], &a[1], &a[2], &g[0], &g[1], &g[2], &m[0], &m[1], &m[2]);
+  //getMotion9(&a[0], &a[1], &a[2], &g[0], &g[1], &g[2], &m[0], &m[1], &m[2]);
+  //getMotion6(&a[0], &a[1], &a[2], &g[0], &g[1], &g[2]);
+  getRotation(&g[0], &g[1], &g[2]);
 
   for (size_t i = 0; i < 3; i++)
   {

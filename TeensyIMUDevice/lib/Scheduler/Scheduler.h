@@ -12,6 +12,7 @@ public:
     TaskFunc func;
     uint32_t interval;
     uint32_t lastRunTime;
+    int32_t delta;
   };
 
 public:
@@ -20,9 +21,13 @@ public:
 public:
   Scheduler();
 
-  bool addTask(TaskFunc f, uint32_t interval);
-
+  int8_t addTask(TaskFunc f, uint32_t interval);
   void loop();
+
+  int32_t getDelta(int8_t task)
+  {
+    return m_tasks[task].delta;
+  }
 
 private:
   uint8_t m_numTasks;
