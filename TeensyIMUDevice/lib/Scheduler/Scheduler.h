@@ -1,28 +1,38 @@
 #pragma once
 
-#include <stdint.h>
+#include <Arduino.h>
 
 class Scheduler
 {
 public:
-  typedef void(*TaskFunc)();
+  typedef void (*TaskFunc)();
 
   struct Task
   {
     TaskFunc func;
-    uint32_t interval;
-    uint32_t lastRunTime;
+    uint32_t intervalUs;
+    uint32_t lastRunTimeUs;
+    int32_t deltaUs;
   };
 
 public:
-  static const uint8_t MAX_NUM_TASKS = 3;
+  static const uint8_t MAX_NUM_TASKS = 10;
+
+public:
+  static uint32_t HzToUsInterval(float hz);
 
 public:
   Scheduler();
 
-  bool addTask(TaskFunc f, uint32_t interval);
-
+  int8_t addTask(TaskFunc f, uint32_t intervalUs);
   void loop();
+
+  int32_t getDelta(int8_t task)
+  {
+    return m_tasks[task].deltaUs;
+  }
+
+  void print(Stream &str);
 
 private:
   uint8_t m_numTasks;
