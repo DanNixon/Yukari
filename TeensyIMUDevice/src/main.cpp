@@ -1,11 +1,10 @@
 #include <limits.h>
 
-#include <IMU_MPU9150.h>
-
-#include <MSP.h>
 #include <Wire.h>
 
-#include "Scheduler.h"
+#include <IMU_MPU9150.h>
+#include <MSP.h>
+#include <Scheduler.h>
 
 #define LED_PIN 13
 
