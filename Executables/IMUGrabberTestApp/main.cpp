@@ -242,7 +242,7 @@ int runGrabber(IIMUGrabber_sptr grabber)
   cb->setGrabber(grabber);
   cb->setActor(cubeActor);
   rendererInteractor->AddObserver(vtkCommand::TimerEvent, cb);
-  rendererInteractor->CreateRepeatingTimer(10);
+  rendererInteractor->CreateRepeatingTimer(1000);
 
   vtkSmartPointer<VTKIMUCalibrationInteractionStyle> style =
       vtkSmartPointer<VTKIMUCalibrationInteractionStyle>::New();

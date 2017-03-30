@@ -4,52 +4,28 @@
 
 #include <MSP.h>
 #include <Wire.h>
-#include <helper_3dmath.h>
+
+#include "Scheduler.h"
 
 #define LED_PIN 13
 
-MSP g_msp(Serial1);
+Scheduler g_scheduler;
 
+MSP g_msp(Serial);
 IMU_MPU9150 g_imu;
 
-void setup()
+void taskIMU()
 {
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, HIGH);
-
-  Serial.begin(9600);
-
-  Serial1.begin(115200);
-  g_msp.begin();
-
-  // Wait for a serial connection
-  while (!Serial)
-    delay(5);
-
-  // Init i2c bus
-  Wire.begin();
-
-  // Init IMU
-  bool imuInitResult = g_imu.init();
-  Serial.print("IMU init: ");
-  Serial.println(imuInitResult);
-
-  Serial.println("Up");
-  digitalWrite(LED_PIN, LOW);
+  g_imu.sample();
 }
 
-uint32_t lastSampleTime = 0;
-
-void loop()
+void taskMSP()
 {
   g_msp.loop();
+}
 
-  static uint32_t now;
-
-  now = micros();
-  if (now - lastSampleTime > 1000 / 250) // 4kHz
-    g_imu.sample();
-
+void taskDebugIMU()
+{
   IMU::IMUData d = g_imu.filteredData();
 
   Serial.print("a/g/m:\t");
@@ -72,6 +48,45 @@ void loop()
   Serial.print(d.mag[2]);
 
   Serial.print("\n");
+}
 
-  delay(10);
+void setup()
+{
+  pinMode(LED_PIN, OUTPUT);
+  // digitalWrite(LED_PIN, HIGH);
+
+  Serial.begin(9600);
+
+  // Init scheduler
+  g_scheduler.addTask(&taskIMU, 1000 / 250);
+  // g_scheduler.addTask(&taskMSP, 1000);
+  g_scheduler.addTask(&taskDebugIMU, 50000);
+
+  // Init MSP
+  g_msp.setOnMessage([](MSP::Direction dir, uint8_t cmd, uint8_t *buff, uint8_t len) {
+    Serial.println((uint8_t)dir);
+    Serial.println(cmd);
+    Serial.println(buff[0]);
+    digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+  });
+
+  // Wait for a serial connection
+  while (!Serial)
+    delay(5);
+
+  // Init i2c bus
+  Wire.begin();
+
+  // Init IMU
+  bool imuInitResult = g_imu.init();
+  // Serial.print("IMU init: ");
+  // Serial.println(imuInitResult);
+
+  // Serial.println("Up");
+  digitalWrite(LED_PIN, LOW);
+}
+
+void loop()
+{
+  g_scheduler.loop();
 }
