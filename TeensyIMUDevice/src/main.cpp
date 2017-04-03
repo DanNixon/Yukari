@@ -82,13 +82,12 @@ void setup()
   g_scheduler.print(Serial);
 
   /* Init MSP */
-  g_msp.setOnMessage([](MSP::Direction dir, uint8_t cmd, uint8_t *buff, uint8_t len)
-                     {
-                       Serial.println((uint8_t)dir);
-                       Serial.println(cmd);
-                       Serial.println(buff[0]);
-                       digitalWrite(LED_PIN, !digitalRead(LED_PIN));
-                     });
+  g_msp.setOnMessage([](MSP::Direction dir, uint8_t cmd, uint8_t *buff, uint8_t len) {
+    Serial.println((uint8_t)dir);
+    Serial.println(cmd);
+    Serial.println(buff[0]);
+    digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+  });
 
   /* Init i2c bus */
   Wire.begin();

@@ -17,8 +17,7 @@ public:
     FROM_DEVICE = '<'
   };
 
-  typedef std::function<void(Direction dir, uint8_t cmd, uint8_t *buff, uint8_t len)>
-      OnMessageFunc;
+  typedef std::function<void(Direction dir, uint8_t cmd, uint8_t *buff, uint8_t len)> OnMessageFunc;
 
 public:
   MSP(Stream &stream);
