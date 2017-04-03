@@ -8,7 +8,7 @@ public:
   struct IMUData
   {
     float gyro[3];
-    float acc[3];
+    float accel[3];
     float mag[3];
   };
 
@@ -28,7 +28,10 @@ public:
   }
 
   virtual bool init() = 0;
-  virtual void sample() = 0;
+
+  virtual void sampleGyro() = 0;
+  virtual void sampleAccel() = 0;
+  virtual void sampleMag() = 0;
 
   const IMUData &rawData() const
   {
