@@ -22,17 +22,17 @@ int8_t Scheduler::addTask(TaskFunc f, uint32_t interval)
 void Scheduler::loop()
 {
   uint32_t now = micros();
-  int32_t delta;
+  int32_t overrun;
 
   for (uint8_t i = 0; i < m_numTasks; i++)
   {
-    delta = (now - m_tasks[i].lastRunTime) - m_tasks[i].interval;
+    overrun = (now - m_tasks[i].lastRunTime) - m_tasks[i].interval;
 
-    if (delta >= 0)
+    if (overrun >= 0)
     {
       m_tasks[i].func();
       m_tasks[i].lastRunTime = now;
-      m_tasks[i].delta = delta;
+      m_tasks[i].overrun = overrun;
     }
   }
 }

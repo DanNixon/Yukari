@@ -12,7 +12,7 @@ public:
     TaskFunc func;
     uint32_t interval;
     uint32_t lastRunTime;
-    int32_t delta;
+    int32_t overrun;
   };
 
 public:
@@ -24,9 +24,9 @@ public:
   int8_t addTask(TaskFunc f, uint32_t interval);
   void loop();
 
-  int32_t getDelta(int8_t task)
+  int32_t getOverrun(int8_t task)
   {
-    return m_tasks[task].delta;
+    return m_tasks[task].overrun;
   }
 
 private:

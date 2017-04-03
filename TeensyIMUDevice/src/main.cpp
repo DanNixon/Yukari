@@ -50,7 +50,7 @@ void taskDebugIMU()
 
   Serial.print("\n");
 
-  Serial.printf("Delta: %d\n", g_scheduler.getDelta(imuTask));
+  Serial.printf("Overrun: %d\n", g_scheduler.getOverrun(imuTask));
 }
 
 void setup()
