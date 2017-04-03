@@ -1,22 +1,14 @@
-project(YukariProcessingApp)
+project(PCDToMesh)
 
-set(HEADERS
-  ProcessingCLI.h)
+set(HEADERS)
 
 set(SOURCES
-  main.cpp
-  ProcessingCLI.cpp)
+  main.cpp)
 
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
-  YukariAlgorithms
-  YukariCLI
-  YukariCloudCapture
   YukariCommon
-  YukariIMU
-  YukariMaths
-  YukariProcessing
   ${PCL_LIBRARIES})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Executables)
