@@ -1,4 +1,4 @@
-project(YukariCaptureApp)
+project(CapturePointClouds)
 
 set(HEADERS
   CaptureCLI.h

@@ -1,4 +1,4 @@
-project(IMUGrabberTestApp)
+project(IMUGrabberTest)
 
 set(HEADERS
   VTKIMUActorCallback.h
