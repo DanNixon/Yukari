@@ -8,11 +8,9 @@
 #include <YukariCommon/LoggingService.h>
 
 /* Algorithm includes */
-#include "Add.h"
 #include "ApplyTransformationToCloud.h"
 #include "ConcatenatePointClouds.h"
 #include "GenerateMeshFromPointCloud.h"
-#include "IMUFrameToEigenTransformation.h"
 #include "LoadPointCloud.h"
 #include "RemoveNaNFromPointCloud.h"
 #include "SaveVTKMesh.h"
@@ -38,16 +36,12 @@ namespace Algorithms
 
     /* Create algorithm */
     IAlgorithm_sptr alg;
-    if (cleanName == "add")
-      alg = std::make_shared<Add>();
-    else if (cleanName == "applytransformationtocloud")
+    if (cleanName == "applytransformationtocloud")
       alg = std::make_shared<ApplyTransformationToCloud>();
     else if (cleanName == "concatenatepointclouds")
       alg = std::make_shared<ConcatenatePointClouds>();
     else if (cleanName == "generatemeshfrompointcloud")
       alg = std::make_shared<GenerateMeshFromPointCloud>();
-    else if (cleanName == "imuframetoeigentransformation")
-      alg = std::make_shared<IMUFrameToEigenTransformation>();
     else if (cleanName == "loadpointcloud")
       alg = std::make_shared<LoadPointCloud>();
     else if (cleanName == "removenanfrompointcloud")

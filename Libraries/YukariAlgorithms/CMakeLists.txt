@@ -1,24 +1,20 @@
 project(YukariAlgorithms)
 
 set(HEADERS
-  Add.h
   AlgorithmFactory.h
   ApplyTransformationToCloud.h
   ConcatenatePointClouds.h
   GenerateMeshFromPointCloud.h
-  IMUFrameToEigenTransformation.h
   LoadPointCloud.h
   RemoveNaNFromPointCloud.h
   SaveVTKMesh.h
   TriangulatePointCloud.h)
 
 set(SOURCES
-  Add.cpp
   AlgorithmFactory.cpp
   ApplyTransformationToCloud.cpp
   ConcatenatePointClouds.cpp
   GenerateMeshFromPointCloud.cpp
-  IMUFrameToEigenTransformation.cpp
   LoadPointCloud.cpp
   RemoveNaNFromPointCloud.cpp
   SaveVTKMesh.cpp
@@ -30,11 +26,9 @@ set(LIB_DEPS
   ${PCL_LIBRARIES})
 
 set(TESTS
-  test/AddTest.cpp
   test/AlgorithmFactoryTest.cpp
   test/ApplyTransformationToCloudTest.cpp
   test/ConcatenatePointCloudsTest.cpp
-  test/GenerateMeshFromPointCloudTest.cpp
   test/IMUFrameToEigenTransformationTest.cpp
   test/LoadPointCloudTest.cpp
   test/RemoveNaNFromPointCloudTest.cpp

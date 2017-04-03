@@ -6,6 +6,8 @@
 #include <memory>
 #include <ostream>
 
+#include <Eigen/Geometry>
+
 #include <YukariMaths/Quaternion.h>
 #include <YukariMaths/Vector3.h>
 
@@ -47,6 +49,8 @@ namespace IMU
     {
       return m_position;
     }
+
+    Eigen::Matrix4f toEigen() const;
 
     friend std::ostream &operator<<(std::ostream &s, const IMUFrame &f);
 
