@@ -8,7 +8,7 @@
 
 namespace Yukari
 {
-namespace CaptureApp
+namespace CaptureTriggers
 {
   class CLITrigger : public ITrigger
   {

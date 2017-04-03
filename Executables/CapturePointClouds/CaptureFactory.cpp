@@ -4,6 +4,8 @@
 
 #include <memory>
 
+#include <YukariCaptureTriggers/SignalTrigger.h>
+#include <YukariCaptureTriggers/TimelapseCaptureTrigger.h>
 #include <YukariCloudCapture/DummyCloudGrabber.h>
 #include <YukariCloudCapture/OpenNI2CloudGrabber.h>
 #include <YukariCommon/LoggingService.h>
@@ -11,9 +13,7 @@
 #include <YukariIMU/MSPGrabberAttitude.h>
 #include <YukariIMU/MSPGrabberIMU.h>
 
-#include "SignalTrigger.h"
-#include "TimelapseCaptureTrigger.h"
-
+using namespace Yukari::CaptureTriggers;
 using namespace Yukari::CloudCapture;
 using namespace Yukari::Common;
 using namespace Yukari::IMU;

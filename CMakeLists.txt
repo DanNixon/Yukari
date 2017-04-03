@@ -63,6 +63,7 @@ add_subdirectory(ThirdParty/serial)
 
 # Libraries
 add_subdirectory(Libraries/YukariAlgorithms)
+add_subdirectory(Libraries/YukariCaptureTriggers)
 add_subdirectory(Libraries/YukariCLI)
 add_subdirectory(Libraries/YukariCloudCapture)
 add_subdirectory(Libraries/YukariCommon)
@@ -77,6 +78,7 @@ add_subdirectory(Executables/IMUGrabberTest)
 add_subdirectory(Executables/PCDToMesh)
 add_subdirectory(Executables/PCDViewer)
 add_subdirectory(Executables/PointCloudAlignment)
+add_subdirectory(Executables/TriggerTestApp)
 
 # Docs
 add_doxygen(

@@ -2,6 +2,8 @@
 
 #include "CaptureCLI.h"
 
+using namespace Yukari::CaptureTriggers;
+
 namespace Yukari
 {
 namespace CaptureApp

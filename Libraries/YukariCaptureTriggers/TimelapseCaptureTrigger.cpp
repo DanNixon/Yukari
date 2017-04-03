@@ -4,7 +4,7 @@
 
 namespace Yukari
 {
-namespace CaptureApp
+namespace CaptureTriggers
 {
   TimelapseCaptureTrigger::TimelapseCaptureTrigger(std::chrono::seconds duration)
       : m_duration(duration)

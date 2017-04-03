@@ -3,8 +3,8 @@
 #pragma once
 
 #include <YukariCLI/CLI.h>
+#include <YukariCaptureTriggers/CLITrigger.h>
 
-#include "CLITrigger.h"
 #include "CaptureController.h"
 
 namespace Yukari
@@ -20,10 +20,10 @@ namespace CaptureApp
 
   private:
     bool m_hasInit;
-    CLITrigger_sptr m_startTrigger;
-    CLITrigger_sptr m_stopTrigger;
-    CLITrigger_sptr m_captureTrigger;
-    CLITrigger_sptr m_exitTrigger;
+    CaptureTriggers::CLITrigger_sptr m_startTrigger;
+    CaptureTriggers::CLITrigger_sptr m_stopTrigger;
+    CaptureTriggers::CLITrigger_sptr m_captureTrigger;
+    CaptureTriggers::CLITrigger_sptr m_exitTrigger;
   };
 }
 }

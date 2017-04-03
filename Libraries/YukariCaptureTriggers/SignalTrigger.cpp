@@ -6,7 +6,7 @@ using namespace Yukari::Common;
 
 namespace Yukari
 {
-namespace CaptureApp
+namespace CaptureTriggers
 {
   SignalTrigger::SignalTrigger(int signal)
       : m_signal(signal)
