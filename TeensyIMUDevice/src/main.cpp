@@ -1,11 +1,11 @@
-#include <limits.h>
-
-#include <MPU9150_9Axis_MotionApps41.h>
-#include <helper_3dmath.h>
+#include <I2Cdev.h>
 
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
 #include "Wire.h"
 #endif
+
+#include <MPU9150_9Axis_MotionApps41.h>
+#include <helper_3dmath.h>
 
 #include <MSP.h>
 #include <Scheduler.h>
@@ -19,22 +19,16 @@ MSP g_msp(Serial);
 
 MPU9150 g_imu;
 uint16_t g_dmpFIFOPacketSize;
-uint16_t g_dmpFIFOSize;
+uint16_t g_dmpFIFOBufferSize;
 uint8_t g_dmpFIFOBuffer[64];
 bool g_dmpReady = false;
 volatile bool g_mpuInterrupt = false;
 
-Quaternion q;
-VectorInt16 aa;
-VectorInt16 aaReal;
-VectorInt16 aaWorld;
-VectorFloat gravity;
-float euler[3];
-float ypr[3];
-
-#define OUTPUT_READABLE_YAWPITCHROLL
-#define OUTPUT_READABLE_REALACCEL
-#define OUTPUT_READABLE_WORLDACCEL
+Quaternion g_quat;
+VectorFloat m_gravity;
+VectorInt16 m_accel;
+VectorInt16 m_realAccel;
+VectorInt16 m_worldAccel;
 
 void dmpDataReady()
 {
@@ -56,13 +50,12 @@ void setup()
   g_scheduler.print(Serial);
 
   /* Init MSP */
-  g_msp.setOnMessage([](MSP::Direction dir, uint8_t cmd, uint8_t *buff, uint8_t len)
-                     {
-                       Serial.println((uint8_t)dir);
-                       Serial.println(cmd);
-                       Serial.println(buff[0]);
-                       digitalWrite(LED_PIN, !digitalRead(LED_PIN));
-                     });
+  g_msp.setOnMessage([](MSP::Direction dir, uint8_t cmd, uint8_t *buff, uint8_t len) {
+    Serial.println((uint8_t)dir);
+    Serial.println(cmd);
+    Serial.println(buff[0]);
+    digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+  });
 
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   /* Init i2c bus (Arduino) */
@@ -79,6 +72,9 @@ void setup()
   g_imu.initialize();
   Serial.print("IMU init: ");
   Serial.println(g_imu.testConnection());
+
+  g_imu.setFullScaleAccelRange(MPU9150_ACCEL_FS_16);
+  g_imu.setFullScaleGyroRange(MPU9150_GYRO_FS_2000);
 
   pinMode(MPU_INTERRUPT_PIN, INPUT);
 
@@ -104,9 +100,9 @@ void loop()
     return;
 
   // wait for MPU interrupt or extra packet(s) available
-  while (!g_mpuInterrupt && g_dmpFIFOSize < g_dmpFIFOPacketSize)
+  while (!g_mpuInterrupt && g_dmpFIFOBufferSize < g_dmpFIFOPacketSize)
   {
-    /* g_scheduler.loop(); */
+    g_scheduler.loop();
   }
 
   // reset interrupt flag and get INT_STATUS byte
@@ -114,96 +110,67 @@ void loop()
   uint8_t mpuIntStatus = g_imu.getIntStatus();
 
   // get current FIFO count
-  g_dmpFIFOSize = g_imu.getFIFOCount();
+  g_dmpFIFOBufferSize = g_imu.getFIFOCount();
 
   // check for overflow (this should never happen unless our code is too inefficient)
-  if ((mpuIntStatus & 0x10) || g_dmpFIFOSize == 1024)
+  if ((mpuIntStatus & 0x10) || g_dmpFIFOBufferSize == 1024)
   {
     // reset so we can continue cleanly
     g_imu.resetFIFO();
     Serial.println(F("FIFO overflow!"));
-
-    // otherwise, check for DMP data ready interrupt (this should happen frequently)
   }
+  // otherwise, check for DMP data ready interrupt (this should happen frequently)
   else if (mpuIntStatus & 0x02)
   {
     // wait for correct available data length, should be a VERY short wait
-    while (g_dmpFIFOSize < g_dmpFIFOPacketSize)
-      g_dmpFIFOSize = g_imu.getFIFOCount();
+    while (g_dmpFIFOBufferSize < g_dmpFIFOPacketSize)
+      g_dmpFIFOBufferSize = g_imu.getFIFOCount();
 
     // read a packet from FIFO
     g_imu.getFIFOBytes(g_dmpFIFOBuffer, g_dmpFIFOPacketSize);
 
     // track FIFO count here in case there is > 1 packet available
     // (this lets us immediately read more without waiting for an interrupt)
-    g_dmpFIFOSize -= g_dmpFIFOPacketSize;
+    g_dmpFIFOBufferSize -= g_dmpFIFOPacketSize;
 
-#ifdef OUTPUT_READABLE_QUATERNION
-    // display quaternion values in easy matrix form: w x y z
-    g_imu.dmpGetQuaternion(&q, g_dmpFIFOBuffer);
+    g_imu.dmpGetQuaternion(&g_quat, g_dmpFIFOBuffer);
+    g_imu.dmpGetAccel(&m_accel, g_dmpFIFOBuffer);
+    g_imu.dmpGetGravity(&m_gravity, &g_quat);
+    g_imu.dmpGetLinearAccel(&m_realAccel, &m_accel, &m_gravity);
+    g_imu.dmpGetLinearAccelInWorld(&m_worldAccel, &m_realAccel, &g_quat);
+
+    // Device orientation as quaternion
     Serial.print("quat\t");
-    Serial.print(q.w);
+    Serial.print(g_quat.w);
     Serial.print("\t");
-    Serial.print(q.x);
+    Serial.print(g_quat.x);
     Serial.print("\t");
-    Serial.print(q.y);
+    Serial.print(g_quat.y);
     Serial.print("\t");
-    Serial.println(q.z);
-#endif
+    Serial.println(g_quat.z);
 
-#ifdef OUTPUT_READABLE_EULER
-    // display Euler angles in degrees
-    g_imu.dmpGetQuaternion(&q, g_dmpFIFOBuffer);
-    g_imu.dmpGetEuler(euler, &q);
-    Serial.print("euler\t");
-    Serial.print(euler[0] * 180 / M_PI);
+    // Linear acceleration
+    Serial.print("a\t");
+    Serial.print(m_accel.x);
     Serial.print("\t");
-    Serial.print(euler[1] * 180 / M_PI);
+    Serial.print(m_accel.y);
     Serial.print("\t");
-    Serial.println(euler[2] * 180 / M_PI);
-#endif
+    Serial.println(m_accel.z);
 
-#ifdef OUTPUT_READABLE_YAWPITCHROLL
-    // display Euler angles in degrees
-    g_imu.dmpGetQuaternion(&q, g_dmpFIFOBuffer);
-    g_imu.dmpGetGravity(&gravity, &q);
-    g_imu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-    Serial.print("ypr\t");
-    Serial.print(ypr[0] * 180 / M_PI);
-    Serial.print("\t");
-    Serial.print(ypr[1] * 180 / M_PI);
-    Serial.print("\t");
-    Serial.println(ypr[2] * 180 / M_PI);
-#endif
-
-#ifdef OUTPUT_READABLE_REALACCEL
-    // display real acceleration, adjusted to remove gravity
-    g_imu.dmpGetQuaternion(&q, g_dmpFIFOBuffer);
-    g_imu.dmpGetAccel(&aa, g_dmpFIFOBuffer);
-    g_imu.dmpGetGravity(&gravity, &q);
-    g_imu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
+    // Linear acceleration without gravity
     Serial.print("areal\t");
-    Serial.print(aaReal.x);
+    Serial.print(m_realAccel.x);
     Serial.print("\t");
-    Serial.print(aaReal.y);
+    Serial.print(m_realAccel.y);
     Serial.print("\t");
-    Serial.println(aaReal.z);
-#endif
+    Serial.println(m_realAccel.z);
 
-#ifdef OUTPUT_READABLE_WORLDACCEL
-    // display initial world-frame acceleration, adjusted to remove gravity
-    // and rotated based on known orientation from quaternion
-    g_imu.dmpGetQuaternion(&q, g_dmpFIFOBuffer);
-    g_imu.dmpGetAccel(&aa, g_dmpFIFOBuffer);
-    g_imu.dmpGetGravity(&gravity, &q);
-    g_imu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
-    g_imu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
+    // Linear acceleration without gravity and corrected for orientation
     Serial.print("aworld\t");
-    Serial.print(aaWorld.x);
+    Serial.print(m_worldAccel.x);
     Serial.print("\t");
-    Serial.print(aaWorld.y);
+    Serial.print(m_worldAccel.y);
     Serial.print("\t");
-    Serial.println(aaWorld.z);
-#endif
+    Serial.println(m_worldAccel.z);
   }
 }
