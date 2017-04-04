@@ -15,9 +15,6 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # No min/max macros from MSVC
 add_definitions(-DNOMINMAX)
 
-# Fixes issues with PCL/boost on Ubuntu 14.04 when compiled in Debug mode
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O1")
-
 # All warnings
 include(EnableExtraCompilerWarnings)
 globally_enable_extra_compiler_warnings()
@@ -46,6 +43,9 @@ if(UNIX)
   list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
   list(REMOVE_ITEM VTK_LIBRARIES "vtkproj4")
 
+  # Fixes issues with PCL/boost on Ubuntu 14.04 when compiled in Debug mode
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O1")
+
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x -pthread")
 endif()
 
@@ -62,7 +62,7 @@ include_directories(Libraries
 add_subdirectory(ThirdParty/serial)
 
 # Libraries
-add_subdirectory(Libraries/YukariAlgorithms)
+add_subdirectory(Libraries/YukariCaptureTriggers)
 add_subdirectory(Libraries/YukariCLI)
 add_subdirectory(Libraries/YukariCloudCapture)
 add_subdirectory(Libraries/YukariCommon)
@@ -71,11 +71,13 @@ add_subdirectory(Libraries/YukariMaths)
 add_subdirectory(Libraries/YukariProcessing)
 
 # Executables
-add_subdirectory(Executables/CloudGrabberTestApp)
-add_subdirectory(Executables/IMUGrabberTestApp)
+add_subdirectory(Executables/CapturePointClouds)
+add_subdirectory(Executables/CloudGrabberTest)
+add_subdirectory(Executables/IMUGrabberTest)
+add_subdirectory(Executables/PCDToMesh)
 add_subdirectory(Executables/PCDViewer)
-add_subdirectory(Executables/YukariCaptureApp)
-add_subdirectory(Executables/YukariProcessingApp)
+add_subdirectory(Executables/PointCloudAlignment)
+add_subdirectory(Executables/TriggerTestApp)
 
 # Docs
 add_doxygen(

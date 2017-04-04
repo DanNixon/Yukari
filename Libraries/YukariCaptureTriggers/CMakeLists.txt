@@ -1,17 +1,19 @@
-project(YukariCommon)
+project(YukariCaptureTriggers)
 
 set(HEADERS
-  ConfigurationManager.h
-  LoggingService.h
-  SignalBroker.h)
+  CLITrigger.h
+  ITrigger.h
+  SignalTrigger.h
+  TimelapseCaptureTrigger.h)
 
 set(SOURCES
-  ConfigurationManager.cpp
-  LoggingService.cpp
-  SignalBroker.cpp)
+  CLITrigger.cpp
+  SignalTrigger.cpp
+  TimelapseCaptureTrigger.cpp)
 
 set(LIB_DEPS
-  ${Boost_LIBRARIES})
+  YukariCLI
+  YukariCommon)
 
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} ${LIB_DEPS})

@@ -1,0 +1,11 @@
+data add cloud_filenames 1
+data set cloud_filenames string bun0.pcd
+data add mesh_filenames 1
+data set mesh_filenames string mesh.vtk
+alg run LoadPointCloud cloud_filenames->[file] [cloud]->point_clouds
+data ls
+alg run GenerateMeshFromPointCloud point_clouds->[cloud] [mesh]->meshes
+data ls
+alg run SaveVTKMesh meshes->[mesh] mesh_filenames->[filename]
+data ls
+script reset

@@ -14,7 +14,8 @@ namespace CloudCapture
   class ICloudGrabber
   {
   public:
-    typedef pcl::PointCloud<pcl::PointXYZRGBA> Cloud;
+    typedef pcl::PointXYZRGBA PointType;
+    typedef pcl::PointCloud<PointType> Cloud;
 
   public:
     virtual void open()

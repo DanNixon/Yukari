@@ -5,7 +5,6 @@ set(HEADERS
   IIMUGrabber.h
   IMUConstants.h
   IMUFrame.h
-  ExtendedIMUFrame.h
   MSPGrabber.h
   MSPGrabberIMU.h
   MSPGrabberAttitude.h
@@ -14,7 +13,6 @@ set(HEADERS
 set(SOURCES
   DummyIMUGrabber.cpp
   IMUFrame.cpp
-  ExtendedIMUFrame.cpp
   MSPGrabber.cpp
   MSPGrabberIMU.cpp
   MSPGrabberAttitude.cpp
@@ -25,7 +23,6 @@ set(LIB_DEPS
   serial)
 
 set(TESTS
-  test/ExtendedIMUFrameTest.cpp
   test/IMUFrameTest.cpp
   test/MSPClientTest.cpp)
 
