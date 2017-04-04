@@ -26,7 +26,7 @@ void MSP::loop()
       bool checksumPass = true; // TODO
 
       if (checksumPass && m_onMessage)
-        m_onMessage((Direction)m_buffer[2], m_buffer[4], m_buffer + 5, m_buffer[3]);
+        m_onMessage((Direction)m_buffer[2], (Command)m_buffer[4], m_buffer + 5, m_buffer[3]);
 
       resetBuffer();
     }
