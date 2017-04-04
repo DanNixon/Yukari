@@ -10,24 +10,14 @@
 #include <YukariCloudCapture/ICloudGrabber.h>
 
 using namespace Yukari::CloudCapture;
-using namespace Yukari::Processing;
 
 namespace Yukari
 {
-namespace Algorithms
+namespace Processing
 {
   GenerateMeshFromPointCloud::GenerateMeshFromPointCloud()
       : m_logger(Common::LoggingService::GetLogger("GenerateMeshFromPointCloud"))
   {
-    /* Add default validator */
-    m_validator = [](const IAlgorithm &alg) {
-      /* Check that at least one point cloud was provided */
-      Property_sptr cloud = alg.getProperty(Processing::INPUT, "cloud");
-      if (cloud->size() == 0)
-        return "Must provide at least one point clouds";
-
-      return "";
-    };
   }
 
   pcl::PolygonMesh::Ptr
@@ -79,23 +69,6 @@ namespace Algorithms
     m_logger->trace("Cloud processed");
 
     return triangles;
-  }
-
-  void GenerateMeshFromPointCloud::doExecute()
-  {
-    Property_sptr cloud = getProperty(Processing::INPUT, "cloud");
-    size_t len = cloud->size();
-    Property_sptr mesh = std::make_shared<Property>(len);
-
-    GenerateMeshFromPointCloud::Parameters params;
-
-    for (size_t i = 0; i < len; i++)
-    {
-      m_logger->debug("Mesh estimation for cloud {}", i);
-      (*mesh)[i] = estimateSingle(cloud->value<ICloudGrabber::Cloud::ConstPtr>(i), params);
-    }
-
-    setProperty(Processing::OUTPUT, "mesh", mesh);
   }
 }
 }

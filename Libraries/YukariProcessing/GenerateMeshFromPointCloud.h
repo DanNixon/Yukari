@@ -2,17 +2,16 @@
 
 #pragma once
 
-#include <YukariProcessing/IAlgorithm.h>
-
 #include <pcl/PolygonMesh.h>
 
 #include <YukariCloudCapture/ICloudGrabber.h>
+#include <YukariCommon/LoggingService.h>
 
 namespace Yukari
 {
-namespace Algorithms
+namespace Processing
 {
-  class GenerateMeshFromPointCloud : public Processing::IAlgorithm
+  class GenerateMeshFromPointCloud
   {
   public:
     struct Parameters
@@ -26,9 +25,6 @@ namespace Algorithms
     pcl::PolygonMesh::Ptr
     estimateSingle(const Yukari::CloudCapture::ICloudGrabber::Cloud::ConstPtr cloud,
                    const Parameters &params);
-
-  protected:
-    virtual void doExecute() override;
 
   private:
     Common::LoggingService::Logger m_logger;
