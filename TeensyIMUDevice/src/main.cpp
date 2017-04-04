@@ -1,9 +1,5 @@
 #include <I2Cdev.h>
 
-#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
-#include "Wire.h"
-#endif
-
 #include <MPU9150_9Axis_MotionApps41.h>
 #include <helper_3dmath.h>
 
