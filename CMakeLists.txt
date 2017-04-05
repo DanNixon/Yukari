@@ -68,6 +68,7 @@ add_subdirectory(Libraries/YukariCloudCapture)
 add_subdirectory(Libraries/YukariCommon)
 add_subdirectory(Libraries/YukariIMU)
 add_subdirectory(Libraries/YukariMaths)
+add_subdirectory(Libraries/YukariMSP)
 add_subdirectory(Libraries/YukariProcessing)
 
 # Executables

@@ -8,10 +8,10 @@
 #include <serial/serial.h>
 
 #include <YukariCommon/LoggingService.h>
-#include <YukariIMU/MSPClient.h>
+#include <YukariMSP/MSPClient.h>
 
 using namespace Yukari::Common;
-using namespace Yukari::IMU;
+using namespace Yukari::MSP;
 namespace po = boost::program_options;
 
 int main(int argc, char **argv)

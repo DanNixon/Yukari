@@ -9,7 +9,7 @@
 
 namespace Yukari
 {
-namespace IMU
+namespace MSP
 {
   /**
    * @class MSPClient
@@ -58,12 +58,6 @@ namespace IMU
     static void BuildCommandPayload(Payload &payload, MSPCommand command, const Payload &data);
     static bool ParseResponsePayload(const Payload &payload, MSPCommand &command, Payload &data);
 
-    static int16_t Read16(Payload::const_iterator it);
-
-    static bool ParseRawIMUPayload(const Payload &payload, int16_t *gyro, int16_t *acc,
-                                   int16_t *mag);
-    static bool ParseAttitudePayload(const Payload &payload, float *att);
-
   public:
     MSPClient(serial::Serial &port);
 
@@ -76,4 +70,4 @@ namespace IMU
 }
 }
 
-std::ostream &operator<<(std::ostream &str, const Yukari::IMU::MSPClient::Payload &payload);
+std::ostream &operator<<(std::ostream &str, const Yukari::MSP::MSPClient::Payload &payload);

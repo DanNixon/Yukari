@@ -8,7 +8,7 @@ using namespace Yukari::Common;
 
 namespace Yukari
 {
-namespace IMU
+namespace MSP
 {
   void MSPClient::BuildCommandPayload(Payload &payload, MSPCommand command, const Payload &data)
   {
@@ -48,71 +48,6 @@ namespace IMU
     command = (MSPCommand)payload[4];
     data.reserve(payload[3]);
     data.insert(data.begin(), payload.begin() + 5, payload.end() - 1);
-
-    return true;
-  }
-
-  int16_t MSPClient::Read16(Payload::const_iterator it)
-  {
-    union {
-      int16_t v;
-      uint8_t b[2];
-    } s;
-
-    s.b[0] = *(it++);
-    s.b[1] = *it;
-
-    return s.v;
-  }
-
-  bool MSPClient::ParseRawIMUPayload(const Payload &payload, int16_t *gyro, int16_t *acc,
-                                     int16_t *mag)
-  {
-    if (payload.size() != 18)
-      return false;
-
-    auto data = payload.begin();
-
-    size_t i;
-
-    for (i = 0; i < 3; i++)
-    {
-      acc[i] = Read16(data);
-      data += 2;
-    }
-
-    for (i = 0; i < 3; i++)
-    {
-      gyro[i] = Read16(data);
-      data += 2;
-    }
-
-    for (i = 0; i < 3; i++)
-    {
-      mag[i] = Read16(data);
-      data += 2;
-    }
-
-    return true;
-  }
-
-  bool MSPClient::ParseAttitudePayload(const Payload &payload, float *att)
-  {
-    if (payload.size() != 6)
-      return false;
-
-    auto data = payload.begin();
-
-    /* X axis */
-    att[0] = Read16(data) / 10.0f;
-    data += 2;
-
-    /* Y axis */
-    att[1] = Read16(data) / 10.0f;
-    data += 2;
-
-    /* Heading */
-    att[2] = Read16(data);
 
     return true;
   }
@@ -165,7 +100,7 @@ namespace IMU
 }
 }
 
-std::ostream &operator<<(std::ostream &str, const Yukari::IMU::MSPClient::Payload &payload)
+std::ostream &operator<<(std::ostream &str, const Yukari::MSP::MSPClient::Payload &payload)
 {
   str << "Payload[" << std::hex;
 

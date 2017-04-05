@@ -4,12 +4,14 @@
 
 #include <boost/qvm/all.hpp>
 
+#include <YukariMSP/MSPParsers.h>
 #include <YukariMaths/Quaternion.h>
 #include <YukariMaths/Vector3.h>
 
 using namespace boost::qvm;
 using namespace Yukari::Common;
 using namespace Yukari::Maths;
+using namespace Yukari::MSP;
 
 namespace Yukari
 {
@@ -32,7 +34,7 @@ namespace IMU
 
     /* MSP data */
     bool ok = m_client.requestData(MSPClient::ATTITUDE, m_mspPayload) &&
-              MSPClient::ParseAttitudePayload(m_mspPayload, m_attitude);
+              MSPParsers::ParseAttitudePayload(m_mspPayload, m_attitude);
 
     if (!ok)
     {

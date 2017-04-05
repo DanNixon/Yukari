@@ -8,8 +8,6 @@
 #include <memory>
 #include <serial/serial.h>
 
-#include "MSPClient.h"
-
 namespace Yukari
 {
 namespace IMU

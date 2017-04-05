@@ -8,7 +8,7 @@
 #include <memory>
 #include <serial/serial.h>
 
-#include "MSPClient.h"
+#include <YukariMSP/MSPClient.h>
 
 namespace Yukari
 {
@@ -33,11 +33,11 @@ namespace IMU
     serial::Timeout m_defaultTimeout;
     serial::Timeout m_calibrationTimeout;
     serial::Serial m_port;
-    MSPClient m_client;
+    MSP::MSPClient m_client;
 
     std::chrono::time_point<std::chrono::high_resolution_clock> m_lastFrameTime;
 
-    MSPClient::Payload m_mspPayload;
+    MSP::MSPClient::Payload m_mspPayload;
   };
 
   typedef std::shared_ptr<MSPGrabber> MSPGrabber_sptr;

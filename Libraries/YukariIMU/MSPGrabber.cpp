@@ -8,6 +8,7 @@
 
 using namespace Yukari::Common;
 using namespace Yukari::Maths;
+using namespace Yukari::MSP;
 
 namespace Yukari
 {

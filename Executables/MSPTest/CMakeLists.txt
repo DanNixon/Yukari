@@ -9,7 +9,7 @@ add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
   YukariCommon
-  YukariIMU
+  YukariMSP
   serial)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Executables)

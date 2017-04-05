@@ -1,28 +1,20 @@
-project(YukariIMU)
+project(YukariMSP)
 
 set(HEADERS
-  DummyIMUGrabber.h
-  IIMUGrabber.h
-  IMUFrame.h
-  MSPGrabber.h
-  MSPGrabberAttitude.h
-  TeensyIMUDevice.h)
+  MSPClient.h
+  MSPParsers.h)
 
 set(SOURCES
-  DummyIMUGrabber.cpp
-  IMUFrame.cpp
-  MSPGrabber.cpp
-  MSPGrabberAttitude.cpp
-  TeensyIMUDevice.cpp)
+  MSPClient.cpp
+  MSPParsers.cpp)
 
 set(LIB_DEPS
   YukariCommon
-  YukariMaths
-  YukariMSP
   serial)
 
 set(TESTS
-  test/IMUFrameTest.cpp)
+  test/MSPClientTest.cpp
+  test/MSPParsersTest.cpp)
 
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} ${LIB_DEPS})

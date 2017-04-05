@@ -27,9 +27,10 @@
 
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/DummyIMUGrabber.h>
-#include <YukariIMU/MSPClient.h>
 #include <YukariIMU/MSPGrabberAttitude.h>
-#include <YukariIMU/MSPGrabberIMU.h>
+#include <YukariIMU/TeensyIMUDevice.h>
+#include <YukariMSP/MSPClient.h>
+#include <YukariMSP/MSPParsers.h>
 
 #include "VTKIMUActorCallback.h"
 #include "VTKIMUCalibrationInteractionStyle.h"
@@ -38,6 +39,7 @@ using namespace boost::qvm;
 using namespace Yukari::Common;
 using namespace Yukari::IMU;
 using namespace Yukari::Maths;
+using namespace Yukari::MSP;
 using namespace Yukari::IMUGrabberTest;
 namespace po = boost::program_options;
 
@@ -46,10 +48,6 @@ int runGrabber(IIMUGrabber_sptr grabber);
 
 int main(int argc, char **argv)
 {
-  // LoggingService::Disable();
-
-  LoggingService::GetLogger("MSPGrabberIMU")->set_level(spdlog::level::trace);
-
   auto logger = LoggingService::GetLogger("main");
 
   /* Init command line */
@@ -96,9 +94,9 @@ int main(int argc, char **argv)
   else if (mode == "attitude")
     return runGrabber(std::make_shared<MSPGrabberAttitude>(args["port"].as<std::string>(),
                                                            args["baud"].as<int>()));
-  else if (mode == "imu")
+  else if (mode == "teensy")
     return runGrabber(
-        std::make_shared<MSPGrabberIMU>(args["port"].as<std::string>(), args["baud"].as<int>()));
+        std::make_shared<TeensyIMUDevice>(args["port"].as<std::string>(), args["baud"].as<int>()));
   else
     return 2;
 }
@@ -133,8 +131,8 @@ int runRawData(const std::string &portName, unsigned int baud)
   {
     MSPClient::Payload p1, p2;
     bool ok = msp.requestData(MSPClient::RAW_IMU, p1) &&
-              MSPClient::ParseRawIMUPayload(p1, gyro, acc, mag) &&
-              msp.requestData(MSPClient::ATTITUDE, p2) && MSPClient::ParseAttitudePayload(p2, att);
+              MSPParsers::ParseRawIMUPayload(p1, gyro, acc, mag) &&
+              msp.requestData(MSPClient::ATTITUDE, p2) && MSPParsers::ParseAttitudePayload(p2, att);
 
     if (ok)
     {
