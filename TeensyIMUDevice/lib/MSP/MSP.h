@@ -37,8 +37,8 @@ public:
 
   enum class Direction : uint8_t
   {
-    TO_DEVICE = '>',
-    FROM_DEVICE = '<'
+    TO_DEVICE = '<',
+    FROM_DEVICE = '>'
   };
 
   typedef std::function<void(Direction dir, Command cmd, uint8_t *buff, uint8_t len)> OnMessageFunc;
@@ -48,6 +48,7 @@ public:
   virtual ~MSP();
 
   void loop();
+  void sendPacket(Command cmd, uint8_t *buff, uint8_t len);
 
   inline void setOnMessage(OnMessageFunc f)
   {

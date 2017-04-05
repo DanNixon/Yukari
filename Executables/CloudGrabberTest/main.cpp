@@ -67,7 +67,7 @@ int main(int argc, char **argv)
   if (!grabber)
     return 1;
 
-  Yukari::CloudGrabberTestApp::CloudGrabberVisualisation viewer(grabber);
+  Yukari::CloudGrabberTest::CloudGrabberVisualisation viewer(grabber);
   viewer.run();
 
   return 0;

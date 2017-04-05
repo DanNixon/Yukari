@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+using namespace Yukari::Common;
+
 namespace Yukari
 {
 namespace IMU
@@ -36,7 +38,11 @@ namespace IMU
       checksum ^= *it;
 
     if (checksum != payload.back())
+    {
+      LoggingService::GetLogger("MSPClient")
+          ->error("Checksum mismatch: got {}, expected {}", payload.back(), checksum);
       return false;
+    }
 
     /* Parse data */
     command = (MSPCommand)payload[4];
@@ -112,7 +118,8 @@ namespace IMU
   }
 
   MSPClient::MSPClient(serial::Serial &port)
-      : m_port(port)
+      : m_logger(LoggingService::GetLogger("MSPClient"))
+      , m_port(port)
   {
     m_port.setTimeout(serial::Timeout::max(), 1000, 0, 2000, 0);
   }
@@ -127,6 +134,7 @@ namespace IMU
     /* Build and send payload */
     Payload txPayload;
     BuildCommandPayload(txPayload, command, payload);
+    m_logger->trace("MSP TX payload: {}", txPayload);
     bytesTransfered = m_port.write(txPayload);
     if (bytesTransfered != txPayload.size())
       return false;
@@ -136,14 +144,40 @@ namespace IMU
 
     bytesTransfered = m_port.read(rxPayload, 5);
     if (bytesTransfered != 5)
+    {
+      m_logger->error("Incorrect number of bytes received: {} (expected 5)", bytesTransfered);
       return false;
+    }
 
-    bytesTransfered = m_port.read(rxPayload, rxPayload[3] + 1);
-    if (bytesTransfered != rxPayload[3] + 1)
+    size_t numBytesToRx = rxPayload[3] + 1;
+    bytesTransfered = m_port.read(rxPayload, numBytesToRx);
+    if (bytesTransfered != numBytesToRx)
+    {
+      m_logger->error("Incorrect number of bytes received: {} (expected {})", bytesTransfered,
+                      numBytesToRx);
       return false;
+    }
 
     /* Parse response payload */
+    payload.clear();
     return ParseResponsePayload(rxPayload, command, payload);
   }
 }
+}
+
+std::ostream &operator<<(std::ostream &str, const Yukari::IMU::MSPClient::Payload &payload)
+{
+  str << "Payload[" << std::hex;
+
+  for (auto it = payload.cbegin(); it != payload.cend(); ++it)
+  {
+    if (it != payload.cbegin())
+      str << ',';
+
+    str << std::hex << (int)*it;
+  }
+
+  str << "]" << std::dec;
+
+  return str;
 }

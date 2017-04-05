@@ -6,7 +6,7 @@ using namespace Yukari::Maths;
 
 namespace Yukari
 {
-namespace IMUGrabberTestApp
+namespace IMUGrabberTest
 {
   VTKIMUActorCallback *VTKIMUActorCallback::New()
   {

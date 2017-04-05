@@ -35,10 +35,10 @@ namespace IMU
     int16_t m_acc[3];
     int16_t m_mag[3];
 
-    Yukari::Maths::Vector3 m_positionAccum;
+    Maths::Vector3 m_positionAccum;
 
   private:
-    Yukari::Common::LoggingService::Logger m_logger;
+    Common::LoggingService::Logger m_logger;
   };
 }
 }

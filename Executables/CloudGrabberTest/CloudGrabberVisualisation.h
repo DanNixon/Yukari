@@ -8,7 +8,7 @@
 
 namespace Yukari
 {
-namespace CloudGrabberTestApp
+namespace CloudGrabberTest
 {
   class CloudGrabberVisualisation
   {

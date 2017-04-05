@@ -38,7 +38,7 @@ using namespace boost::qvm;
 using namespace Yukari::Common;
 using namespace Yukari::IMU;
 using namespace Yukari::Maths;
-using namespace Yukari::IMUGrabberTestApp;
+using namespace Yukari::IMUGrabberTest;
 namespace po = boost::program_options;
 
 int runRawData(const std::string &portName, unsigned int baud);

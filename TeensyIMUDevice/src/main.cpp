@@ -12,7 +12,7 @@
 
 Scheduler g_scheduler;
 
-MSP g_msp(Serial);
+MSP g_msp(MSP_SERIAL);
 
 BMP085 g_barometer;
 float g_temperature;
@@ -61,7 +61,9 @@ void taskDMP()
   {
     // reset so we can continue cleanly
     g_imu.resetFIFO();
-    Serial.println(F("FIFO overflow!"));
+#ifdef DEBUG
+    DEBUG_SERIAL.println(F("FIFO overflow!"));
+#endif
   }
   // otherwise, check for DMP data ready interrupt (this should happen frequently)
   else if (mpuIntStatus & 0x02)
@@ -105,65 +107,103 @@ void taskBarometer()
 
 void taskPrintData()
 {
+#ifdef DEBUG
   // Device orientation as quaternion
-  Serial.print("quat\t");
-  Serial.print(g_quat.w);
-  Serial.print("\t");
-  Serial.print(g_quat.x);
-  Serial.print("\t");
-  Serial.print(g_quat.y);
-  Serial.print("\t");
-  Serial.println(g_quat.z);
+  DEBUG_SERIAL.print("quat\t");
+  DEBUG_SERIAL.print(g_quat.w);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.print(g_quat.x);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.print(g_quat.y);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.println(g_quat.z);
 
   // Linear acceleration
-  Serial.print("a\t");
-  Serial.print(m_accel.x);
-  Serial.print("\t");
-  Serial.print(m_accel.y);
-  Serial.print("\t");
-  Serial.println(m_accel.z);
+  DEBUG_SERIAL.print("a\t");
+  DEBUG_SERIAL.print(m_accel.x);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.print(m_accel.y);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.println(m_accel.z);
 
   // Linear acceleration without gravity
-  Serial.print("areal\t");
-  Serial.print(m_realAccel.x);
-  Serial.print("\t");
-  Serial.print(m_realAccel.y);
-  Serial.print("\t");
-  Serial.println(m_realAccel.z);
+  DEBUG_SERIAL.print("areal\t");
+  DEBUG_SERIAL.print(m_realAccel.x);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.print(m_realAccel.y);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.println(m_realAccel.z);
 
   // Linear acceleration without gravity and corrected for orientation
-  Serial.print("aworld\t");
-  Serial.print(m_worldAccel.x);
-  Serial.print("\t");
-  Serial.print(m_worldAccel.y);
-  Serial.print("\t");
-  Serial.println(m_worldAccel.z);
+  DEBUG_SERIAL.print("aworld\t");
+  DEBUG_SERIAL.print(m_worldAccel.x);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.print(m_worldAccel.y);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.println(m_worldAccel.z);
 
   // BMP180 data
-  Serial.print("T/P/Alt\t");
-  Serial.print(g_temperature);
-  Serial.print("\t");
-  Serial.print(g_pressure);
-  Serial.print("\t");
-  Serial.println(g_altitude);
+  DEBUG_SERIAL.print("T/P/Alt\t");
+  DEBUG_SERIAL.print(g_temperature);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.print(g_pressure);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.println(g_altitude);
+#endif
 }
+
+void taskMSP()
+{
+  g_msp.loop();
+}
+
+struct MSPOrientationPayload
+{
+  int16_t w;
+  int16_t i;
+  int16_t j;
+  int16_t k;
+};
 
 void setup()
 {
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH);
 
-  /* Init serial */
-  Serial.begin(9600);
-  while (!Serial)
+/* Init serial */
+#ifdef DEBUG
+  DEBUG_SERIAL.begin(DEBUG_BAUD);
+  while (!DEBUG_SERIAL)
     delay(5);
+#endif /* DEBUG */
 
   /* Init MSP */
+  MSP_SERIAL.begin(MSP_BAUD);
   g_msp.setOnMessage([](MSP::Direction dir, MSP::Command cmd, uint8_t *buff, uint8_t len) {
-    Serial.println((uint8_t)dir);
-    Serial.println((uint8_t)cmd);
-    Serial.println(buff[0]);
-    digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+    bool incomming = dir == MSP::Direction::TO_DEVICE;
+
+    // TODO
+    DEBUG_SERIAL.print("in=");
+    DEBUG_SERIAL.println(incomming);
+    DEBUG_SERIAL.print("dir=");
+    DEBUG_SERIAL.println((uint8_t)dir, HEX);
+    DEBUG_SERIAL.print("cmd=");
+    DEBUG_SERIAL.println((uint8_t)cmd, HEX);
+    DEBUG_SERIAL.print("len=");
+    DEBUG_SERIAL.println(len);
+    for (uint8_t i = 0; i < len; i++)
+    {
+      DEBUG_SERIAL.print(buff[i], HEX);
+      DEBUG_SERIAL.print(' ');
+    }
+    DEBUG_SERIAL.println();
+
+    MSPOrientationPayload p;
+    p.w = 1000;
+    p.i = 1500;
+    p.j = -1000;
+    p.k = -100;
+    g_msp.sendPacket(MSP::Command::Y_RAW_IMU, (uint8_t *)&p, sizeof(MSPOrientationPayload));
   });
 
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
@@ -173,12 +213,15 @@ void setup()
 #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
   /* Init i2c bus (Fast Wire) */
   Fastwire::setup(400, true);
-#endif
+#endif /* I2CDEV_IMPLEMENTATION */
 
+#ifndef DISABLE_SENSORS
   /* Init IMU */
   g_imu.initialize();
-  Serial.print("IMU init: ");
-  Serial.println(g_imu.testConnection());
+#ifdef DEBUG
+  DEBUG_SERIAL.print("IMU init: ");
+  DEBUG_SERIAL.println(g_imu.testConnection());
+#endif /* DEBUG */
 
   g_imu.setFullScaleAccelRange(MPU9150_ACCEL_FS_16);
   g_imu.setFullScaleGyroRange(MPU9150_GYRO_FS_2000);
@@ -198,20 +241,29 @@ void setup()
 
   /* Init barometer */
   g_barometer.initialize();
-  Serial.print("Barometer init: ");
-  Serial.println(g_barometer.testConnection());
+#ifdef DEBUG
+  DEBUG_SERIAL.print("Barometer init: ");
+  DEBUG_SERIAL.println(g_barometer.testConnection());
+#endif /* DEBUG */
+#endif /* DISABLE_SENSORS */
 
   /* Init scheduler */
   g_scheduler.addTask(&taskBlink, Scheduler::HzToUsInterval(5.0f));
+  g_scheduler.addTask(&taskMSP, Scheduler::HzToUsInterval(100.0f));
+#ifndef DISABLE_SENSORS
   if (dmpStatus == 0)
     g_scheduler.addTask(&taskDMP, Scheduler::HzToUsInterval(100.0f));
   g_scheduler.addTask(&taskBarometer, Scheduler::HzToUsInterval(10.0f));
-  g_scheduler.addTask(&taskPrintData, Scheduler::HzToUsInterval(10.0f));
-  /* g_scheduler.addTask(&taskMSP, Scheduler::HzToUsInterval(50.0f)); */
-  g_scheduler.print(Serial);
+#endif /* DISABLE_SENSORS */
+#ifdef DEBUG
+  /* g_scheduler.addTask(&taskPrintData, Scheduler::HzToUsInterval(10.0f)); */
+  g_scheduler.print(DEBUG_SERIAL);
+#endif /* DEBUG */
 
-  Serial.println("Up");
   digitalWrite(LED_PIN, LOW);
+#ifdef DEBUG
+  DEBUG_SERIAL.println("Ready");
+#endif /* DEBUG */
 }
 
 void loop()

@@ -2,7 +2,7 @@
 
 namespace Yukari
 {
-namespace CloudGrabberTestApp
+namespace CloudGrabberTest
 {
   CloudGrabberVisualisation::CloudGrabberVisualisation(
       Yukari::CloudCapture::ICloudGrabber_sptr grabber)

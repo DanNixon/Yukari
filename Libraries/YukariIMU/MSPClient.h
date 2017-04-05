@@ -5,6 +5,8 @@
 #include <serial/serial.h>
 #include <vector>
 
+#include <YukariCommon/LoggingService.h>
+
 namespace Yukari
 {
 namespace IMU
@@ -26,7 +28,7 @@ namespace IMU
     /**
      * @brief Commands for custom MSP interface
      *
-     * Some are from "original" MSP, some are custom (prefixed with "_Y").
+     * Some are from "original" MSP, some are custom (prefixed with "Y_").
      */
     enum MSPCommand
     {
@@ -68,7 +70,10 @@ namespace IMU
     bool requestData(MSPCommand command, Payload &payload);
 
   private:
+    Common::LoggingService::Logger m_logger;
     serial::Serial &m_port;
   };
 }
 }
+
+std::ostream &operator<<(std::ostream &str, const Yukari::IMU::MSPClient::Payload &payload);

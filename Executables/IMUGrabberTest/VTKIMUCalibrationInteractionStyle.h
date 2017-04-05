@@ -7,7 +7,7 @@
 
 namespace Yukari
 {
-namespace IMUGrabberTestApp
+namespace IMUGrabberTest
 {
   class VTKIMUCalibrationInteractionStyle : public vtkInteractorStyleTrackballCamera
   {

@@ -74,10 +74,11 @@ add_subdirectory(Libraries/YukariProcessing)
 add_subdirectory(Executables/CapturePointClouds)
 add_subdirectory(Executables/CloudGrabberTest)
 add_subdirectory(Executables/IMUGrabberTest)
+add_subdirectory(Executables/MSPTest)
 add_subdirectory(Executables/PCDToMesh)
 add_subdirectory(Executables/PCDViewer)
 add_subdirectory(Executables/PointCloudAlignment)
-add_subdirectory(Executables/TriggerTestApp)
+add_subdirectory(Executables/TriggerTest)
 
 # Docs
 add_doxygen(
