@@ -19,6 +19,7 @@ set(SOURCES
   MSPClient.cpp)
 
 set(LIB_DEPS
+  YukariCommon
   YukariMaths
   serial)
 
