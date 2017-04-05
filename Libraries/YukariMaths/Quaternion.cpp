@@ -16,12 +16,12 @@ namespace Maths
     set_identity(*this);
   }
 
-  Quaternion::Quaternion(float i, float j, float k, float w)
+  Quaternion::Quaternion(float w, float i, float j, float k)
   {
-    m_values[0] = i;
-    m_values[1] = j;
-    m_values[2] = k;
-    m_values[3] = w;
+    m_values[0] = w;
+    m_values[1] = i;
+    m_values[2] = j;
+    m_values[3] = k;
   }
 
   Quaternion::Quaternion(const Vector3 &axis, float angle, AngleUnit unit)

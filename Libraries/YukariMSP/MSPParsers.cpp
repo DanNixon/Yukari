@@ -24,8 +24,8 @@ namespace MSP
     return s.v;
   }
 
-  bool MSPParsers::ParseRawIMUPayload(const MSPClient::Payload &payload, int16_t *gyro, int16_t *acc,
-                                      int16_t *mag)
+  bool MSPParsers::ParseRawIMUPayload(const MSPClient::Payload &payload, int16_t *gyro,
+                                      int16_t *acc, int16_t *mag)
   {
     if (payload.size() != 18)
       return false;
@@ -78,8 +78,29 @@ namespace MSP
 
   bool MSPParsers::ParseQuaternion(const MSPClient::Payload &payload, Quaternion &quat)
   {
-    /* TODO */
-    return false;
+    static const size_t DATA_LENGTH = 8;
+
+    if (payload.size() != DATA_LENGTH)
+      return false;
+
+    union {
+      struct
+      {
+        int16_t w;
+        int16_t i;
+        int16_t j;
+        int16_t k;
+      } q;
+
+      uint8_t data[DATA_LENGTH];
+    } u;
+
+    std::copy(payload.begin(), payload.end(), u.data);
+
+    quat = Quaternion((float)u.q.w / 1000.0f, (float)u.q.i / 1000.0f, (float)u.q.j / 1000.0f,
+                      (float)u.q.k / 1000.0f);
+
+    return true;
   }
 }
 }

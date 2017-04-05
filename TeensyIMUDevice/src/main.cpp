@@ -170,8 +170,8 @@ void setup()
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH);
 
-/* Init serial */
 #ifdef DEBUG
+  /* Init debug serial */
   DEBUG_SERIAL.begin(DEBUG_BAUD);
   while (!DEBUG_SERIAL)
     delay(5);
@@ -180,11 +180,7 @@ void setup()
   /* Init MSP */
   MSP_SERIAL.begin(MSP_BAUD);
   g_msp.setOnMessage([](MSP::Direction dir, MSP::Command cmd, uint8_t *buff, uint8_t len) {
-    bool incomming = dir == MSP::Direction::TO_DEVICE;
-
-    // TODO
-    DEBUG_SERIAL.print("in=");
-    DEBUG_SERIAL.println(incomming);
+#ifdef DEBUG
     DEBUG_SERIAL.print("dir=");
     DEBUG_SERIAL.println((uint8_t)dir, HEX);
     DEBUG_SERIAL.print("cmd=");
@@ -197,13 +193,23 @@ void setup()
       DEBUG_SERIAL.print(' ');
     }
     DEBUG_SERIAL.println();
+#endif
 
-    MSPOrientationPayload p;
-    p.w = 1000;
-    p.i = 1500;
-    p.j = -1000;
-    p.k = -100;
-    g_msp.sendPacket(MSP::Command::Y_RAW_IMU, (uint8_t *)&p, sizeof(MSPOrientationPayload));
+    switch (cmd)
+    {
+    case MSP::Command::Y_ORIENTATION:
+    {
+      MSPOrientationPayload p;
+      p.w = g_quat.w * 1000;
+      p.i = g_quat.x * 1000;
+      p.j = g_quat.y * 1000;
+      p.k = g_quat.z * 1000;
+      g_msp.sendPacket(MSP::Command::Y_RAW_IMU, (uint8_t *)&p, sizeof(MSPOrientationPayload));
+      break;
+    }
+    default:
+      break;
+    }
   });
 
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
@@ -249,14 +255,14 @@ void setup()
 
   /* Init scheduler */
   g_scheduler.addTask(&taskBlink, Scheduler::HzToUsInterval(5.0f));
-  g_scheduler.addTask(&taskMSP, Scheduler::HzToUsInterval(100.0f));
+  g_scheduler.addTask(&taskMSP, 0);
 #ifndef DISABLE_SENSORS
   if (dmpStatus == 0)
-    g_scheduler.addTask(&taskDMP, Scheduler::HzToUsInterval(100.0f));
+    g_scheduler.addTask(&taskDMP, 0);
   g_scheduler.addTask(&taskBarometer, Scheduler::HzToUsInterval(10.0f));
 #endif /* DISABLE_SENSORS */
 #ifdef DEBUG
-  /* g_scheduler.addTask(&taskPrintData, Scheduler::HzToUsInterval(10.0f)); */
+  g_scheduler.addTask(&taskPrintData, Scheduler::HzToUsInterval(10.0f));
   g_scheduler.print(DEBUG_SERIAL);
 #endif /* DEBUG */
 
