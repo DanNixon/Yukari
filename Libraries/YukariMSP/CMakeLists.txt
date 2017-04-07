@@ -10,6 +10,7 @@ set(SOURCES
 
 set(LIB_DEPS
   YukariCommon
+  YukariMaths
   serial)
 
 set(TESTS

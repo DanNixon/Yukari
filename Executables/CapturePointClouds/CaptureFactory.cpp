@@ -11,7 +11,7 @@
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/DummyIMUGrabber.h>
 #include <YukariIMU/MSPGrabberAttitude.h>
-#include <YukariIMU/MSPGrabberIMU.h>
+#include <YukariIMU/TeensyIMUDevice.h>
 
 using namespace Yukari::CaptureTriggers;
 using namespace Yukari::CloudCapture;
@@ -77,8 +77,8 @@ namespace CaptureApp
         imu = std::make_shared<DummyIMUGrabber>();
       else if (type == "attitude")
         imu = std::make_shared<MSPGrabberAttitude>(port, baud);
-      else if (type == "imu")
-        imu = std::make_shared<MSPGrabberIMU>(port, baud);
+      else if (type == "teensy")
+        imu = std::make_shared<TeensyIMUDevice>(port, baud);
       else
         logger->warn("Unknown IMU grabber type");
 
