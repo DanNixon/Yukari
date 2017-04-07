@@ -209,6 +209,21 @@ void setup()
 
     switch (cmd)
     {
+    case MSP::Command::Y_RAW_IMU:
+    {
+      /* TODO */
+      break;
+    }
+    case MSP::Command::Y_LINEAR_ACC_REAL:
+    {
+      /* TODO */
+      break;
+    }
+    case MSP::Command::Y_LINEAR_ACC_WORLD:
+    {
+      /* TODO */
+      break;
+    }
     case MSP::Command::Y_ORIENTATION:
     {
       uint8_t pkt[8];
