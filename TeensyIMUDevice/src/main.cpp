@@ -32,6 +32,10 @@ VectorInt16 m_accel;
 VectorInt16 m_realAccel;
 VectorInt16 m_worldAccel;
 
+#ifdef TEAPOT
+uint8_t g_teapotPacket[14] = {'$', 0x02, 0, 0, 0, 0, 0, 0, 0, 0, 0x00, 0x00, '\r', '\n'};
+#endif /* TEAPOT */
+
 void dmpDataReady()
 {
   g_mpuInterrupt = true;
@@ -105,9 +109,9 @@ void taskBarometer()
   g_altitude = g_barometer.getAltitude(g_pressure);
 }
 
+#ifdef DEBUG
 void taskPrintData()
 {
-#ifdef DEBUG
   // Device orientation as quaternion
   DEBUG_SERIAL.print("quat\t");
   DEBUG_SERIAL.print(g_quat.w);
@@ -149,33 +153,41 @@ void taskPrintData()
   DEBUG_SERIAL.print(g_pressure);
   DEBUG_SERIAL.print("\t");
   DEBUG_SERIAL.println(g_altitude);
-#endif
 }
+#endif /* DEBUG */
+
+#ifdef TEAPOT
+void taskTeapot()
+{
+  g_teapotPacket[2] = g_dmpFIFOBuffer[0];
+  g_teapotPacket[3] = g_dmpFIFOBuffer[1];
+  g_teapotPacket[4] = g_dmpFIFOBuffer[4];
+  g_teapotPacket[5] = g_dmpFIFOBuffer[5];
+  g_teapotPacket[6] = g_dmpFIFOBuffer[8];
+  g_teapotPacket[7] = g_dmpFIFOBuffer[9];
+  g_teapotPacket[8] = g_dmpFIFOBuffer[12];
+  g_teapotPacket[9] = g_dmpFIFOBuffer[13];
+
+  DEBUG_SERIAL.write(g_teapotPacket, 14);
+}
+#endif /* TEAPOT */
 
 void taskMSP()
 {
   g_msp.loop();
 }
 
-struct MSPOrientationPayload
-{
-  int16_t w;
-  int16_t i;
-  int16_t j;
-  int16_t k;
-};
-
 void setup()
 {
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH);
 
-#ifdef DEBUG
+#if defined(DEBUG) || defined(TEAPOT)
   /* Init debug serial */
   DEBUG_SERIAL.begin(DEBUG_BAUD);
   while (!DEBUG_SERIAL)
     delay(5);
-#endif /* DEBUG */
+#endif /* DEBUG || TEAPOT */
 
   /* Init MSP */
   MSP_SERIAL.begin(MSP_BAUD);
@@ -199,12 +211,16 @@ void setup()
     {
     case MSP::Command::Y_ORIENTATION:
     {
-      MSPOrientationPayload p;
-      p.w = g_quat.w * 1000;
-      p.i = g_quat.x * 1000;
-      p.j = g_quat.y * 1000;
-      p.k = g_quat.z * 1000;
-      g_msp.sendPacket(MSP::Command::Y_RAW_IMU, (uint8_t *)&p, sizeof(MSPOrientationPayload));
+      uint8_t pkt[8];
+      pkt[0] = g_dmpFIFOBuffer[0];
+      pkt[1] = g_dmpFIFOBuffer[1];
+      pkt[2] = g_dmpFIFOBuffer[4];
+      pkt[3] = g_dmpFIFOBuffer[5];
+      pkt[4] = g_dmpFIFOBuffer[8];
+      pkt[5] = g_dmpFIFOBuffer[9];
+      pkt[6] = g_dmpFIFOBuffer[12];
+      pkt[7] = g_dmpFIFOBuffer[13];
+      g_msp.sendPacket(MSP::Command::Y_RAW_IMU, pkt, 8);
       break;
     }
     default:
@@ -256,6 +272,9 @@ void setup()
   /* Init scheduler */
   g_scheduler.addTask(&taskBlink, Scheduler::HzToUsInterval(5.0f));
   g_scheduler.addTask(&taskMSP, 0);
+#ifdef TEAPOT
+  g_scheduler.addTask(&taskTeapot, Scheduler::HzToUsInterval(50.0f));
+#endif
 #ifndef DISABLE_SENSORS
   if (dmpStatus == 0)
     g_scheduler.addTask(&taskDMP, 0);

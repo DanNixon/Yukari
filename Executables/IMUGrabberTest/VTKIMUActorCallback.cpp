@@ -40,7 +40,7 @@ namespace IMUGrabberTest
 
     /* Apply orientation */
     m_actor->SetOrientation(0, 0, 0);
-    m_actor->RotateWXYZ(angle, axis.x(), axis.z(), axis.z());
+    m_actor->RotateWXYZ(angle, -axis.x(), axis.z(), axis.y());
 
     /* Render */
     vtkRenderWindowInteractor *rendererInteractor = vtkRenderWindowInteractor::SafeDownCast(caller);

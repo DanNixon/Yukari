@@ -78,27 +78,24 @@ namespace MSP
 
   bool MSPParsers::ParseQuaternion(const MSPClient::Payload &payload, Quaternion &quat)
   {
-    static const size_t DATA_LENGTH = 8;
-
-    if (payload.size() != DATA_LENGTH)
+    if (payload.size() != 8)
       return false;
 
-    union {
-      struct
-      {
-        int16_t w;
-        int16_t i;
-        int16_t j;
-        int16_t k;
-      } q;
+    static const float F = 16384.0f;
 
-      uint8_t data[DATA_LENGTH];
-    } u;
+    float q[4];
+    q[0] = ((payload[0] << 8) | payload[1]) / F;
+    q[1] = ((payload[2] << 8) | payload[3]) / F;
+    q[2] = ((payload[4] << 8) | payload[5]) / F;
+    q[3] = ((payload[6] << 8) | payload[7]) / F;
 
-    std::copy(payload.begin(), payload.end(), u.data);
+    for (size_t i = 0; i < 4; i++)
+    {
+      if (q[i] >= 2)
+        q[i] = -4 + q[i];
+    }
 
-    quat = Quaternion((float)u.q.w / 1000.0f, (float)u.q.i / 1000.0f, (float)u.q.j / 1000.0f,
-                      (float)u.q.k / 1000.0f);
+    quat = Quaternion(q[0], q[1], q[2], q[3]);
 
     return true;
   }
