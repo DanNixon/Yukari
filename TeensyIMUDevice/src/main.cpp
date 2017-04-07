@@ -252,7 +252,11 @@ void setup()
   Fastwire::setup(400, true);
 #endif /* I2CDEV_IMPLEMENTATION */
 
-#ifndef DISABLE_SENSORS
+#ifdef GPS_SERIAL
+  GPS_SERIAL.begin(GPS_BAUD);
+#endif /* GPS_SERIAL */
+
+#ifndef DISABLE_IMU
   /* Init IMU */
   g_imu.initialize();
 #ifdef DEBUG
@@ -275,14 +279,16 @@ void setup()
 
     g_dmpFIFOPacketSize = g_imu.dmpGetFIFOPacketSize();
   }
+#endif /* DISABLE_IMU */
 
+#ifndef DISABLE_BARO
   /* Init barometer */
   g_barometer.initialize();
 #ifdef DEBUG
   DEBUG_SERIAL.print("Barometer init: ");
   DEBUG_SERIAL.println(g_barometer.testConnection());
 #endif /* DEBUG */
-#endif /* DISABLE_SENSORS */
+#endif /* DISABLE_BARO */
 
   /* Init scheduler */
   g_scheduler.addTask(&taskBlink, Scheduler::HzToUsInterval(5.0f));
@@ -290,11 +296,13 @@ void setup()
 #ifdef TEAPOT
   g_scheduler.addTask(&taskTeapot, Scheduler::HzToUsInterval(50.0f));
 #endif
-#ifndef DISABLE_SENSORS
+#ifndef DISABLE_IMU
   if (dmpStatus == 0)
     g_scheduler.addTask(&taskDMP, 0);
+#endif /* DISABLE_IMU */
+#ifndef DISABLE_BARO
   g_scheduler.addTask(&taskBarometer, Scheduler::HzToUsInterval(10.0f));
-#endif /* DISABLE_SENSORS */
+#endif /* DISABLE_BARO */
 #ifdef DEBUG
   g_scheduler.addTask(&taskPrintData, Scheduler::HzToUsInterval(10.0f));
   g_scheduler.print(DEBUG_SERIAL);
