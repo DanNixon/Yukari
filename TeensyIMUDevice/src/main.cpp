@@ -2,6 +2,7 @@
 
 #include <BMP085.h>
 #include <MPU9150_9Axis_MotionApps41.h>
+#include <TinyGPS++.h>
 #include <helper_3dmath.h>
 
 #include <MSP.h>
@@ -14,12 +15,19 @@ Scheduler g_scheduler;
 
 MSP g_msp(MSP_SERIAL);
 
+#ifndef DISABLE_GPS
+TinyGPSPlus g_gps;
+#endif /* DISABLE_GPS */
+
+#ifndef DISABLE_BARO
 BMP085 g_barometer;
 float g_temperature;
 float g_pressure;
 float g_altitude;
 int32_t g_baroLastMicros = 0;
+#endif /* DISABLE_BARO */
 
+#ifndef DISABLE_IMU
 MPU9150 g_imu;
 uint16_t g_dmpFIFOPacketSize;
 uint16_t g_dmpFIFOBufferSize;
@@ -31,15 +39,18 @@ VectorFloat m_gravity;
 VectorInt16 m_accel;
 VectorInt16 m_realAccel;
 VectorInt16 m_worldAccel;
+#endif /* DISABLE_IMU */
 
 #ifdef TEAPOT
 uint8_t g_teapotPacket[14] = {'$', 0x02, 0, 0, 0, 0, 0, 0, 0, 0, 0x00, 0x00, '\r', '\n'};
 #endif /* TEAPOT */
 
+#ifndef DISABLE_IMU
 void dmpDataReady()
 {
   g_mpuInterrupt = true;
 }
+#endif /* DISABLE_IMU */
 
 void taskBlink()
 {
@@ -48,6 +59,7 @@ void taskBlink()
   digitalWrite(LED_PIN, blinkState);
 }
 
+#ifndef DISABLE_IMU
 void taskDMP()
 {
   if (!g_mpuInterrupt && g_dmpFIFOBufferSize < g_dmpFIFOPacketSize)
@@ -90,7 +102,9 @@ void taskDMP()
     g_imu.dmpGetLinearAccelInWorld(&m_worldAccel, &m_realAccel, &g_quat);
   }
 }
+#endif /* DISABLE_IMU */
 
+#ifndef DISABLE_BARO
 void taskBarometer()
 {
   g_baroLastMicros = micros();
@@ -108,10 +122,12 @@ void taskBarometer()
   g_pressure = g_barometer.getPressure();
   g_altitude = g_barometer.getAltitude(g_pressure);
 }
+#endif /* DISABLE_BARO */
 
 #ifdef DEBUG
 void taskPrintData()
 {
+#ifndef DISABLE_IMU
   // Device orientation as quaternion
   DEBUG_SERIAL.print("quat\t");
   DEBUG_SERIAL.print(g_quat.w);
@@ -145,7 +161,9 @@ void taskPrintData()
   DEBUG_SERIAL.print(m_worldAccel.y);
   DEBUG_SERIAL.print("\t");
   DEBUG_SERIAL.println(m_worldAccel.z);
+#endif /* DISABLE_IMU */
 
+#ifndef DISABLE_BARO
   // BMP180 data
   DEBUG_SERIAL.print("T/P/Alt\t");
   DEBUG_SERIAL.print(g_temperature);
@@ -153,6 +171,7 @@ void taskPrintData()
   DEBUG_SERIAL.print(g_pressure);
   DEBUG_SERIAL.print("\t");
   DEBUG_SERIAL.println(g_altitude);
+#endif /* DISABLE_BARO */
 }
 #endif /* DEBUG */
 
@@ -172,6 +191,27 @@ void taskTeapot()
 }
 #endif /* TEAPOT */
 
+#ifndef DISABLE_GPS
+void taskFeedGPS()
+{
+  if (GPS_SERIAL.available())
+    g_gps.encode(GPS_SERIAL.read());
+}
+#endif /* DISABLE_GPS */
+
+#ifdef DEBUG
+void taskDebugPrintGPS()
+{
+  DEBUG_SERIAL.printf("Sats: %ln\n", g_gps.satellites.value());
+  DEBUG_SERIAL.printf("Lat: %ln\n", g_gps.location.lat());
+  DEBUG_SERIAL.printf("Lon: %ln\n", g_gps.location.lng());
+  DEBUG_SERIAL.printf("Age: %ln\n", g_gps.location.age());
+  DEBUG_SERIAL.printf("Alt: %lnm\n", g_gps.altitude.meters());
+  DEBUG_SERIAL.printf("Course: %lndeg\n", g_gps.course.deg());
+  DEBUG_SERIAL.printf("Speed: %lnknph\n", g_gps.speed.kmph());
+}
+#endif /* DEBUG */
+
 void taskMSP()
 {
   g_msp.loop();
@@ -187,6 +227,7 @@ void setup()
   DEBUG_SERIAL.begin(DEBUG_BAUD);
   while (!DEBUG_SERIAL)
     delay(5);
+  DEBUG_SERIAL.println("Serial up");
 #endif /* DEBUG || TEAPOT */
 
   /* Init MSP */
@@ -227,6 +268,7 @@ void setup()
     case MSP::Command::Y_ORIENTATION:
     {
       uint8_t pkt[8];
+#ifndef DISABLE_IMU
       pkt[0] = g_dmpFIFOBuffer[0];
       pkt[1] = g_dmpFIFOBuffer[1];
       pkt[2] = g_dmpFIFOBuffer[4];
@@ -235,6 +277,7 @@ void setup()
       pkt[5] = g_dmpFIFOBuffer[9];
       pkt[6] = g_dmpFIFOBuffer[12];
       pkt[7] = g_dmpFIFOBuffer[13];
+#endif /* DISABLE_IMU */
       g_msp.sendPacket(MSP::Command::Y_RAW_IMU, pkt, 8);
       break;
     }
@@ -242,6 +285,9 @@ void setup()
       break;
     }
   });
+#ifdef DEBUG
+  DEBUG_SERIAL.println("MSP init");
+#endif /* DEBUG */
 
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   /* Init i2c bus (Arduino) */
@@ -251,10 +297,16 @@ void setup()
   /* Init i2c bus (Fast Wire) */
   Fastwire::setup(400, true);
 #endif /* I2CDEV_IMPLEMENTATION */
+#ifdef DEBUG
+  DEBUG_SERIAL.println("Wire init");
+#endif /* DEBUG */
 
 #ifdef GPS_SERIAL
   GPS_SERIAL.begin(GPS_BAUD);
 #endif /* GPS_SERIAL */
+#ifdef DEBUG
+  DEBUG_SERIAL.println("GPS init");
+#endif /* DEBUG */
 
 #ifndef DISABLE_IMU
   /* Init IMU */
@@ -292,10 +344,13 @@ void setup()
 
   /* Init scheduler */
   g_scheduler.addTask(&taskBlink, Scheduler::HzToUsInterval(5.0f));
-  g_scheduler.addTask(&taskMSP, 0);
 #ifdef TEAPOT
   g_scheduler.addTask(&taskTeapot, Scheduler::HzToUsInterval(50.0f));
 #endif
+  g_scheduler.addTask(&taskMSP, 0);
+#ifndef DISABLE_GPS
+  g_scheduler.addTask(&taskFeedGPS, 0);
+#endif /* DISABLE_GPS */
 #ifndef DISABLE_IMU
   if (dmpStatus == 0)
     g_scheduler.addTask(&taskDMP, 0);
@@ -305,6 +360,7 @@ void setup()
 #endif /* DISABLE_BARO */
 #ifdef DEBUG
   g_scheduler.addTask(&taskPrintData, Scheduler::HzToUsInterval(10.0f));
+  g_scheduler.addTask(&taskDebugPrintGPS, Scheduler::HzToUsInterval(0.5f));
   g_scheduler.print(DEBUG_SERIAL);
 #endif /* DEBUG */
 
