@@ -202,13 +202,28 @@ void taskFeedGPS()
 #ifdef DEBUG
 void taskDebugPrintGPS()
 {
-  DEBUG_SERIAL.printf("Sats: %ln\n", g_gps.satellites.value());
-  DEBUG_SERIAL.printf("Lat: %ln\n", g_gps.location.lat());
-  DEBUG_SERIAL.printf("Lon: %ln\n", g_gps.location.lng());
-  DEBUG_SERIAL.printf("Age: %ln\n", g_gps.location.age());
-  DEBUG_SERIAL.printf("Alt: %lnm\n", g_gps.altitude.meters());
-  DEBUG_SERIAL.printf("Course: %lndeg\n", g_gps.course.deg());
-  DEBUG_SERIAL.printf("Speed: %lnknph\n", g_gps.speed.kmph());
+  DEBUG_SERIAL.printf("GPS stats\n");
+
+  if (g_gps.satellites.isUpdated())
+    DEBUG_SERIAL.printf("Sats: %ld\n", g_gps.satellites.value());
+
+  if (g_gps.location.isUpdated())
+  {
+    DEBUG_SERIAL.printf("Lat: %c%d.%ld\n", g_gps.location.rawLat().negative ? '-' : '+',
+                        g_gps.location.rawLat().deg, g_gps.location.rawLat().billionths);
+    DEBUG_SERIAL.printf("Lng: %c%d.%ld\n", g_gps.location.rawLat().negative ? '-' : '+',
+                        g_gps.location.rawLng().deg, g_gps.location.rawLng().billionths);
+    DEBUG_SERIAL.printf("Age: %ld\n", g_gps.location.age());
+  }
+
+  if (g_gps.altitude.isUpdated())
+    DEBUG_SERIAL.printf("Alt: %ldcm\n", g_gps.altitude.value());
+
+  if (g_gps.course.isUpdated())
+    DEBUG_SERIAL.printf("Course: %ld(deg/100)\n", g_gps.course.value());
+
+  if (g_gps.speed.isUpdated())
+    DEBUG_SERIAL.printf("Speed: %ld(knot/100)\n", g_gps.speed.value());
 }
 #endif /* DEBUG */
 
@@ -360,7 +375,7 @@ void setup()
 #endif /* DISABLE_BARO */
 #ifdef DEBUG
   g_scheduler.addTask(&taskPrintData, Scheduler::HzToUsInterval(10.0f));
-  g_scheduler.addTask(&taskDebugPrintGPS, Scheduler::HzToUsInterval(0.5f));
+  g_scheduler.addTask(&taskDebugPrintGPS, Scheduler::HzToUsInterval(1.0f));
   g_scheduler.print(DEBUG_SERIAL);
 #endif /* DEBUG */
 
