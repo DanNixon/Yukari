@@ -78,7 +78,7 @@ void taskDMP()
     // reset so we can continue cleanly
     g_imu.resetFIFO();
 #ifdef DEBUG
-    DEBUG_SERIAL.println(F("FIFO overflow!"));
+    DEBUG_SERIAL.printf("FIFO overflow!\n");
 #endif
   }
   // otherwise, check for DMP data ready interrupt (this should happen frequently)
@@ -129,43 +129,21 @@ void taskPrintData()
 {
 #ifndef DISABLE_IMU
   // Device orientation as quaternion
-  DEBUG_SERIAL.print("quat\t");
-  DEBUG_SERIAL.print(g_quat.w);
-  DEBUG_SERIAL.print("\t");
-  DEBUG_SERIAL.print(g_quat.x);
-  DEBUG_SERIAL.print("\t");
-  DEBUG_SERIAL.print(g_quat.y);
-  DEBUG_SERIAL.print("\t");
-  DEBUG_SERIAL.println(g_quat.z);
+  DEBUG_SERIAL.printf("quat\t%d\t%d\t%d\t%d\n", g_quat.w, g_quat.x, g_quat.z, g_quat.w);
 
   // Linear acceleration
-  DEBUG_SERIAL.print("a\t");
-  DEBUG_SERIAL.print(m_accel.x);
-  DEBUG_SERIAL.print("\t");
-  DEBUG_SERIAL.print(m_accel.y);
-  DEBUG_SERIAL.print("\t");
-  DEBUG_SERIAL.println(m_accel.z);
+  DEBUG_SERIAL.printf("a\t%d\t%d\t%d\n", m_accel.x, m_accel.y, m_accel.z);
 
   // Linear acceleration without gravity
-  DEBUG_SERIAL.print("areal\t");
-  DEBUG_SERIAL.print(m_realAccel.x);
-  DEBUG_SERIAL.print("\t");
-  DEBUG_SERIAL.print(m_realAccel.y);
-  DEBUG_SERIAL.print("\t");
-  DEBUG_SERIAL.println(m_realAccel.z);
+  DEBUG_SERIAL.printf("aReal\t%d\t%d\t%d\n", m_realAccel.x, m_realAccel.y, m_realAccel.z);
 
   // Linear acceleration without gravity and corrected for orientation
-  DEBUG_SERIAL.print("aworld\t");
-  DEBUG_SERIAL.print(m_worldAccel.x);
-  DEBUG_SERIAL.print("\t");
-  DEBUG_SERIAL.print(m_worldAccel.y);
-  DEBUG_SERIAL.print("\t");
-  DEBUG_SERIAL.println(m_worldAccel.z);
+  DEBUG_SERIAL.printf("aWorld\t%d\t%d\t%d\n", m_worldAccel.x, m_worldAccel.y, m_worldAccel.z);
 #endif /* DISABLE_IMU */
 
 #ifndef DISABLE_BARO
   // BMP180 data
-  DEBUG_SERIAL.print("T/P/Alt\t");
+  DEBUG_SERIAL.printf("T/P/Alt\t");
   DEBUG_SERIAL.print(g_temperature);
   DEBUG_SERIAL.print("\t");
   DEBUG_SERIAL.print(g_pressure);
@@ -211,7 +189,7 @@ void taskDebugPrintGPS()
   {
     DEBUG_SERIAL.printf("Lat: %c%d.%ld\n", g_gps.location.rawLat().negative ? '-' : '+',
                         g_gps.location.rawLat().deg, g_gps.location.rawLat().billionths);
-    DEBUG_SERIAL.printf("Lng: %c%d.%ld\n", g_gps.location.rawLat().negative ? '-' : '+',
+    DEBUG_SERIAL.printf("Lng: %c%d.%ld\n", g_gps.location.rawLng().negative ? '-' : '+',
                         g_gps.location.rawLng().deg, g_gps.location.rawLng().billionths);
     DEBUG_SERIAL.printf("Age: %ld\n", g_gps.location.age());
   }
@@ -242,25 +220,24 @@ void setup()
   DEBUG_SERIAL.begin(DEBUG_BAUD);
   while (!DEBUG_SERIAL)
     delay(5);
-  DEBUG_SERIAL.println("Serial up");
+  DEBUG_SERIAL.printf("Serial up\n");
 #endif /* DEBUG || TEAPOT */
 
   /* Init MSP */
   MSP_SERIAL.begin(MSP_BAUD);
   g_msp.setOnMessage([](MSP::Direction dir, MSP::Command cmd, uint8_t *buff, uint8_t len) {
 #ifdef DEBUG
-    DEBUG_SERIAL.print("dir=");
+    DEBUG_SERIAL.printf("dir=");
     DEBUG_SERIAL.println((uint8_t)dir, HEX);
-    DEBUG_SERIAL.print("cmd=");
+    DEBUG_SERIAL.printf("cmd=");
     DEBUG_SERIAL.println((uint8_t)cmd, HEX);
-    DEBUG_SERIAL.print("len=");
-    DEBUG_SERIAL.println(len);
+    DEBUG_SERIAL.printf("len=%d\n", len);
     for (uint8_t i = 0; i < len; i++)
     {
       DEBUG_SERIAL.print(buff[i], HEX);
       DEBUG_SERIAL.print(' ');
     }
-    DEBUG_SERIAL.println();
+    DEBUG_SERIAL.printf("\n");
 #endif
 
     switch (cmd)
@@ -301,7 +278,7 @@ void setup()
     }
   });
 #ifdef DEBUG
-  DEBUG_SERIAL.println("MSP init");
+  DEBUG_SERIAL.printf("MSP init\n");
 #endif /* DEBUG */
 
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
@@ -313,22 +290,22 @@ void setup()
   Fastwire::setup(400, true);
 #endif /* I2CDEV_IMPLEMENTATION */
 #ifdef DEBUG
-  DEBUG_SERIAL.println("Wire init");
+  DEBUG_SERIAL.printf("Wire init\n");
 #endif /* DEBUG */
 
 #ifdef GPS_SERIAL
   GPS_SERIAL.begin(GPS_BAUD);
 #endif /* GPS_SERIAL */
 #ifdef DEBUG
-  DEBUG_SERIAL.println("GPS init");
+  DEBUG_SERIAL.printf("GPS init\n");
+  DEBUG_SERIAL.printf("TinyGPS++ version: %s\n", TinyGPSPlus::libraryVersion());
 #endif /* DEBUG */
 
 #ifndef DISABLE_IMU
   /* Init IMU */
   g_imu.initialize();
 #ifdef DEBUG
-  DEBUG_SERIAL.print("IMU init: ");
-  DEBUG_SERIAL.println(g_imu.testConnection());
+  DEBUG_SERIAL.printf("IMU init: %d\n", g_imu.testConnection());
 #endif /* DEBUG */
 
   g_imu.setFullScaleAccelRange(MPU9150_ACCEL_FS_16);
@@ -352,8 +329,7 @@ void setup()
   /* Init barometer */
   g_barometer.initialize();
 #ifdef DEBUG
-  DEBUG_SERIAL.print("Barometer init: ");
-  DEBUG_SERIAL.println(g_barometer.testConnection());
+  DEBUG_SERIAL.printf("Barometer init: %d\n", g_barometer.testConnection());
 #endif /* DEBUG */
 #endif /* DISABLE_BARO */
 
@@ -381,7 +357,7 @@ void setup()
 
   digitalWrite(LED_PIN, LOW);
 #ifdef DEBUG
-  DEBUG_SERIAL.println("Ready");
+  DEBUG_SERIAL.printf("Ready\n");
 #endif /* DEBUG */
 }
 
