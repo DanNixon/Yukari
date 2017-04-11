@@ -14,30 +14,27 @@ namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE>
-  class GenerateMeshFromPointCloud
+  template <typename POINT_TYPE> class GenerateMeshFromPointCloud
   {
   public:
     typedef pcl::PointCloud<POINT_TYPE> Cloud;
+    typedef typename Cloud::ConstPtr CloudConstPtr;
 
     struct Parameters
     {
-      // TODO
+      /* TODO */
     };
 
   public:
     GenerateMeshFromPointCloud();
 
-    pcl::PolygonMesh::Ptr
-      estimateSingle(const Cloud::ConstPtr cloud,
-        const Parameters &params)
+    pcl::PolygonMesh::Ptr estimateSingle(const CloudConstPtr cloud, const Parameters &params)
     {
       /* Normal estimation */
       m_logger->trace("Normal estimation");
-      pcl::NormalEstimation<ICloudGrabber::PointType, pcl::Normal> n;
+      pcl::NormalEstimation<POINT_TYPE, pcl::Normal> n;
       pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);
-      pcl::search::KdTree<ICloudGrabber::PointType>::Ptr tree(
-        new pcl::search::KdTree<ICloudGrabber::PointType>);
+      typename pcl::search::KdTree<POINT_TYPE>::Ptr tree(new pcl::search::KdTree<POINT_TYPE>);
       tree->setInputCloud(cloud);
       n.setInputCloud(cloud);
       n.setSearchMethod(tree);
@@ -49,7 +46,7 @@ namespace Processing
       pcl::PointCloud<pcl::PointXYZ> c2;
       pcl::copyPointCloud(*cloud, c2);
       pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals(
-        new pcl::PointCloud<pcl::PointNormal>);
+          new pcl::PointCloud<pcl::PointNormal>);
       pcl::concatenateFields(c2, *normals, *cloud_with_normals);
 
       /* Create search tree */

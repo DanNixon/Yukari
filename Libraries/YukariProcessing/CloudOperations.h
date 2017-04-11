@@ -2,30 +2,30 @@
 
 #pragma once
 
-#include <pcl/point_types.h>
 #include <Eigen/Geometry>
 #include <pcl/common/transforms.h>
 #include <pcl/filters/filter.h>
+#include <pcl/point_types.h>
 
 namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE>
-  class CloudOperations
+  template <typename POINT_TYPE> class CloudOperations
   {
   public:
     typedef pcl::PointCloud<POINT_TYPE> Cloud;
+    typedef typename Cloud::Ptr CloudPtr;
 
   public:
-	  Cloud::Ptr ApplyTransformationToCloud(Cloud::Ptr cloud, Eigen::Matrix4f transform)
+    CloudPtr ApplyTransformationToCloud(CloudPtr cloud, Eigen::Matrix4f transform)
     {
-      Cloud::Ptr tc(new ICloudGrabber::Cloud());
+      CloudPtr tc(new Cloud());
       pcl::transformPointCloud(*cloud, *tc, transform);
       return tc;
     }
 
-	  Cloud::Ptr ConcatenateClouds(std::vector<Cloud::Ptr> clouds)
+    CloudPtr ConcatenateClouds(std::vector<CloudPtr> clouds)
     {
       if (clouds.empty())
         return nullptr;
@@ -33,7 +33,7 @@ namespace Processing
       if (clouds.size() == 1)
         return clouds.front();
 
-      Cloud::Ptr outputCloud(new ICloudGrabber::Cloud(*(clouds.front())));
+      CloudPtr outputCloud(new Cloud(*(clouds.front())));
 
       for (auto it = clouds.begin() + 1; it != clouds.end(); ++it)
         *outputCloud += *(*it);
@@ -41,9 +41,9 @@ namespace Processing
       return outputCloud;
     }
 
-	  Cloud::Ptr RemoveNaNFromCloud(Cloud::Ptr cloud)
+    CloudPtr RemoveNaNFromCloud(CloudPtr cloud)
     {
-      Cloud::Ptr fc(new Cloud());
+      CloudPtr fc(new Cloud());
 
       std::vector<int> indices;
       pcl::removeNaNFromPointCloud(*cloud, *fc, indices);
