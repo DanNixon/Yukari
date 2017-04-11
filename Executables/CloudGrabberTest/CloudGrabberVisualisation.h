@@ -14,12 +14,11 @@ namespace CloudGrabberTest
   class CloudGrabberVisualisation
   {
   public:
-    typedef pcl::PointCloud<POINT_TYPE> Cloud;
-    typedef typename Cloud::ConstPtr CloudConstPtr;
+    typedef typename CloudCapture::ICloudGrabber<POINT_TYPE>::Ptr GrabberPtr;
 
   public:
     CloudGrabberVisualisation(
-      std::shared_ptr<pcl::Grabber> grabber)
+      GrabberPtr grabber)
       : m_cloudViewer(new pcl::visualization::PCLVisualizer("Cloud grabber visualisation"))
       , m_grabber(grabber)
     {
@@ -29,37 +28,38 @@ namespace CloudGrabberTest
     {
       m_cloudViewer->setCameraFieldOfView(1.02259994f);
 
-      m_grabber->start();
+      m_grabber->open();
 
       bool cloudInit = false;
       while (!m_cloudViewer->wasStopped())
       {
         m_cloudViewer->spinOnce();
 
-        if (m_cloud)
+        auto cloud = m_grabber->grabCloud();
+
+        if (cloud)
         {
           if (!cloudInit)
           {
             m_cloudViewer->setPosition(0, 0);
-            m_cloudViewer->setSize(m_cloud->width, m_cloud->height);
+            m_cloudViewer->setSize(cloud->width, cloud->height);
             cloudInit = !cloudInit;
           }
 
-          if (!m_cloudViewer->updatePointCloud(m_cloud, "OpenNICloud"))
+          if (!m_cloudViewer->updatePointCloud(cloud, "OpenNICloud"))
           {
-            m_cloudViewer->addPointCloud(m_cloud, "OpenNICloud");
+            m_cloudViewer->addPointCloud(cloud, "OpenNICloud");
             m_cloudViewer->resetCameraViewpoint("OpenNICloud");
           }
         }
       }
 
-      m_grabber->stop();
+      m_grabber->close();
     }
 
   private:
     std::shared_ptr<pcl::visualization::PCLVisualizer> m_cloudViewer;
-    std::shared_ptr<pcl::Grabber> m_grabber;
-    CloudConstPtr m_cloud;
+    GrabberPtr m_grabber;
   };
 }
 }

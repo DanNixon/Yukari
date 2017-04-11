@@ -8,13 +8,14 @@
 
 #include <pcl/io/openni2/openni.h>
 #include <pcl/io/openni2_grabber.h>
+#include <pcl/common/transforms.h>
 
 namespace Yukari
 {
 namespace CloudCapture
 {
   template <typename POINT_TYPE>
-  class PCLCloudGrabberWrapper : public ICloudGrabber
+  class PCLCloudGrabberWrapper : public ICloudGrabber<POINT_TYPE>
   {
   public:
     PCLCloudGrabberWrapper(std::shared_ptr<pcl::Grabber> grabber, Eigen::Matrix4f transform = Eigen::Matrix4f::Identity())
@@ -23,7 +24,7 @@ namespace CloudCapture
     {
       boost::function<void(const ICloudGrabber::Cloud::ConstPtr &)> cloudCB =
         boost::bind(&PCLCloudGrabberWrapper::cloudCallback, this, _1);
-      m_cloudCBConnection = m_grabber.registerCallback(cloudCB);
+      m_cloudCBConnection = m_grabber->registerCallback(cloudCB);
     }
 
     virtual ~PCLCloudGrabberWrapper()
@@ -42,12 +43,12 @@ namespace CloudCapture
 
     virtual bool isOpen() const override
     {
-      return m_grabber.isRunning();
+      return m_grabber->isRunning();
     }
 
-    virtual pcl::PointCloud<POINT_TYPE>::ConstPtr grabCloud() override
+    virtual CloudConstPtr grabCloud() override
     {
-      pcl::PointCloud<POINT_TYPE>::ConstPtr rawCloud;
+      CloudConstPtr rawCloud;
 
       /* Get captured cloud */
       if (m_rawCloudMutex.try_lock())
@@ -60,14 +61,14 @@ namespace CloudCapture
         return nullptr;
 
       /* Transform captured cloud */
-      pcl::PointCloud<POINT_TYPE>::Ptr transformedCloud(new pcl::PointCloud<POINT_TYPE>());
+      CloudPtr transformedCloud(new pcl::PointCloud<POINT_TYPE>());
       pcl::transformPointCloud(*rawCloud, *transformedCloud, m_cloudTransform);
 
       return transformedCloud;
     }
 
   private:
-    void cloudCallback(pcl::PointCloud<POINT_TYPE>::ConstPtr cloud)
+    void cloudCallback(CloudConstPtr cloud)
     {
       std::lock_guard<std::mutex> lock(m_rawCloudMutex);
       m_rawCloud = cloud;
@@ -80,7 +81,7 @@ namespace CloudCapture
     boost::signals2::connection m_cloudCBConnection;
 
     std::mutex m_rawCloudMutex;
-    pcl::PointCloud<POINT_TYPE>::ConstPtr m_rawCloud;
+    CloudConstPtr m_rawCloud;
   };
 }
 }
