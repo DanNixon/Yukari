@@ -4,9 +4,7 @@ set(HEADERS
   CloudOperations.h
   GenerateMeshFromPointCloud.h)
 
-set(SOURCES
-  CloudOperations.cpp
-  GenerateMeshFromPointCloud.cpp)
+set(SOURCES)
 
 set(LIB_DEPS
   YukariCommon

@@ -3,14 +3,10 @@
 #include <boost/program_options.hpp>
 #include <pcl/console/parse.h>
 #include <pcl/console/print.h>
-
-#include <YukariCloudCapture/DummyCloudGrabber.h>
-#include <YukariCloudCapture/ICloudGrabber.h>
-#include <YukariCloudCapture/OpenNI2CloudGrabber.h>
+#include <pcl/io/openni2_grabber.h>
 
 #include "CloudGrabberVisualisation.h"
 
-using namespace Yukari::CloudCapture;
 namespace po = boost::program_options;
 
 int main(int argc, char **argv)
@@ -22,7 +18,7 @@ int main(int argc, char **argv)
   // clang-format off
   desc.add_options()
     ("help", "Show brief usage message")
-    ("grabber", po::value<std::string>()->default_value("dummy"), "Cloud grabber type")
+    ("grabber", po::value<std::string>()->default_value("openni2"), "Cloud grabber type")
     ("device", po::value<std::string>()->default_value(""), "Device ID (for OpenNI2 grabber)")
     ("depthmode", po::value<int>()->default_value(0), "Depth capture mode (for OpenNI2 grabber)")
     ("imagemode", po::value<int>()->default_value(0), "Image capture mode (for OpenNI2 grabber)");
@@ -48,26 +44,22 @@ int main(int argc, char **argv)
 
   /* Create cloud grabber */
   const std::string source = args["grabber"].as<std::string>();
-  ICloudGrabber_sptr grabber;
-  if (source == "dummy")
-  {
-    grabber = std::make_shared<DummyCloudGrabber>();
-  }
-  else if (source == "openni2")
+  std::shared_ptr<pcl::Grabber> grabber;
+  if (source == "openni2")
   {
     pcl::io::OpenNI2Grabber::Mode depthMode =
         pcl::io::OpenNI2Grabber::Mode(args["depthmode"].as<int>());
     pcl::io::OpenNI2Grabber::Mode imageMode =
         pcl::io::OpenNI2Grabber::Mode(args["imagemode"].as<int>());
 
-    grabber = std::make_shared<OpenNI2CloudGrabber>(args["device"].as<std::string>(), depthMode,
-                                                    imageMode);
+    auto g = std::make_shared<pcl::io::OpenNI2Grabber>(args["device"].as<std::string>(), depthMode, imageMode);
+    grabber = g;
   }
 
   if (!grabber)
     return 1;
 
-  Yukari::CloudGrabberTest::CloudGrabberVisualisation viewer(grabber);
+  Yukari::CloudGrabberTest::CloudGrabberVisualisation<pcl::PointXYZRGBA> viewer(grabber);
   viewer.run();
 
   return 0;

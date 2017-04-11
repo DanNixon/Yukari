@@ -16,7 +16,6 @@ add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 target_link_libraries(${PROJECT_NAME}
   YukariCaptureTriggers
   YukariCLI
-  YukariCloudCapture
   YukariCommon
   YukariIMU
   YukariMaths
