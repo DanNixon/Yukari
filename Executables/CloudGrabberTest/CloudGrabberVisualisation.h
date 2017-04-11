@@ -3,7 +3,8 @@
 #include <memory>
 
 #include <pcl/visualization/pcl_visualizer.h>
-#include <pcl/io/grabber.h>
+
+#include <YukariCloudCapture/ICloudGrabber.h>
 
 namespace Yukari
 {
