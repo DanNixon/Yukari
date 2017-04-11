@@ -6,7 +6,7 @@
 #include <pcl/io/openni2_grabber.h>
 
 #include <YukariCloudCapture/ICloudGrabber.h>
-#include <YukariCloudCapture/PCLCloudGrabberWrapper.h>
+#include <YukariCloudCapture/OpenNI2CloudGrabber.h>
 
 #include "CloudGrabberVisualisation.h"
 
@@ -56,8 +56,7 @@ int main(int argc, char **argv)
     pcl::io::OpenNI2Grabber::Mode imageMode =
         pcl::io::OpenNI2Grabber::Mode(args["imagemode"].as<int>());
 
-    auto pclGrabber = std::make_shared<pcl::io::OpenNI2Grabber>(args["device"].as<std::string>(), depthMode, imageMode);
-    grabber = std::make_shared<PCLCloudGrabberWrapper<pcl::PointXYZRGBA>>(pclGrabber);
+    grabber = std::make_shared<OpenNI2CloudGrabber<pcl::PointXYZRGBA>>(args["device"].as<std::string>(), depthMode, imageMode);
   }
 
   if (!grabber)

@@ -6,8 +6,7 @@
 
 #include <mutex>
 
-#include <pcl/io/openni2/openni.h>
-#include <pcl/io/openni2_grabber.h>
+#include <pcl/io/grabber.h>
 #include <pcl/common/transforms.h>
 
 namespace Yukari
