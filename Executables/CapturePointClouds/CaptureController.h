@@ -12,6 +12,8 @@
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/IIMUGrabber.h>
 
+#include "Types.h"
+
 namespace Yukari
 {
 namespace CaptureApp
@@ -36,7 +38,7 @@ namespace CaptureApp
       m_outputRootPath = root;
     }
 
-    inline void setCloudGrabber(CloudCapture::ICloudGrabber_sptr grabber)
+    inline void setCloudGrabber(CloudGrabberPtr grabber)
     {
       m_cloudGrabber = grabber;
     }
@@ -67,7 +69,7 @@ namespace CaptureApp
     boost::filesystem::path m_outputRootPath;
     boost::filesystem::path m_currentCaptureRootPath;
 
-    CloudCapture::ICloudGrabber_sptr m_cloudGrabber;
+    CloudGrabberPtr m_cloudGrabber;
     IMU::IIMUGrabber_sptr m_imuGrabber;
 
     std::vector<CaptureTriggers::ITrigger_sptr> m_startTriggers;

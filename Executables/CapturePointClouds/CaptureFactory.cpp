@@ -6,12 +6,13 @@
 
 #include <YukariCaptureTriggers/SignalTrigger.h>
 #include <YukariCaptureTriggers/TimelapseCaptureTrigger.h>
-#include <YukariCloudCapture/DummyCloudGrabber.h>
 #include <YukariCloudCapture/OpenNI2CloudGrabber.h>
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/DummyIMUGrabber.h>
 #include <YukariIMU/MSPGrabberAttitude.h>
 #include <YukariIMU/TeensyIMUDevice.h>
+
+#include "Types.h"
 
 using namespace Yukari::CaptureTriggers;
 using namespace Yukari::CloudCapture;
@@ -37,16 +38,12 @@ namespace CaptureApp
       std::string type = config.get<std::string>("capture.cloud.grabber", "dummy");
 
       /* Create cloud grabber */
-      ICloudGrabber_sptr grabber;
-      if (type == "dummy")
-      {
-        grabber = std::make_shared<DummyCloudGrabber>();
-      }
-      else if (type == "openni2")
+      CloudGrabberPtr grabber;
+      if (type == "openni2")
       {
         // TODO: add modes
         std::string deviceID = config.get<std::string>("capture.cloud.device", "");
-        grabber = std::make_shared<OpenNI2CloudGrabber>(
+        grabber = std::make_shared<OpenNI2CloudGrabber<pcl::PointXYZRGBA>>(
             deviceID, pcl::io::OpenNI2Grabber::OpenNI_Default_Mode,
             pcl::io::OpenNI2Grabber::OpenNI_Default_Mode);
       }

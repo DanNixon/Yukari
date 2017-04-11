@@ -3,7 +3,8 @@ project(CapturePointClouds)
 set(HEADERS
   CaptureCLI.h
   CaptureController.h
-  CaptureFactory.h)
+  CaptureFactory.h
+  Types.h)
 
 set(SOURCES
   CaptureCLI.cpp
