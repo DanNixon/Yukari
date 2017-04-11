@@ -18,14 +18,14 @@ namespace Processing
     typedef typename Cloud::Ptr CloudPtr;
 
   public:
-    CloudPtr ApplyTransformationToCloud(CloudPtr cloud, Eigen::Matrix4f transform)
+    static CloudPtr ApplyTransformationToCloud(CloudPtr cloud, Eigen::Matrix4f transform)
     {
       CloudPtr tc(new Cloud());
       pcl::transformPointCloud(*cloud, *tc, transform);
       return tc;
     }
 
-    CloudPtr ConcatenateClouds(std::vector<CloudPtr> clouds)
+    static CloudPtr ConcatenateClouds(std::vector<CloudPtr> clouds)
     {
       if (clouds.empty())
         return nullptr;
@@ -41,7 +41,7 @@ namespace Processing
       return outputCloud;
     }
 
-    CloudPtr RemoveNaNFromCloud(CloudPtr cloud)
+    static CloudPtr RemoveNaNFromCloud(CloudPtr cloud)
     {
       CloudPtr fc(new Cloud());
 
