@@ -15,8 +15,10 @@ namespace CloudCapture
   class OpenNI2CloudGrabber : public PCLCloudGrabberWrapper<POINT_TYPE>
   {
   public:
-    OpenNI2CloudGrabber(const std::string &device, pcl::io::OpenNI2Grabber::Mode depthMode, pcl::io::OpenNI2Grabber::Mode imageMode)
-      : PCLCloudGrabberWrapper(std::make_shared<pcl::io::OpenNI2Grabber>(device, depthMode, imageMode))
+    OpenNI2CloudGrabber(const std::string &device, pcl::io::OpenNI2Grabber::Mode depthMode,
+                        pcl::io::OpenNI2Grabber::Mode imageMode)
+        : PCLCloudGrabberWrapper(
+              std::make_shared<pcl::io::OpenNI2Grabber>(device, depthMode, imageMode))
     {
       m_cloudTransform(0, 0) = -1.0f;
       m_cloudTransform(1, 1) = -1.0f;

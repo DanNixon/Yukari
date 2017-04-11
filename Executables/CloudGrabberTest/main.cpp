@@ -56,7 +56,8 @@ int main(int argc, char **argv)
     pcl::io::OpenNI2Grabber::Mode imageMode =
         pcl::io::OpenNI2Grabber::Mode(args["imagemode"].as<int>());
 
-    grabber = std::make_shared<OpenNI2CloudGrabber<pcl::PointXYZRGBA>>(args["device"].as<std::string>(), depthMode, imageMode);
+    grabber = std::make_shared<OpenNI2CloudGrabber<pcl::PointXYZRGBA>>(
+        args["device"].as<std::string>(), depthMode, imageMode);
   }
 
   if (!grabber)

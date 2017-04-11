@@ -10,17 +10,15 @@ namespace Yukari
 {
 namespace CloudGrabberTest
 {
-  template <typename POINT_TYPE>
-  class CloudGrabberVisualisation
+  template <typename POINT_TYPE> class CloudGrabberVisualisation
   {
   public:
     typedef typename CloudCapture::ICloudGrabber<POINT_TYPE>::Ptr GrabberPtr;
 
   public:
-    CloudGrabberVisualisation(
-      GrabberPtr grabber)
-      : m_cloudViewer(new pcl::visualization::PCLVisualizer("Cloud grabber visualisation"))
-      , m_grabber(grabber)
+    CloudGrabberVisualisation(GrabberPtr grabber)
+        : m_cloudViewer(new pcl::visualization::PCLVisualizer("Cloud grabber visualisation"))
+        , m_grabber(grabber)
     {
     }
 

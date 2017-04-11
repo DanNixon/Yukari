@@ -8,9 +8,9 @@
 
 namespace Yukari
 {
-  namespace CaptureApp
-  {
-    typedef CloudCapture::ICloudGrabber<pcl::PointXYZRGBA> CloudGrabber;
-    typedef typename CloudGrabber::Ptr CloudGrabberPtr;
-  }
+namespace CaptureApp
+{
+  typedef CloudCapture::ICloudGrabber<pcl::PointXYZRGBA> CloudGrabber;
+  typedef typename CloudGrabber::Ptr CloudGrabberPtr;
+}
 }

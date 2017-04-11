@@ -6,23 +6,23 @@
 
 #include <mutex>
 
-#include <pcl/io/grabber.h>
 #include <pcl/common/transforms.h>
+#include <pcl/io/grabber.h>
 
 namespace Yukari
 {
 namespace CloudCapture
 {
-  template <typename POINT_TYPE>
-  class PCLCloudGrabberWrapper : public ICloudGrabber<POINT_TYPE>
+  template <typename POINT_TYPE> class PCLCloudGrabberWrapper : public ICloudGrabber<POINT_TYPE>
   {
   public:
-    PCLCloudGrabberWrapper(std::shared_ptr<pcl::Grabber> grabber, Eigen::Matrix4f transform = Eigen::Matrix4f::Identity())
-      : m_grabber(grabber)
-      , m_cloudTransform(transform)
+    PCLCloudGrabberWrapper(std::shared_ptr<pcl::Grabber> grabber,
+                           Eigen::Matrix4f transform = Eigen::Matrix4f::Identity())
+        : m_grabber(grabber)
+        , m_cloudTransform(transform)
     {
       boost::function<void(const ICloudGrabber::Cloud::ConstPtr &)> cloudCB =
-        boost::bind(&PCLCloudGrabberWrapper::cloudCallback, this, _1);
+          boost::bind(&PCLCloudGrabberWrapper::cloudCallback, this, _1);
       m_cloudCBConnection = m_grabber->registerCallback(cloudCB);
     }
 

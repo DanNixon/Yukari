@@ -10,8 +10,7 @@ namespace Yukari
 {
 namespace CloudCapture
 {
-  template <typename POINT_TYPE>
-  class ICloudGrabber
+  template <typename POINT_TYPE> class ICloudGrabber
   {
   public:
     typedef std::shared_ptr<ICloudGrabber<POINT_TYPE>> Ptr;
