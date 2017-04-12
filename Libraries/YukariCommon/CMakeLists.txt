@@ -2,6 +2,7 @@ project(YukariCommon)
 
 set(HEADERS
   LoggingService.h
+  MapHelpers.h
   NamedDistLogSink.h
   SignalBroker.h
   StringParsers.h)
@@ -15,7 +16,8 @@ set(LIB_DEPS
   ${Boost_LIBRARIES})
 
 set(TESTS
-  test/StringParsersTest.cpp)
+  test/StringParsersTest.cpp
+  test/MapHelpersTest.cpp)
 
 set(TEST_DEPS
   ${PROJECT_NAME}

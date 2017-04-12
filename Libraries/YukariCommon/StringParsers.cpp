@@ -12,14 +12,14 @@ namespace Yukari
     {
       auto log = LoggingService::Instance().getLogger("StringParsers");
 
-      boost::regex expression("(\\w+)\\s*\\(\\s*(.*)\\s*\\)");
+      boost::regex expression("(\\w+)\\s*(\\(\\s*(.*)\\s*\\))?");
 
       boost::cmatch what;
       if (boost::regex_match(input.c_str(), what, expression))
       {
-        log->trace("Got parameter name: \"{}\", parameter list: \"{}\"", what[1], what[2]);
+        log->trace("Got parameter name: \"{}\", parameter list: \"{}\"", what[1], what[3]);
         command = what[1];
-        return (what[2].length() == 0) ? true : ParseParameterList(what[2], parameters);
+        return (what[3].length() == 0) ? true : ParseParameterList(what[3], parameters);
       }
       else
       {
@@ -50,7 +50,7 @@ namespace Yukari
         flags |= boost::match_prev_avail;
         flags |= boost::match_not_bob;
       }
-      
+
       return !parameters.empty();
     }
   }

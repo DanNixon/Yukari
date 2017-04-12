@@ -51,7 +51,6 @@ namespace CaptureApp
     void addStartTrigger(CaptureTriggers::ITrigger_sptr trigger);
     void addStopTrigger(CaptureTriggers::ITrigger_sptr trigger);
     void addCaptureTrigger(CaptureTriggers::ITrigger_sptr trigger);
-    void addExitTrigger(CaptureTriggers::ITrigger_sptr trigger);
 
   private:
     void triggerCapture();
@@ -75,7 +74,6 @@ namespace CaptureApp
     std::vector<CaptureTriggers::ITrigger_sptr> m_startTriggers;
     std::vector<CaptureTriggers::ITrigger_sptr> m_stopTriggers;
     std::vector<CaptureTriggers::ITrigger_sptr> m_captureTriggers;
-    std::vector<CaptureTriggers::ITrigger_sptr> m_exitTriggers;
   };
 
   typedef std::shared_ptr<CaptureController> CaptureController_sptr;

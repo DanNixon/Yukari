@@ -1,6 +1,8 @@
 project(YukariCloudCapture)
 
 set(HEADERS
+  CloudGrabberFactory.h
+  DummyCloudGrabber.h
   ICloudGrabber.h
   OpenNI2CloudGrabber.h
   PCLCloudGrabberWrapper.h)

@@ -5,16 +5,20 @@
 #include <pcl/console/print.h>
 #include <pcl/io/openni2_grabber.h>
 
-#include <YukariCloudCapture/ICloudGrabber.h>
-#include <YukariCloudCapture/OpenNI2CloudGrabber.h>
+#include <YukariCloudCapture/CloudGrabberFactory.h>
+#include <YukariCommon/StringParsers.h>
+#include <YukariCommon/LoggingService.h>
 
 #include "CloudGrabberVisualisation.h"
 
 namespace po = boost::program_options;
 using namespace Yukari::CloudCapture;
+using namespace Yukari::Common;
 
 int main(int argc, char **argv)
 {
+  auto log = LoggingService::Instance().getLogger("main");
+
   /* Init command line */
   po::options_description desc("Allowed options");
   po::variables_map args;
@@ -22,10 +26,7 @@ int main(int argc, char **argv)
   // clang-format off
   desc.add_options()
     ("help", "Show brief usage message")
-    ("grabber", po::value<std::string>()->default_value("openni2"), "Cloud grabber type")
-    ("device", po::value<std::string>()->default_value(""), "Device ID (for OpenNI2 grabber)")
-    ("depthmode", po::value<int>()->default_value(0), "Depth capture mode (for OpenNI2 grabber)")
-    ("imagemode", po::value<int>()->default_value(0), "Image capture mode (for OpenNI2 grabber)");
+    ("grabber", po::value<std::string>()->default_value("dummy"), "Cloud grabber type");
   // clang-format on
 
   /* Parse command line args */
@@ -35,7 +36,7 @@ int main(int argc, char **argv)
   }
   catch (po::error const &e)
   {
-    std::cerr << e.what() << '\n';
+    log->critical("{}", e.what());
     return 1;
   }
 
@@ -47,24 +48,16 @@ int main(int argc, char **argv)
   }
 
   /* Create cloud grabber */
-  const std::string source = args["grabber"].as<std::string>();
-  typename ICloudGrabber<pcl::PointXYZRGBA>::Ptr grabber;
-  if (source == "openni2")
-  {
-    pcl::io::OpenNI2Grabber::Mode depthMode =
-        pcl::io::OpenNI2Grabber::Mode(args["depthmode"].as<int>());
-    pcl::io::OpenNI2Grabber::Mode imageMode =
-        pcl::io::OpenNI2Grabber::Mode(args["imagemode"].as<int>());
-
-    grabber = std::make_shared<OpenNI2CloudGrabber<pcl::PointXYZRGBA>>(
-        args["device"].as<std::string>(), depthMode, imageMode);
-  }
-
+  typename ICloudGrabber<pcl::PointXYZRGBA>::Ptr grabber = CloudGrabberFactory<pcl::PointXYZRGBA>::Create(args["grabber"].as<std::string>());
   if (!grabber)
+  {
+    log->critical("Failed to create cloud grabber");
     return 1;
+  }
 
   Yukari::CloudGrabberTest::CloudGrabberVisualisation<pcl::PointXYZRGBA> viewer(grabber);
   viewer.run();
 
+  log->info("Exiting");
   return 0;
 }

@@ -14,18 +14,48 @@ namespace Common
   {
     BOOST_AUTO_TEST_SUITE(StringParsersTest)
 
-    BOOST_AUTO_TEST_CASE(ParseCommand_EmptyString)
+      BOOST_AUTO_TEST_CASE(CleanString_1)
+    {
+      std::string s = "  test1234   \t";
+
+      StringParsers::CleanString(s);
+      BOOST_CHECK_EQUAL(s, std::string("test1234"));
+    }
+
+    BOOST_AUTO_TEST_CASE(CleanString_2)
+    {
+      std::string s = "T EST4 2781";
+
+      StringParsers::CleanString(s);
+      BOOST_CHECK_EQUAL(s, std::string("t est4 2781"));
+    }
+
+      BOOST_AUTO_TEST_CASE(ParseCommand_EmptyString)
     {
       std::string in = "";
 
       std::string cmd;
-    std::map<std::string, std::string> params;
+      std::map<std::string, std::string> params;
 
-    BOOST_CHECK(!StringParsers::ParseCommand(in, cmd, params));
+      BOOST_CHECK(!StringParsers::ParseCommand(in, cmd, params));
 
-    BOOST_CHECK_EQUAL(cmd, std::string(""));
+      BOOST_CHECK_EQUAL(cmd, std::string(""));
 
-    BOOST_CHECK_EQUAL(params.size(), 0);
+      BOOST_CHECK_EQUAL(params.size(), 0);
+    }
+
+    BOOST_AUTO_TEST_CASE(ParseCommand_CommandOnly)
+    {
+      std::string in = "TestThing";
+
+      std::string cmd;
+      std::map<std::string, std::string> params;
+
+      BOOST_CHECK(StringParsers::ParseCommand(in, cmd, params));
+
+      BOOST_CHECK_EQUAL(cmd, std::string("TestThing"));
+
+      BOOST_CHECK_EQUAL(params.size(), 0);
     }
 
     BOOST_AUTO_TEST_CASE(ParseCommand_NoParameters)
