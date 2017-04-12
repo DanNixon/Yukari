@@ -73,13 +73,15 @@ add_subdirectory(Libraries/YukariProcessing)
 
 # Executables
 add_subdirectory(Executables/CapturePointClouds)
-add_subdirectory(Executables/CloudGrabberTest)
-add_subdirectory(Executables/IMUGrabberTest)
-add_subdirectory(Executables/MSPTest)
-add_subdirectory(Executables/PCDToMesh)
 add_subdirectory(Executables/PCDViewer)
-add_subdirectory(Executables/PointCloudAlignment)
-add_subdirectory(Executables/TriggerTest)
+
+add_subdirectory(Executables/Processing/PCDToMesh)
+add_subdirectory(Executables/Processing/PointCloudAlignment)
+
+add_subdirectory(Executables/Test/CloudGrabberTest)
+add_subdirectory(Executables/Test/IMUGrabberTest)
+add_subdirectory(Executables/Test/MSPTest)
+add_subdirectory(Executables/Test/TriggerTest)
 
 # Docs
 add_doxygen(

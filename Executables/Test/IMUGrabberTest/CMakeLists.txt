@@ -18,4 +18,4 @@ target_link_libraries(${PROJECT_NAME}
   serial
   ${VTK_LIBRARIES})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Executables)
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Executables/Test)

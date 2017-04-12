@@ -1,4 +1,4 @@
-project(TriggerTestApp)
+project(MSPTest)
 
 set(HEADERS)
 
@@ -8,8 +8,8 @@ set(SOURCES
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
-  YukariCaptureTriggers
   YukariCommon
+  YukariMSP
   serial)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Executables)
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Executables/Test)

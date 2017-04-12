@@ -1,4 +1,4 @@
-project(PCDToMesh)
+project(TriggerTestApp)
 
 set(HEADERS)
 
@@ -8,7 +8,8 @@ set(SOURCES
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
+  YukariCaptureTriggers
   YukariCommon
-  ${PCL_LIBRARIES})
+  serial)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Executables)
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Executables/Test)
