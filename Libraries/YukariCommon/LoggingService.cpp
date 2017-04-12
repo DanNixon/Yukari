@@ -32,7 +32,18 @@ namespace Common
   LoggingService::LoggingService()
     : m_sink(std::make_shared<NamedDistLogSink_mt>())
   {
-    m_sink->addSink("console", std::make_shared<spdlog::sinks::wincolor_stderr_sink_mt>());
+#ifndef NDEBUG
+    auto stdoutSink = std::make_shared<spdlog::sinks::stdout_sink_mt>();
+#else
+    auto stdoutSink = std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>();
+#endif
+    stdoutSink->set_level(spdlog::level::trace);
+    m_sink->addSink("console", stdoutSink);
+
+#ifndef NDEBUG
+    m_sink->set_level(spdlog::level::trace);
+#endif
+
     getLogger("LoggingService")->info("Init logging service");
   }
 

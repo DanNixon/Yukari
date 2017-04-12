@@ -1,3 +1,3 @@
-#define BOOST_TEST_MODULE "YukariMSPTest"
+#define BOOST_TEST_MODULE "YukariCommonTest"
 
 #include <boost/test/included/unit_test.hpp>
