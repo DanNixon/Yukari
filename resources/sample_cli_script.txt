@@ -1,9 +1,0 @@
-data add value_a 3
-data add value_b 3
-data set value_a int 1,2,3
-data set value_b int 6,5,4
-data ls
-alg run add value_a->[a] value_b->[b] [z]->result
-data ls
-data get result int
-script reset
