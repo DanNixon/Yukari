@@ -1,12 +1,11 @@
 project(YukariCommon)
 
 set(HEADERS
-  ConfigurationManager.h
   LoggingService.h
+  NamedDistLogSink.h
   SignalBroker.h)
 
 set(SOURCES
-  ConfigurationManager.cpp
   LoggingService.cpp
   SignalBroker.cpp)
 

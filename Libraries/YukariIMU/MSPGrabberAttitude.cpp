@@ -19,7 +19,7 @@ namespace IMU
 {
   MSPGrabberAttitude::MSPGrabberAttitude(const std::string &port, unsigned int baud)
       : MSPGrabber(port, baud)
-      , m_logger(LoggingService::GetLogger("MSPGrabberIMU"))
+      , m_logger(LoggingService::Instance().getLogger("MSPGrabberIMU"))
   {
     m_mspPayload.reserve(6);
   }

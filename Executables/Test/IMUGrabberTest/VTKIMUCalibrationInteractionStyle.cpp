@@ -12,7 +12,7 @@ namespace IMUGrabberTest
   VTKIMUCalibrationInteractionStyle *VTKIMUCalibrationInteractionStyle::New()
   {
     VTKIMUCalibrationInteractionStyle *o = new VTKIMUCalibrationInteractionStyle();
-    o->m_logger = LoggingService::GetLogger("VTKIMUCalibrationInteractionStyle");
+    o->m_logger = LoggingService::Instance().getLogger("VTKIMUCalibrationInteractionStyle");
     o->m_logger->info("Press A for accelerometer calibration.");
     o->m_logger->info("Press M for magnetometer calibration.");
     return o;

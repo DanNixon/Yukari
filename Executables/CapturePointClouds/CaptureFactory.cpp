@@ -23,26 +23,26 @@ namespace Yukari
 {
 namespace CaptureApp
 {
-  CaptureController_sptr CaptureFactory::Create(Common::ConfigurationManager::Config config)
+  CaptureController_sptr CaptureFactory::Create(boost::program_options::variables_map config)
   {
-    auto logger = LoggingService::GetLogger("CaptureFactory");
+    auto logger = LoggingService::Instance().getLogger("CaptureFactory");
 
     CaptureController_sptr retVal = std::make_shared<CaptureController>();
 
     /* Get destination directory */
     retVal->setRootOutputDirectory(
-        boost::filesystem::path(config.get<std::string>("capture.output_root_directory", ".")));
+        boost::filesystem::path(config["dir"].as<std::string>()));
 
     /* Get cloud grabber */
     {
-      std::string type = config.get<std::string>("capture.cloud.grabber", "dummy");
+      std::string type = config["cloudgrabber"].as<std::string>();
 
       /* Create cloud grabber */
       CloudGrabberPtr grabber;
       if (type == "openni2")
       {
         // TODO: add modes
-        std::string deviceID = config.get<std::string>("capture.cloud.device", "");
+        std::string deviceID = config["opennidevice"].as<std::string>();
         grabber = std::make_shared<OpenNI2CloudGrabber<pcl::PointXYZRGBA>>(
             deviceID, pcl::io::OpenNI2Grabber::OpenNI_Default_Mode,
             pcl::io::OpenNI2Grabber::OpenNI_Default_Mode);
@@ -64,9 +64,9 @@ namespace CaptureApp
     /* Get IMU grabber */
     {
       /* Get data */
-      std::string type = config.get<std::string>("capture.imu.grabber", "dummy");
-      std::string port = config.get<std::string>("capture.imu.port", "");
-      int baud = config.get<int>("capture.imu.baud", 115200);
+      std::string type = config["imugrabber"].as<std::string>();
+      std::string port = config["imuport"].as<std::string>();
+      int baud = config["imubaud"].as<int>();
 
       /* Create IMU grabber */
       IIMUGrabber_sptr imu;

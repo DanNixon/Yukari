@@ -16,7 +16,7 @@ namespace po = boost::program_options;
 
 int main(int argc, char **argv)
 {
-  auto logger = LoggingService::GetLogger("main");
+  auto logger = LoggingService::Instance().getLogger("main");
 
   /* Init command line */
   po::options_description desc("Allowed options");

@@ -48,7 +48,7 @@ int runGrabber(IIMUGrabber_sptr grabber);
 
 int main(int argc, char **argv)
 {
-  auto logger = LoggingService::GetLogger("main");
+  auto logger = LoggingService::Instance().getLogger("main");
 
   /* Init command line */
   po::options_description desc("Allowed options");
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
 
 int runRawData(const std::string &portName, unsigned int baud)
 {
-  auto logger = LoggingService::GetLogger("runRawData");
+  auto logger = LoggingService::Instance().getLogger("runRawData");
 
   serial::Serial port(portName, baud);
   MSPClient msp(port);
@@ -195,7 +195,7 @@ vtkPolyData *generateCube(Vector3 d)
 
 int runGrabber(IIMUGrabber_sptr grabber)
 {
-  auto logger = LoggingService::GetLogger("runGrabber");
+  auto logger = LoggingService::Instance().getLogger("runGrabber");
 
   if (!grabber)
   {

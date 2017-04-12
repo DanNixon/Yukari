@@ -4,7 +4,6 @@
 
 #include <boost/program_options.hpp>
 
-#include <YukariCommon/ConfigurationManager.h>
 #include <YukariCommon/LoggingService.h>
 
 #include "CaptureCLI.h"
@@ -24,7 +23,12 @@ int main(int argc, char **argv)
   desc.add_options()
     ("help", "Show brief usage message")
     ("cli", "Start with CLI enabled")
-    ("config", po::value<std::string>(), "Configuration file to use");
+    ("dir", po::value<std::string>()->default_value("."), "Root output directory")
+    ("cloudgraber", po::value<std::string>()->default_value("dummy"), "Cloud grabber to use")
+    ("opennidevice", po::value<std::string>()->default_value(""), "OpenNI device ID")
+    ("imugrabber", po::value<std::string>()->default_value("dummy"), "IMU grabber to use")
+    ("imuport", po::value<std::string>(), "Serial port for IMU device")
+    ("imubaud", po::value<int>()->default_value(115200), "Serial port speed for IMU device");
   // clang-format on
 
   /* Parse command line args */
@@ -45,19 +49,11 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  /* Load configuration */
-  ConfigurationManager::Config config;
-  if (args.count("config"))
-    config = ConfigurationManager::Load(args["config"].as<std::string>());
-  else
-    config = ConfigurationManager::LoadFromAppDataDirectory("yukari", "capture_config.json");
-
   /* Configure logging */
-  LoggingService::Configure(config);
-  auto logger = LoggingService::GetLogger("YukariCaptureApp");
+  auto logger = LoggingService::Instance().getLogger("YukariCaptureApp");
 
   /* Create capture controller */
-  CaptureController_sptr captureController = CaptureFactory::Create(config);
+  CaptureController_sptr captureController = CaptureFactory::Create(args);
   if (!captureController)
   {
     logger->error("Could not create capture controller!");
@@ -66,7 +62,7 @@ int main(int argc, char **argv)
 
   /* Add CLI if required */
   std::shared_ptr<CaptureCLI> cli;
-  if (args.count("cli") || config.get<bool>("capture.cli", false))
+  if (args.count("cli"))
   {
     logger->info("Adding CLI");
     cli = std::make_shared<CaptureCLI>(std::cin, std::cout);
@@ -75,7 +71,7 @@ int main(int argc, char **argv)
   }
 
   logger->info("Capture controller: {}", *captureController);
-  LoggingService::Flush();
+  LoggingService::Instance().flush();
 
   /* Run capture */
   int exitCode = captureController->run();
@@ -86,6 +82,6 @@ int main(int argc, char **argv)
     cli->exit();
     cli->join();
   }
-  LoggingService::Flush();
+  LoggingService::Instance().flush();
   return exitCode;
 }

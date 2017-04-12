@@ -48,7 +48,7 @@ namespace IMU
 
   bool MSPGrabber::calibrateAccelerometer()
   {
-    auto logger = LoggingService::GetLogger("runFrameGrabber");
+    auto logger = LoggingService::Instance().getLogger("runFrameGrabber");
 
     if (!m_port.isOpen())
     {
@@ -66,7 +66,7 @@ namespace IMU
 
   bool MSPGrabber::calibrateMagnetometer()
   {
-    auto logger = LoggingService::GetLogger("runFrameGrabber");
+    auto logger = LoggingService::Instance().getLogger("runFrameGrabber");
 
     if (!m_port.isOpen())
     {

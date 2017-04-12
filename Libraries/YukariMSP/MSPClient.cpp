@@ -39,7 +39,7 @@ namespace MSP
 
     if (checksum != payload.back())
     {
-      LoggingService::GetLogger("MSPClient")
+      LoggingService::Instance().getLogger("MSPClient")
           ->error("Checksum mismatch: got {}, expected {}", payload.back(), checksum);
       return false;
     }
@@ -53,7 +53,7 @@ namespace MSP
   }
 
   MSPClient::MSPClient(serial::Serial &port)
-      : m_logger(LoggingService::GetLogger("MSPClient"))
+      : m_logger(LoggingService::Instance().getLogger("MSPClient"))
       , m_port(port)
   {
     m_port.setTimeout(serial::Timeout::max(), 1000, 0, 2000, 0);

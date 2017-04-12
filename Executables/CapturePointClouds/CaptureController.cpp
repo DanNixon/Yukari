@@ -17,7 +17,7 @@ namespace Yukari
 namespace CaptureApp
 {
   CaptureController::CaptureController()
-      : m_logger(LoggingService::GetLogger("CaptureController"))
+      : m_logger(LoggingService::Instance().getLogger("CaptureController"))
       , m_isRunning(false)
       , m_shouldStop(false)
       , m_shouldExit(false)
@@ -39,7 +39,7 @@ namespace CaptureApp
       if (m_shouldStop)
       {
         stop();
-        LoggingService::Flush();
+        LoggingService::Instance().flush();
       }
     }
 
@@ -48,7 +48,7 @@ namespace CaptureApp
       stop();
 
     /* Ensure log is flushed before exiting */
-    LoggingService::Flush();
+    LoggingService::Instance().flush();
 
     return 0;
   }
@@ -158,7 +158,7 @@ namespace CaptureApp
       if (!start())
       {
         m_logger->error("Failed to start capture");
-        LoggingService::Flush();
+        LoggingService::Instance().flush();
       }
     });
     m_startTriggers.push_back(trigger);
@@ -196,7 +196,7 @@ namespace CaptureApp
     }
 
     m_logger->trace("Capture triggered");
-    LoggingService::Flush();
+    LoggingService::Instance().flush();
 
     /* Grab point cloud */
     auto cloud = m_cloudGrabber->grabCloud();
@@ -246,7 +246,7 @@ namespace CaptureApp
     /* Increment frame counter */
     m_currentFrameCount++;
 
-    LoggingService::Flush();
+    LoggingService::Instance().flush();
   }
 
   std::ostream &operator<<(std::ostream &s, const CaptureController &o)

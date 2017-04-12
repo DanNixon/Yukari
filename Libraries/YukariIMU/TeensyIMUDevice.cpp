@@ -13,7 +13,7 @@ namespace IMU
 {
   TeensyIMUDevice::TeensyIMUDevice(const std::string &port, unsigned int baud)
       : MSPGrabber(port, baud)
-      , m_logger(LoggingService::GetLogger("TeensyIMUDevice"))
+      , m_logger(LoggingService::Instance().getLogger("TeensyIMUDevice"))
   {
     m_mspPayloadQuat.reserve(6);
   }

@@ -4,7 +4,7 @@
 
 int main()
 {
-  auto logger = Yukari::Common::LoggingService::GetLogger("PointCloudAlignment");
+  auto logger = Yukari::Common::LoggingService::Instance().getLogger("PointCloudAlignment");
 
   /* TODO */
 

@@ -5,10 +5,9 @@
 #include <memory>
 
 #include <spdlog/fmt/ostr.h>
-#include <spdlog/sinks/dist_sink.h>
 #include <spdlog/spdlog.h>
 
-#include "ConfigurationManager.h"
+#include "NamedDistLogSink.h"
 
 namespace Yukari
 {
@@ -18,23 +17,42 @@ namespace Common
   {
   public:
     typedef std::shared_ptr<spdlog::logger> Logger;
-    typedef spdlog::sinks::stdout_sink_st DefaultSink;
-    typedef std::shared_ptr<DefaultSink> DefaultSinkPtr;
 
   public:
-    static void Configure(ConfigurationManager::Config &config);
-    static void Disable();
-    static void Flush();
-    static Logger GetLogger(const std::string &name);
-
-  private:
-    static DefaultSinkPtr GetDefaultSink();
     static spdlog::level::level_enum GetLogLevelFromStr(const std::string &levelStr);
     static void EnsureLogDirectoryExists(const std::string &filename);
 
+  public:
+    static LoggingService &Instance()
+    {
+      static LoggingService instance;
+      return instance;
+    }
+
   private:
-    static DefaultSinkPtr m_defaultSink;
-    static std::shared_ptr<spdlog::sinks::dist_sink_st> m_sink;
+    LoggingService();
+    ~LoggingService();
+
+  public:
+    inline std::shared_ptr<NamedDistLogSink_mt> getSink()
+    {
+      return m_sink;
+    }
+
+    inline void disable()
+    {
+      m_sink->set_level(spdlog::level::off);
+    }
+
+    inline void flush()
+    {
+      m_sink->flush();
+    }
+
+    Logger getLogger(const std::string &name);
+
+  private:
+    std::shared_ptr<NamedDistLogSink_mt> m_sink;
   };
 }
 }

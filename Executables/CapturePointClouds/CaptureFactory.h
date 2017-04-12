@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <YukariCommon/ConfigurationManager.h>
+#include <boost/program_options.hpp>
 
 #include "CaptureController.h"
 
@@ -13,7 +13,7 @@ namespace CaptureApp
   class CaptureFactory
   {
   public:
-    static CaptureController_sptr Create(Common::ConfigurationManager::Config config);
+    static CaptureController_sptr Create(boost::program_options::variables_map config);
   };
 }
 }

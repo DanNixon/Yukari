@@ -6,9 +6,11 @@
 
 #include <YukariCommon/LoggingService.h>
 
+using namespace Yukari::Common;
+
 int main(int argc, char **argv)
 {
-  auto logger = Yukari::Common::LoggingService::GetLogger("PCDToMesh");
+  auto logger = LoggingService::Instance().getLogger("PCDToMesh");
 
   if (argc != 2)
   {

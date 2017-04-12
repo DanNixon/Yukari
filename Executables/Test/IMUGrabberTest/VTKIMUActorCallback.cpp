@@ -11,7 +11,7 @@ namespace IMUGrabberTest
   VTKIMUActorCallback *VTKIMUActorCallback::New()
   {
     VTKIMUActorCallback *o = new VTKIMUActorCallback;
-    o->m_logger = LoggingService::GetLogger("VTKIMUActorCallback");
+    o->m_logger = LoggingService::Instance().getLogger("VTKIMUActorCallback");
     o->m_logger->info("Blue is front of device, red is back of device");
     return o;
   }
