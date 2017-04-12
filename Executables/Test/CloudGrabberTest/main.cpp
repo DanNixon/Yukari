@@ -6,8 +6,8 @@
 #include <pcl/io/openni2_grabber.h>
 
 #include <YukariCloudCapture/CloudGrabberFactory.h>
-#include <YukariCommon/StringParsers.h>
 #include <YukariCommon/LoggingService.h>
+#include <YukariCommon/StringParsers.h>
 
 #include "CloudGrabberVisualisation.h"
 
@@ -48,7 +48,8 @@ int main(int argc, char **argv)
   }
 
   /* Create cloud grabber */
-  typename ICloudGrabber<pcl::PointXYZRGBA>::Ptr grabber = CloudGrabberFactory<pcl::PointXYZRGBA>::Create(args["grabber"].as<std::string>());
+  typename ICloudGrabber<pcl::PointXYZRGBA>::Ptr grabber =
+      CloudGrabberFactory<pcl::PointXYZRGBA>::Create(args["grabber"].as<std::string>());
   if (!grabber)
   {
     log->critical("Failed to create cloud grabber");

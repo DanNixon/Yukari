@@ -2,15 +2,15 @@
 
 #pragma once
 
-#include <string>
 #include <map>
+#include <string>
 
 #include <YukariCommon/MapHelpers.h>
 #include <YukariCommon/StringParsers.h>
 
+#include "DummyCloudGrabber.h"
 #include "ICloudGrabber.h"
 #include "OpenNI2CloudGrabber.h"
-#include "DummyCloudGrabber.h"
 
 namespace Yukari
 {
@@ -23,16 +23,17 @@ namespace CloudCapture
 
   public:
     static GrabberPtr Create(const std::string &fullCommand)
-  {
-    std::string type;
-    std::map<std::string, std::string> params;
-    if (!StringParsers::ParseCommand(fullCommand, type, params))
-      return nullptr;
+    {
+      std::string type;
+      std::map<std::string, std::string> params;
+      if (!StringParsers::ParseCommand(fullCommand, type, params))
+        return nullptr;
 
-    return Create(type, params);
-  }
+      return Create(type, params);
+    }
 
-    static GrabberPtr Create(const std::string &type, std::map<std::string, std::string> & parameters)
+    static GrabberPtr Create(const std::string &type,
+                             std::map<std::string, std::string> &parameters)
     {
       std::string lowerType = type;
       StringParsers::CleanString(lowerType);
@@ -40,17 +41,22 @@ namespace CloudCapture
       GrabberPtr grabber;
       if (lowerType == "dummy")
       {
-        size_t width = std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "width", "10"));
-        size_t height = std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "height", "10"));
+        size_t width =
+            std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "width", "10"));
+        size_t height =
+            std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "height", "10"));
 
         grabber = std::make_shared<DummyCloudGrabber<POINT_TYPE>>(width, height);
       }
       else if (lowerType == "openni2")
       {
-        pcl::io::OpenNI2Grabber::Mode depthMode = pcl::io::OpenNI2Grabber::Mode(std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "depthmode", "0")));
-        pcl::io::OpenNI2Grabber::Mode imageMode = pcl::io::OpenNI2Grabber::Mode(std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "imagemode", "0")));
+        pcl::io::OpenNI2Grabber::Mode depthMode = pcl::io::OpenNI2Grabber::Mode(
+            std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "depthmode", "0")));
+        pcl::io::OpenNI2Grabber::Mode imageMode = pcl::io::OpenNI2Grabber::Mode(
+            std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "imagemode", "0")));
 
-        grabber = std::make_shared<OpenNI2CloudGrabber<POINT_TYPE>>(MapHelpers::Get<std::string, std::string>(parameters, "device"), depthMode, imageMode);
+        grabber = std::make_shared<OpenNI2CloudGrabber<POINT_TYPE>>(
+            MapHelpers::Get<std::string, std::string>(parameters, "device"), depthMode, imageMode);
       }
 
       return grabber;

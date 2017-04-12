@@ -14,7 +14,9 @@ namespace Triggers
       : m_duration(duration)
       , m_enabled(false)
   {
-    LoggingService::Instance().getLogger("PeriodicTrigger")->debug("Init periodic trigger with duration {}s", m_duration.count());
+    LoggingService::Instance()
+        .getLogger("PeriodicTrigger")
+        ->debug("Init periodic trigger with duration {}s", m_duration.count());
   }
 
   void PeriodicTrigger::enable()

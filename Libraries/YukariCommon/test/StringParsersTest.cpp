@@ -14,7 +14,7 @@ namespace Common
   {
     BOOST_AUTO_TEST_SUITE(StringParsersTest)
 
-      BOOST_AUTO_TEST_CASE(CleanString_1)
+    BOOST_AUTO_TEST_CASE(CleanString_1)
     {
       std::string s = "  test1234   \t";
 
@@ -30,7 +30,7 @@ namespace Common
       BOOST_CHECK_EQUAL(s, std::string("t est4 2781"));
     }
 
-      BOOST_AUTO_TEST_CASE(ParseCommand_EmptyString)
+    BOOST_AUTO_TEST_CASE(ParseCommand_EmptyString)
     {
       std::string in = "";
 

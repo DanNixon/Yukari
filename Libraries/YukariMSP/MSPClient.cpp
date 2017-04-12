@@ -39,7 +39,8 @@ namespace MSP
 
     if (checksum != payload.back())
     {
-      LoggingService::Instance().getLogger("MSPClient")
+      LoggingService::Instance()
+          .getLogger("MSPClient")
           ->error("Checksum mismatch: got {}, expected {}", payload.back(), checksum);
       return false;
     }

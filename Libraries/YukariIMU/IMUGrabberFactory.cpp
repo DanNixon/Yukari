@@ -13,19 +13,20 @@ using namespace Yukari::Common;
 
 namespace Yukari
 {
-  namespace IMU
+namespace IMU
 {
-  IIMUGrabber_sptr IMUGrabberFactory::Create(const std::string & fullCommand)
-    {
-      std::string type;
-      std::map<std::string, std::string> params;
-      if (!StringParsers::ParseCommand(fullCommand, type, params))
-        return nullptr;
+  IIMUGrabber_sptr IMUGrabberFactory::Create(const std::string &fullCommand)
+  {
+    std::string type;
+    std::map<std::string, std::string> params;
+    if (!StringParsers::ParseCommand(fullCommand, type, params))
+      return nullptr;
 
-      return Create(type, params);
+    return Create(type, params);
   }
 
-  IIMUGrabber_sptr IMUGrabberFactory::Create(const std::string & type, std::map<std::string, std::string>& parameters)
+  IIMUGrabber_sptr IMUGrabberFactory::Create(const std::string &type,
+                                             std::map<std::string, std::string> &parameters)
   {
     std::string lowerType = type;
     StringParsers::CleanString(lowerType);
@@ -52,6 +53,5 @@ namespace Yukari
 
     return grabber;
   }
-
- }
+}
 }

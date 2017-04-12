@@ -6,8 +6,8 @@
 #include <boost/qvm/all.hpp>
 #include <serial/serial.h>
 
-#include <YukariTriggers/TriggerFactory.h>
 #include <YukariCommon/LoggingService.h>
+#include <YukariTriggers/TriggerFactory.h>
 
 using namespace Yukari::Triggers;
 using namespace Yukari::Common;

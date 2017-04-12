@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include <string>
 #include <map>
+#include <string>
 
 #include "IIMUGrabber.h"
 
@@ -15,7 +15,8 @@ namespace IMU
   {
   public:
     static IIMUGrabber_sptr Create(const std::string &fullCommand);
-    static IIMUGrabber_sptr Create(const std::string &type, std::map<std::string, std::string> & parameters);
+    static IIMUGrabber_sptr Create(const std::string &type,
+                                   std::map<std::string, std::string> &parameters);
   };
 }
 }

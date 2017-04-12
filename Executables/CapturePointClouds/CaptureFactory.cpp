@@ -27,13 +27,13 @@ namespace CaptureApp
     CaptureController_sptr retVal = std::make_shared<CaptureController>();
 
     /* Get destination directory */
-    retVal->setRootOutputDirectory(
-        boost::filesystem::path(config["dir"].as<std::string>()));
+    retVal->setRootOutputDirectory(boost::filesystem::path(config["dir"].as<std::string>()));
 
     /* Get cloud grabber */
     {
       /* Create cloud grabber */
-      CloudGrabberPtr grabber = CloudGrabberFactory<pcl::PointXYZRGBA>::Create(config["cloudgrabber"].as<std::string>());
+      CloudGrabberPtr grabber =
+          CloudGrabberFactory<pcl::PointXYZRGBA>::Create(config["cloudgrabber"].as<std::string>());
       if (!grabber)
       {
         logger->error("Failed to create cloud grabber");

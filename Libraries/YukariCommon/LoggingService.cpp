@@ -30,7 +30,7 @@ namespace Common
   }
 
   LoggingService::LoggingService()
-    : m_sink(std::make_shared<NamedDistLogSink_mt>())
+      : m_sink(std::make_shared<NamedDistLogSink_mt>())
   {
 #ifndef NDEBUG
     auto stdoutSink = std::make_shared<spdlog::sinks::stdout_sink_mt>();

@@ -12,19 +12,20 @@ using namespace Yukari::Common;
 
 namespace Yukari
 {
-  namespace Triggers
+namespace Triggers
 {
-    ITrigger_sptr TriggerFactory::Create(const std::string & fullCommand)
-    {
-      std::string type;
-      std::map<std::string, std::string> params;
-      if (!StringParsers::ParseCommand(fullCommand, type, params))
-        return nullptr;
+  ITrigger_sptr TriggerFactory::Create(const std::string &fullCommand)
+  {
+    std::string type;
+    std::map<std::string, std::string> params;
+    if (!StringParsers::ParseCommand(fullCommand, type, params))
+      return nullptr;
 
-      return Create(type, params);
+    return Create(type, params);
   }
 
-    ITrigger_sptr TriggerFactory::Create(const std::string & type, std::map<std::string, std::string>& parameters)
+  ITrigger_sptr TriggerFactory::Create(const std::string &type,
+                                       std::map<std::string, std::string> &parameters)
   {
     std::string lowerType = type;
     StringParsers::CleanString(lowerType);
@@ -32,7 +33,8 @@ namespace Yukari
     ITrigger_sptr trigger;
     if (lowerType == "periodic")
     {
-      int seconds = std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "seconds", "10"));
+      int seconds =
+          std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "seconds", "10"));
       trigger = std::make_shared<PeriodicTrigger>(std::chrono::seconds(seconds));
     }
     else if (lowerType == "signal")
@@ -43,6 +45,5 @@ namespace Yukari
 
     return trigger;
   }
-
- }
+}
 }
