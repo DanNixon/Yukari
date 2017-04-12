@@ -26,9 +26,7 @@
 #include <vtkSmartPointer.h>
 
 #include <YukariCommon/LoggingService.h>
-#include <YukariIMU/DummyIMUGrabber.h>
-#include <YukariIMU/MSPGrabberAttitude.h>
-#include <YukariIMU/TeensyIMUDevice.h>
+#include <YukariIMU/IMUGrabberFactory.h>
 #include <YukariMSP/MSPClient.h>
 #include <YukariMSP/MSPParsers.h>
 
@@ -57,9 +55,7 @@ int main(int argc, char **argv)
   // clang-format off
   desc.add_options()
     ("help", "Show brief usage message")
-    ("grabber", po::value<std::string>()->default_value("dummy"), "IMU grabber type")
-    ("port", po::value<std::string>(), "Serial port for IMU device")
-    ("baud", po::value<int>()->default_value(115200), "Baud rate used for serial communication");
+    ("grabber", po::value<std::string>()->default_value("dummy"), "IMU grabber type");
   // clang-format on
 
   /* Parse command line args */
@@ -69,7 +65,7 @@ int main(int argc, char **argv)
   }
   catch (po::error const &e)
   {
-    std::cerr << e.what() << '\n';
+    logger->critical("{}", e.what());
     return 1;
   }
 
@@ -83,79 +79,20 @@ int main(int argc, char **argv)
   /* List all ports */
   std::vector<serial::PortInfo> ports = serial::list_ports();
   for (auto it = ports.begin(); it != ports.end(); ++it)
-    printf("(%s, %s, %s)\n", it->port.c_str(), it->description.c_str(), it->hardware_id.c_str());
+    logger->info("({}, {}, {})", it->port, it->description, it->hardware_id);
 
   /* Start IMU test */
-  const std::string mode = args["grabber"].as<std::string>();
-  if (mode == "raw")
-    return runRawData(args["port"].as<std::string>(), args["baud"].as<int>());
-  else if (mode == "dummy")
-    return runGrabber(std::make_shared<DummyIMUGrabber>());
-  else if (mode == "attitude")
-    return runGrabber(std::make_shared<MSPGrabberAttitude>(args["port"].as<std::string>(),
-                                                           args["baud"].as<int>()));
-  else if (mode == "teensy")
-    return runGrabber(
-        std::make_shared<TeensyIMUDevice>(args["port"].as<std::string>(), args["baud"].as<int>()));
-  else
-    return 2;
-}
-
-int runRawData(const std::string &portName, unsigned int baud)
-{
-  auto logger = LoggingService::Instance().getLogger("runRawData");
-
-  serial::Serial port(portName, baud);
-  MSPClient msp(port);
-
-  if (port.isOpen())
+  auto grabber = IMUGrabberFactory::Create(args["grabber"].as<std::string>());
+  if (!grabber)
   {
-    logger->info("Port is open.");
-  }
-  else
-  {
-    logger->error("Port failed to open.");
-    return 2;
+    logger->critical("Failed to create IMU grabber");
+    return 1;
   }
 
-  logger->info("Wait for board to wake...");
-  std::this_thread::sleep_for(std::chrono::seconds(1));
-  logger->info("ok.");
+  /* Run visualisation */
+  runGrabber(grabber);
 
-  int16_t gyro[3];
-  int16_t acc[3];
-  int16_t mag[3];
-  float att[3];
-
-  while (true)
-  {
-    MSPClient::Payload p1, p2;
-    bool ok = msp.requestData(MSPClient::RAW_IMU, p1) &&
-              MSPParsers::ParseRawIMUPayload(p1, gyro, acc, mag) &&
-              msp.requestData(MSPClient::ATTITUDE, p2) && MSPParsers::ParseAttitudePayload(p2, att);
-
-    if (ok)
-    {
-      size_t i;
-      for (i = 0; i < 3; i++)
-        std::cout << std::setw(8) << gyro[i] << ' ';
-      for (i = 0; i < 3; i++)
-        std::cout << std::setw(8) << acc[i] << ' ';
-      for (i = 0; i < 3; i++)
-        std::cout << std::setw(8) << mag[i] << ' ';
-      for (i = 0; i < 3; i++)
-        std::cout << std::setw(8) << att[i] << ' ';
-      std::cout << '\n';
-    }
-    else
-      logger->warn("Failed to get MSP data!");
-
-    p1.clear();
-    p2.clear();
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  }
-
+  logger->info("Exiting.");
   return 0;
 }
 

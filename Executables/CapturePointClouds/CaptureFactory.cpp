@@ -8,9 +8,7 @@
 #include <YukariCaptureTriggers/TimelapseCaptureTrigger.h>
 #include <YukariCloudCapture/CloudGrabberFactory.h>
 #include <YukariCommon/LoggingService.h>
-#include <YukariIMU/DummyIMUGrabber.h>
-#include <YukariIMU/MSPGrabberAttitude.h>
-#include <YukariIMU/TeensyIMUDevice.h>
+#include <YukariIMU/IMUGrabberFactory.h>
 
 #include "Types.h"
 
@@ -48,22 +46,8 @@ namespace CaptureApp
 
     /* Get IMU grabber */
     {
-      /* Get data */
-      std::string type = config["imugrabber"].as<std::string>();
-      std::string port = config["imuport"].as<std::string>();
-      int baud = config["imubaud"].as<int>();
-
       /* Create IMU grabber */
-      IIMUGrabber_sptr imu;
-      if (type == "dummy")
-        imu = std::make_shared<DummyIMUGrabber>();
-      else if (type == "attitude")
-        imu = std::make_shared<MSPGrabberAttitude>(port, baud);
-      else if (type == "teensy")
-        imu = std::make_shared<TeensyIMUDevice>(port, baud);
-      else
-        logger->warn("Unknown IMU grabber type");
-
+      IIMUGrabber_sptr imu = IMUGrabberFactory::Create(config["imugrabber"].as<std::string>());
       if (!imu)
         logger->error("Failed to create IMU grabber");
 

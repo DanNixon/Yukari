@@ -4,6 +4,7 @@ set(HEADERS
   DummyIMUGrabber.h
   IIMUGrabber.h
   IMUFrame.h
+  IMUGrabberFactory.h
   MSPGrabber.h
   MSPGrabberAttitude.h
   TeensyIMUDevice.h)
@@ -11,6 +12,7 @@ set(HEADERS
 set(SOURCES
   DummyIMUGrabber.cpp
   IMUFrame.cpp
+  IMUGrabberFactory.cpp
   MSPGrabber.cpp
   MSPGrabberAttitude.cpp
   TeensyIMUDevice.cpp)
