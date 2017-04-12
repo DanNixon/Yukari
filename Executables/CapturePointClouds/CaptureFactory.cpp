@@ -4,8 +4,7 @@
 
 #include <memory>
 
-#include <YukariCaptureTriggers/SignalTrigger.h>
-#include <YukariCaptureTriggers/TimelapseCaptureTrigger.h>
+#include <YukariCaptureTriggers/TriggerFactory.h>
 #include <YukariCloudCapture/CloudGrabberFactory.h>
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/IMUGrabberFactory.h>

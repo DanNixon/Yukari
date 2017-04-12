@@ -1,15 +1,17 @@
-project(YukariCaptureTriggers)
+project(YukariTriggers)
 
 set(HEADERS
   CLITrigger.h
   ITrigger.h
+  PeriodicTrigger.h
   SignalTrigger.h
-  TimelapseCaptureTrigger.h)
+  TriggerFactory.h)
 
 set(SOURCES
   CLITrigger.cpp
+  PeriodicTrigger.cpp
   SignalTrigger.cpp
-  TimelapseCaptureTrigger.cpp)
+  TriggerFactory.cpp)
 
 set(LIB_DEPS
   YukariCLI

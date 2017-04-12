@@ -9,12 +9,12 @@
 
 namespace Yukari
 {
-namespace CaptureTriggers
+namespace Triggers
 {
-  class TimelapseCaptureTrigger : public ITrigger
+  class PeriodicTrigger : public ITrigger
   {
   public:
-    TimelapseCaptureTrigger(std::chrono::seconds duration);
+    PeriodicTrigger(std::chrono::seconds duration);
 
     virtual void enable() override;
     virtual void disable() override;

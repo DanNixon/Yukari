@@ -62,7 +62,6 @@ include_directories(Libraries
 add_subdirectory(ThirdParty/serial)
 
 # Libraries
-add_subdirectory(Libraries/YukariCaptureTriggers)
 add_subdirectory(Libraries/YukariCLI)
 add_subdirectory(Libraries/YukariCloudCapture)
 add_subdirectory(Libraries/YukariCommon)
@@ -70,6 +69,7 @@ add_subdirectory(Libraries/YukariIMU)
 add_subdirectory(Libraries/YukariMaths)
 add_subdirectory(Libraries/YukariMSP)
 add_subdirectory(Libraries/YukariProcessing)
+add_subdirectory(Libraries/YukariTriggers)
 
 # Executables
 add_subdirectory(Executables/CapturePointClouds)

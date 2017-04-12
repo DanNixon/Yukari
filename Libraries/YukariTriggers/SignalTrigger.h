@@ -7,7 +7,7 @@
 
 namespace Yukari
 {
-namespace CaptureTriggers
+namespace Triggers
 {
   class SignalTrigger : public ITrigger, public Common::ISignalSubscriber
   {

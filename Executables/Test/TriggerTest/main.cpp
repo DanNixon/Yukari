@@ -6,12 +6,10 @@
 #include <boost/qvm/all.hpp>
 #include <serial/serial.h>
 
-#include <YukariCaptureTriggers/ITrigger.h>
-#include <YukariCaptureTriggers/SignalTrigger.h>
-#include <YukariCaptureTriggers/TimelapseCaptureTrigger.h>
+#include <YukariTriggers/TriggerFactory.h>
 #include <YukariCommon/LoggingService.h>
 
-using namespace Yukari::CaptureTriggers;
+using namespace Yukari::Triggers;
 using namespace Yukari::Common;
 namespace po = boost::program_options;
 
@@ -26,9 +24,7 @@ int main(int argc, char **argv)
   // clang-format off
   desc.add_options()
     ("help", "Show brief usage message")
-    ("trigger", po::value<std::string>()->default_value(""), "Name of trigger to add")
-    ("seconds", po::value<int>()->default_value(1), "Timelapse duration in seconds")
-    ("signal", po::value<int>()->default_value(2), "POSIX signal number");
+    ("trigger", po::value<std::string>(), "Name of trigger to add");
   // clang-format on
 
   /* Parse command line args */
@@ -38,7 +34,7 @@ int main(int argc, char **argv)
   }
   catch (po::error const &e)
   {
-    std::cerr << e.what() << '\n';
+    logger->critical("{}", e.what());
     return 1;
   }
 
@@ -50,14 +46,7 @@ int main(int argc, char **argv)
   }
 
   /* Get trigger */
-  ITrigger_sptr trigger;
-  const std::string triggerName = args["trigger"].as<std::string>();
-  if (triggerName == "timelapse")
-    trigger =
-        std::make_shared<TimelapseCaptureTrigger>(std::chrono::seconds(args["seconds"].as<int>()));
-  else if (triggerName == "signal")
-    trigger = std::make_shared<SignalTrigger>(args["signal"].as<int>());
-
+  ITrigger_sptr trigger = TriggerFactory::Create(args["trigger"].as<std::string>());
   if (!trigger)
   {
     logger->error("No trigger!");
@@ -70,5 +59,7 @@ int main(int argc, char **argv)
   while (true)
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
+  logger->info("Exiting.");
+  trigger->disable();
   return 0;
 }

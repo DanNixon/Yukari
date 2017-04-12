@@ -7,7 +7,7 @@
 
 namespace Yukari
 {
-namespace CaptureTriggers
+namespace Triggers
 {
   class ITrigger
   {
