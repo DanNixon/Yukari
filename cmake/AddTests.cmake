@@ -3,7 +3,7 @@ function(AddTests PROJECT_UNDER_TEST TEST_FILES TEST_LIB_DEPS)
 
   add_executable(${test_name} test/main.cpp ${${TEST_FILES}})
 
-  target_link_libraries(${test_name} ${Boost_LIBRARIES} ${PROJECT_UNDER_TEST} ${${TEST_LIB_DEPS}})
+  target_link_libraries(${test_name} ${Boost_LIBRARIES} ${${TEST_LIB_DEPS}})
 
   set_target_properties(${test_name} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/test)

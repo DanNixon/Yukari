@@ -17,9 +17,12 @@ set(TESTS
   test/Vector3Test.cpp
   test/Vector4Test.cpp)
 
+set(TEST_DEPS
+  ${PROJECT_NAME})
+
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 include(AddTests)
-AddTests(${PROJECT_NAME} TESTS "")
+AddTests(${PROJECT_NAME} TESTS TEST_DEPS)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER Libraries)
