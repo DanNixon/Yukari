@@ -80,7 +80,6 @@ add_subdirectory(Executables/Processing/PointCloudAlignment)
 
 add_subdirectory(Executables/Test/CloudGrabberTest)
 add_subdirectory(Executables/Test/IMUGrabberTest)
-add_subdirectory(Executables/Test/MSPTest)
 add_subdirectory(Executables/Test/TriggerTest)
 
 # Docs

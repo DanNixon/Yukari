@@ -25,10 +25,7 @@ int main(int argc, char **argv)
     ("cli", "Start with CLI enabled")
     ("dir", po::value<std::string>()->default_value("."), "Root output directory")
     ("cloudgraber", po::value<std::string>()->default_value("dummy"), "Cloud grabber to use")
-    ("opennidevice", po::value<std::string>()->default_value(""), "OpenNI device ID")
-    ("imugrabber", po::value<std::string>()->default_value("dummy"), "IMU grabber to use")
-    ("imuport", po::value<std::string>(), "Serial port for IMU device")
-    ("imubaud", po::value<int>()->default_value(115200), "Serial port speed for IMU device");
+    ("imugrabber", po::value<std::string>()->default_value("dummy"), "IMU grabber to use");
   // clang-format on
 
   /* Parse command line args */
