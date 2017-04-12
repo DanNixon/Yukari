@@ -7,10 +7,10 @@
 
 #include <boost/filesystem/path.hpp>
 
-#include <YukariCaptureTriggers/ITrigger.h>
 #include <YukariCloudCapture/ICloudGrabber.h>
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/IIMUGrabber.h>
+#include <YukariTriggers/ITrigger.h>
 
 #include "Types.h"
 
@@ -33,9 +33,9 @@ namespace CaptureApp
       return m_isRunning;
     }
 
-    inline void setRootOutputDirectory(const boost::filesystem::path &root)
+    inline void setOutputDirectory(const boost::filesystem::path &root)
     {
-      m_outputRootPath = root;
+      m_outputDirectory = root;
     }
 
     inline void setCloudGrabber(CloudGrabberPtr grabber)
@@ -48,9 +48,7 @@ namespace CaptureApp
       m_imuGrabber = grabber;
     }
 
-    void addStartTrigger(CaptureTriggers::ITrigger_sptr trigger);
-    void addStopTrigger(CaptureTriggers::ITrigger_sptr trigger);
-    void addCaptureTrigger(CaptureTriggers::ITrigger_sptr trigger);
+    void addCaptureTrigger(Triggers::ITrigger_sptr trigger);
 
   private:
     void triggerCapture();
@@ -61,19 +59,14 @@ namespace CaptureApp
     Common::LoggingService::Logger m_logger;
 
     bool m_isRunning;
-    bool m_shouldStop;
-    bool m_shouldExit;
     size_t m_currentFrameCount;
 
-    boost::filesystem::path m_outputRootPath;
-    boost::filesystem::path m_currentCaptureRootPath;
+    boost::filesystem::path m_outputDirectory;
 
     CloudGrabberPtr m_cloudGrabber;
     IMU::IIMUGrabber_sptr m_imuGrabber;
 
-    std::vector<CaptureTriggers::ITrigger_sptr> m_startTriggers;
-    std::vector<CaptureTriggers::ITrigger_sptr> m_stopTriggers;
-    std::vector<CaptureTriggers::ITrigger_sptr> m_captureTriggers;
+    std::vector<Triggers::ITrigger_sptr> m_captureTriggers;
   };
 
   typedef std::shared_ptr<CaptureController> CaptureController_sptr;

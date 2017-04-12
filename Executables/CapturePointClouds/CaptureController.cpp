@@ -8,9 +8,9 @@
 
 #include <YukariIMU/IMUFrame.h>
 
-using namespace Yukari::CaptureTriggers;
 using namespace Yukari::Common;
 using namespace Yukari::IMU;
+using namespace Yukari::Triggers;
 
 namespace Yukari
 {
@@ -19,33 +19,19 @@ namespace CaptureApp
   CaptureController::CaptureController()
       : m_logger(LoggingService::Instance().getLogger("CaptureController"))
       , m_isRunning(false)
-      , m_shouldStop(false)
-      , m_shouldExit(false)
   {
   }
 
   int CaptureController::run()
   {
-    /* Enable exit triggers */
-    m_logger->info("Enabling exit triggers");
-    for (auto it = m_exitTriggers.begin(); it != m_exitTriggers.end(); ++it)
-      (*it)->enable();
+    start();
 
     /* Wait for termination signal */
-    while (!m_shouldExit)
-    {
+    while (m_isRunning)
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-      if (m_shouldStop)
-      {
-        stop();
-        LoggingService::Instance().flush();
-      }
-    }
-
     /* Ensure capture is stopped before exit */
-    if (m_isRunning)
-      stop();
+    stop();
 
     /* Ensure log is flushed before exiting */
     LoggingService::Instance().flush();
@@ -55,6 +41,12 @@ namespace CaptureApp
 
   bool CaptureController::start()
   {
+    if (m_isRunning)
+    {
+      m_logger->error("Already running");
+      return false;
+    }
+
     /* Open IMU grabber */
     m_logger->info("Opening IMU grabber");
     if (m_imuGrabber)
@@ -96,11 +88,9 @@ namespace CaptureApp
     stream.imbue(std::locale(std::locale::classic(), facet));
     stream << time;
 
-    m_currentCaptureRootPath = m_outputRootPath / stream.str();
-    m_logger->info("Capture root path: {}", m_currentCaptureRootPath);
-
     /* Ensure capture directory exists */
-    boost::filesystem::create_directories(m_currentCaptureRootPath);
+    m_logger->info("Capture path: {}", m_outputDirectory);
+    boost::filesystem::create_directories(m_outputDirectory);
     m_logger->debug("Capture root directory created");
 
     /* Reset frrame count */
@@ -108,16 +98,20 @@ namespace CaptureApp
 
     /* Set running flags */
     m_isRunning = true;
-    m_shouldStop = false;
 
     return true;
   }
 
   bool CaptureController::stop()
   {
+    if (!m_isRunning)
+    {
+      m_logger->error("Already stopped");
+      return false;
+    }
+
     /* Clear running flag */
     m_isRunning = false;
-    m_shouldStop = false;
 
     /* Disable capture triggers */
     m_logger->info("Disabling capture triggers");
@@ -137,7 +131,7 @@ namespace CaptureApp
     }
     else
     {
-      m_logger->info("No IMU grabber defined");
+      m_logger->debug("No IMU grabber defined");
     }
 
     /* Close cloud grabber */
@@ -152,38 +146,11 @@ namespace CaptureApp
     return true;
   }
 
-  void CaptureController::addStartTrigger(ITrigger_sptr trigger)
-  {
-    trigger->setHandler([this]() {
-      if (!start())
-      {
-        m_logger->error("Failed to start capture");
-        LoggingService::Instance().flush();
-      }
-    });
-    m_startTriggers.push_back(trigger);
-    m_logger->debug("Added start trigger");
-  }
-
-  void CaptureController::addStopTrigger(ITrigger_sptr trigger)
-  {
-    trigger->setHandler([this]() { m_shouldStop = true; });
-    m_stopTriggers.push_back(trigger);
-    m_logger->debug("Added stop trigger");
-  }
-
   void CaptureController::addCaptureTrigger(ITrigger_sptr trigger)
   {
     trigger->setHandler([this]() { triggerCapture(); });
     m_captureTriggers.push_back(trigger);
     m_logger->debug("Added capture trigger");
-  }
-
-  void CaptureController::addExitTrigger(ITrigger_sptr trigger)
-  {
-    trigger->setHandler([this]() { m_shouldExit = true; });
-    m_exitTriggers.push_back(trigger);
-    m_logger->debug("Added exit trigger");
   }
 
   void CaptureController::triggerCapture()
@@ -224,7 +191,7 @@ namespace CaptureApp
 
     /* Save cloud */
     boost::filesystem::path cloudFilename =
-        m_currentCaptureRootPath / (std::to_string(m_currentFrameCount) + "_cloud.pcd");
+        m_outputDirectory / (std::to_string(m_currentFrameCount) + "_cloud.pcd");
 
     m_logger->trace("Saving point cloud for frame {}: {}", m_currentFrameCount, cloudFilename);
     pcl::io::savePCDFileASCII(cloudFilename.string(), *cloud);
@@ -233,7 +200,7 @@ namespace CaptureApp
     if (m_imuGrabber)
     {
       boost::filesystem::path imuFilename =
-          m_currentCaptureRootPath / (std::to_string(m_currentFrameCount) + "_imu.txt");
+          m_outputDirectory / (std::to_string(m_currentFrameCount) + "_imu.txt");
 
       m_logger->trace("Saving IMU frame for frame {}: {}", m_currentFrameCount, imuFilename);
 
@@ -251,7 +218,7 @@ namespace CaptureApp
 
   std::ostream &operator<<(std::ostream &s, const CaptureController &o)
   {
-    s << "CloudCapture[out dir = " << o.m_outputRootPath
+    s << "CloudCapture[out dir = " << o.m_outputDirectory
       << ", cloud grabber = " << typeid(*(o.m_cloudGrabber)).name()
       << ", IMU grabber = " << (o.m_imuGrabber ? typeid(*(o.m_imuGrabber)).name() : "none")
       << ", capture triggers = [";
@@ -260,15 +227,6 @@ namespace CaptureApp
     {
       s << typeid(*(*(it++))).name();
       if (it != o.m_captureTriggers.end())
-        s << ", ";
-    }
-
-    s << "], exit triggers = [";
-
-    for (auto it = o.m_exitTriggers.begin(); it != o.m_exitTriggers.end();)
-    {
-      s << typeid(*(*(it++))).name();
-      if (it != o.m_exitTriggers.end())
         s << ", ";
     }
 
