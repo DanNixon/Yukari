@@ -166,7 +166,15 @@ namespace CaptureApp
     LoggingService::Instance().flush();
 
     /* Grab point cloud */
-    auto cloud = m_cloudGrabber->grabCloud();
+    static const size_t NUM_ATTEMPTS = 5;
+    size_t attempts = 0;
+    CloudConstPtr cloud;
+    while (!cloud && attempts < NUM_ATTEMPTS)
+    {
+      m_logger->trace("Grabbing point cloud, attempt {}", attempts);
+      cloud = m_cloudGrabber->grabCloud();
+      attempts++;
+    }
     if (!cloud)
     {
       m_logger->error("Failed to grab point cloud, frame will be skipped!");
