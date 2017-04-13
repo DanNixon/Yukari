@@ -28,9 +28,9 @@ namespace CloudCapture
 
       for (size_t i = 0; i < retVal->points.size(); ++i)
       {
-        retVal->points[i].x = 10 * rand() / (RAND_MAX + 1.0f);
-        retVal->points[i].y = 10 * rand() / (RAND_MAX + 1.0f);
-        retVal->points[i].z = 10 * rand() / (RAND_MAX + 1.0f);
+        retVal->points[i].x = 10 * std::rand() / (RAND_MAX + 1.0f);
+        retVal->points[i].y = 10 * std::rand() / (RAND_MAX + 1.0f);
+        retVal->points[i].z = 10 * std::rand() / (RAND_MAX + 1.0f);
 
         retVal->points[i].rgba = 0xFFFFFFFF;
       }

@@ -42,6 +42,11 @@ namespace IMU
 
     auto retVal = std::make_shared<IMUFrame>(frameDuration);
 
+    /* Random position */
+    retVal->position() =
+        Vector3(10 * std::rand() / (RAND_MAX + 1.0f), 10 * std::rand() / (RAND_MAX + 1.0f),
+                10 * std::rand() / (RAND_MAX + 1.0f));
+
     return retVal;
   }
 }
