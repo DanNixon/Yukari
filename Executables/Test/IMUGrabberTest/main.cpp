@@ -90,7 +90,8 @@ int main(int argc, char **argv)
   }
 
   // TODO
-  grabber->setOrientation(Yukari::Maths::Quaternion(Yukari::Maths::Vector3(0.0f, 0.0f, 1.0f), -90.0f, Yukari::Maths::DEGREES));
+  grabber->setPosition(Vector3(1.0f, 0.0f, 0.0f));
+  grabber->setOrientation(Quaternion(Vector3(0.0f, 0.0f, 1.0f), -90.0f, DEGREES));
 
   /* Run visualisation */
   runGrabberVIsualisation(grabber);

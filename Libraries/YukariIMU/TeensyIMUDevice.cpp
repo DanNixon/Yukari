@@ -46,10 +46,13 @@ namespace IMU
 
     auto retVal = std::make_shared<IMUFrame>(frameDuration);
 
-    /* Set orientation from attitude data */
+    /* Set orientation */
     Quaternion q;
     MSPParsers::ParseQuaternion(m_mspPayloadQuat, q);
     retVal->orientation() = q * m_transform.orientation();
+
+    /* Set position */
+    // TODO
 
     return retVal;
   }
