@@ -8,10 +8,12 @@
 #include <pcl/common/transforms.h>
 
 #include <YukariIMU/IMUFrame.h>
+#include <YukariProcessing/SpatialOperations.h>
 
 using namespace Yukari::Common;
 using namespace Yukari::IMU;
 using namespace Yukari::Triggers;
+using namespace Yukari::Processing;
 
 namespace Yukari
 {
@@ -203,11 +205,7 @@ namespace CaptureApp
     if (m_imuGrabber && m_transformMode == TransformMode::TRANSFORM_NOW)
     {
       m_logger->trace("Transforming cloud by IMU");
-      auto q = imu->orientation().toEigen();
-      q.x() = -q.x();
-      //q.y() = -q.y();
-      q.z() = -q.z();
-      pcl::transformPointCloud(*cloud, *cloud, imu->position().toEigen(), q);
+      pcl::transformPointCloud(*cloud, *cloud, imu->position().toEigen(), SpatialOperations::RotateQuaternionForCloud(imu->orientation().toEigen()));
     }
 
     /* Save cloud */

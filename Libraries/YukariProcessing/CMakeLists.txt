@@ -2,7 +2,8 @@ project(YukariProcessing)
 
 set(HEADERS
   CloudOperations.h
-  GenerateMeshFromPointCloud.h)
+  GenerateMeshFromPointCloud.h
+  SpatialOperations.h)
 
 set(SOURCES)
 
