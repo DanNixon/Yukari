@@ -42,7 +42,7 @@ using namespace Yukari::IMUGrabberTest;
 namespace po = boost::program_options;
 
 int runRawData(const std::string &portName, unsigned int baud);
-int runGrabber(IIMUGrabber_sptr grabber);
+int runGrabberVIsualisation(IIMUGrabber_sptr grabber);
 
 int main(int argc, char **argv)
 {
@@ -89,8 +89,11 @@ int main(int argc, char **argv)
     return 1;
   }
 
+  // TODO
+  grabber->setOrientation(Yukari::Maths::Quaternion(Yukari::Maths::Vector3(0.0f, 0.0f, 1.0f), -90.0f, Yukari::Maths::DEGREES));
+
   /* Run visualisation */
-  runGrabber(grabber);
+  runGrabberVIsualisation(grabber);
 
   logger->info("Exiting.");
   return 0;
@@ -130,15 +133,9 @@ vtkPolyData *generateCube(Vector3 d)
   return cube;
 }
 
-int runGrabber(IIMUGrabber_sptr grabber)
+int runGrabberVIsualisation(IIMUGrabber_sptr grabber)
 {
   auto logger = LoggingService::Instance().getLogger("runGrabber");
-
-  if (!grabber)
-  {
-    logger->error("No IMU grabber created");
-    return 2;
-  }
 
   grabber->open();
   if (grabber->isOpen())

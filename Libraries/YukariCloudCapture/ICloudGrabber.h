@@ -32,7 +32,7 @@ namespace CloudCapture
       return true;
     }
 
-    virtual CloudConstPtr grabCloud() = 0;
+    virtual CloudPtr grabCloud() = 0;
   };
 }
 }

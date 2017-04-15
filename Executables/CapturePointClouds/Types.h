@@ -16,6 +16,7 @@ namespace CaptureApp
   typedef typename CloudGrabber::Ptr CloudGrabberPtr;
 
   typedef pcl::PointCloud<PointType> Cloud;
+  typedef typename Cloud::Ptr CloudPtr;
   typedef typename Cloud::ConstPtr CloudConstPtr;
 }
 }

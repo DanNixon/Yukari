@@ -21,6 +21,13 @@ namespace CaptureApp
   class CaptureController
   {
   public:
+    enum class TransformMode: uint8_t
+    {
+      SAVE_TRANSFORM,
+      TRANSFORM_NOW
+    };
+
+  public:
     CaptureController();
 
     int run();
@@ -36,6 +43,11 @@ namespace CaptureApp
     inline void setOutputDirectory(const boost::filesystem::path &root)
     {
       m_outputDirectory = root;
+    }
+
+    inline void setTransformMode(TransformMode mode)
+    {
+      m_transformMode = mode;
     }
 
     inline void setCloudGrabber(CloudGrabberPtr grabber)
@@ -62,6 +74,8 @@ namespace CaptureApp
     size_t m_currentFrameCount;
 
     boost::filesystem::path m_outputDirectory;
+
+    TransformMode m_transformMode;
 
     CloudGrabberPtr m_cloudGrabber;
     IMU::IIMUGrabber_sptr m_imuGrabber;

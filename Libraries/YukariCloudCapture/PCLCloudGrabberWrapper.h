@@ -45,7 +45,7 @@ namespace CloudCapture
       return m_grabber->isRunning();
     }
 
-    virtual CloudConstPtr grabCloud() override
+    virtual CloudPtr grabCloud() override
     {
       CloudConstPtr rawCloud;
 

@@ -25,8 +25,9 @@ int main(int argc, char **argv)
     ("cli", "Start with CLI enabled")
     ("dir", po::value<std::string>()->default_value("."), "Root output directory")
     ("cloudgrabber", po::value<std::string>()->default_value("dummy"), "Cloud grabber to use")
-    ("imugrabber", po::value<std::string>()->default_value("dummy"), "IMU grabber to use")
-    ("capturetrigger", po::value<std::string>()->default_value("periodic(seconds=5)"), "Trigger for a single frame");
+    ("imugrabber", po::value<std::string>(), "IMU grabber to use")
+    ("capturetrigger", po::value<std::string>()->default_value("periodic(seconds=5)"), "Trigger for a single frame")
+    ("transform", "Transform the point cloud at time of capture (IMU frame is not saved when enabled)");
   // clang-format on
 
   /* Parse command line args */

@@ -17,7 +17,7 @@ namespace CloudCapture
     {
     }
 
-    virtual CloudConstPtr grabCloud() override
+    virtual CloudPtr grabCloud() override
     {
       auto retVal = new Cloud();
 
@@ -35,7 +35,7 @@ namespace CloudCapture
         retVal->points[i].rgba = 0xFFFFFFFF;
       }
 
-      return CloudConstPtr(retVal);
+      return CloudPtr(retVal);
     }
 
   protected:

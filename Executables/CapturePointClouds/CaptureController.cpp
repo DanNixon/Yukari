@@ -5,6 +5,7 @@
 #include <typeinfo>
 
 #include <pcl/io/pcd_io.h>
+#include <pcl/common/transforms.h>
 
 #include <YukariIMU/IMUFrame.h>
 
@@ -19,6 +20,7 @@ namespace CaptureApp
   CaptureController::CaptureController()
       : m_logger(LoggingService::Instance().getLogger("CaptureController"))
       , m_isRunning(false)
+    , m_transformMode(TransformMode::SAVE_TRANSFORM)
   {
   }
 
@@ -168,7 +170,7 @@ namespace CaptureApp
     /* Grab point cloud */
     static const size_t NUM_ATTEMPTS = 5;
     size_t attempts = 0;
-    CloudConstPtr cloud;
+    CloudPtr cloud;
     while (!cloud && attempts < NUM_ATTEMPTS)
     {
       m_logger->trace("Grabbing point cloud, attempt {}", attempts);
@@ -197,6 +199,13 @@ namespace CaptureApp
       m_logger->info("No IMU grabber defined");
     }
 
+    /* Transform cloud */
+    if (m_imuGrabber && m_transformMode == TransformMode::TRANSFORM_NOW)
+    {
+      m_logger->trace("Transforming cloud by IMU");
+      pcl::transformPointCloud(*cloud, *cloud, imu->toEigen());
+    }
+
     /* Save cloud */
     boost::filesystem::path cloudFilename =
         m_outputDirectory / (std::to_string(m_currentFrameCount) + "_cloud.pcd");
@@ -205,7 +214,7 @@ namespace CaptureApp
     pcl::io::savePCDFileASCII(cloudFilename.string(), *cloud);
 
     /* Save IMU frame */
-    if (m_imuGrabber)
+    if (m_imuGrabber && m_transformMode == TransformMode::SAVE_TRANSFORM)
     {
       boost::filesystem::path imuFilename =
           m_outputDirectory / (std::to_string(m_currentFrameCount) + "_imu.txt");
@@ -238,7 +247,7 @@ namespace CaptureApp
         s << ", ";
     }
 
-    s << "]]";
+    s << "], transform mode = " << (int)o.m_transformMode << "]";
 
     return s;
   }

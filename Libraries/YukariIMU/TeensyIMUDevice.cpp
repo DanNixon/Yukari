@@ -2,9 +2,13 @@
 
 #include "TeensyIMUDevice.h"
 
+#include <boost/qvm/all.hpp>
+
 #include <YukariMSP/MSPParsers.h>
 
+using namespace boost::qvm;
 using namespace Yukari::Common;
+using namespace Yukari::Maths;
 using namespace Yukari::MSP;
 
 namespace Yukari
@@ -43,7 +47,9 @@ namespace IMU
     auto retVal = std::make_shared<IMUFrame>(frameDuration);
 
     /* Set orientation from attitude data */
-    MSPParsers::ParseQuaternion(m_mspPayloadQuat, retVal->orientation());
+    Quaternion q;
+    MSPParsers::ParseQuaternion(m_mspPayloadQuat, q);
+    retVal->orientation() = q * m_transform.orientation();
 
     return retVal;
   }
