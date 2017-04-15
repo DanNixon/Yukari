@@ -16,9 +16,10 @@ namespace CloudGrabberTest
     typedef typename CloudCapture::ICloudGrabber<POINT_TYPE>::Ptr GrabberPtr;
 
   public:
-    CloudGrabberVisualisation(GrabberPtr grabber)
+    CloudGrabberVisualisation(GrabberPtr grabber, IMU::IIMUGrabber_sptr imu)
         : m_cloudViewer(new pcl::visualization::PCLVisualizer("Cloud grabber visualisation"))
         , m_grabber(grabber)
+      , m_imu(imu)
     {
     }
 
@@ -27,6 +28,8 @@ namespace CloudGrabberTest
       m_cloudViewer->setCameraFieldOfView(1.02259994f);
 
       m_grabber->open();
+      if (m_imu)
+        m_imu->open();
 
       bool cloudInit = false;
       while (!m_cloudViewer->wasStopped())
@@ -37,6 +40,19 @@ namespace CloudGrabberTest
 
         if (cloud)
         {
+          if (m_imu)
+          {
+            auto imuFrame = m_imu->grabFrame();
+            if (imuFrame)
+            {
+              auto q = imuFrame->orientation().toEigen();
+              q.x() = -q.x();
+              //q.y() = -q.y();
+              q.z() = -q.z();
+              pcl::transformPointCloud(*cloud, *cloud, imuFrame->position().toEigen(), q);
+            }
+          }
+
           if (!cloudInit)
           {
             m_cloudViewer->setPosition(0, 0);
@@ -53,11 +69,15 @@ namespace CloudGrabberTest
       }
 
       m_grabber->close();
+      if (m_imu)
+        m_imu->close();
     }
 
   private:
     std::shared_ptr<pcl::visualization::PCLVisualizer> m_cloudViewer;
+
     GrabberPtr m_grabber;
+    IMU::IIMUGrabber_sptr m_imu;
   };
 }
 }

@@ -8,12 +8,15 @@
 #include <YukariCloudCapture/CloudGrabberFactory.h>
 #include <YukariCommon/LoggingService.h>
 #include <YukariCommon/StringParsers.h>
+#include <YukariIMU/IMUGrabberFactory.h>
 
 #include "CloudGrabberVisualisation.h"
 
 namespace po = boost::program_options;
 using namespace Yukari::CloudCapture;
 using namespace Yukari::Common;
+using namespace Yukari::IMU;
+using namespace Yukari::Maths;
 
 int main(int argc, char **argv)
 {
@@ -26,7 +29,8 @@ int main(int argc, char **argv)
   // clang-format off
   desc.add_options()
     ("help", "Show brief usage message")
-    ("grabber", po::value<std::string>()->default_value("dummy"), "Cloud grabber type");
+    ("grabber", po::value<std::string>()->default_value("dummy"), "Cloud grabber type")
+    ("imugrabber", po::value<std::string>(), "IMU grabber to use");
   // clang-format on
 
   /* Parse command line args */
@@ -56,7 +60,19 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  Yukari::CloudGrabberTest::CloudGrabberVisualisation<pcl::PointXYZRGBA> viewer(grabber);
+  /* Create IMU grabber */
+  IIMUGrabber_sptr imu = IMUGrabberFactory::Create(args["imugrabber"].as<std::string>());
+  if (imu)
+  {
+    // TODO
+    imu->setOrientation(Quaternion(Vector3(0.0f, 1.0f, 0.0f), -90.0f, DEGREES));
+  }
+  else
+  {
+    log->error("Failed to create IMU grabber");
+  }
+
+  Yukari::CloudGrabberTest::CloudGrabberVisualisation<pcl::PointXYZRGBA> viewer(grabber, imu);
   viewer.run();
 
   log->info("Exiting");

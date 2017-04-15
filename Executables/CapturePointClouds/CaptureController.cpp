@@ -203,7 +203,11 @@ namespace CaptureApp
     if (m_imuGrabber && m_transformMode == TransformMode::TRANSFORM_NOW)
     {
       m_logger->trace("Transforming cloud by IMU");
-      pcl::transformPointCloud(*cloud, *cloud, imu->toEigen());
+      auto q = imu->orientation().toEigen();
+      q.x() = -q.x();
+      //q.y() = -q.y();
+      q.z() = -q.z();
+      pcl::transformPointCloud(*cloud, *cloud, imu->position().toEigen(), q);
     }
 
     /* Save cloud */

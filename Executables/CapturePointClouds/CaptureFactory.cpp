@@ -13,6 +13,7 @@
 
 using namespace Yukari::CloudCapture;
 using namespace Yukari::Common;
+using namespace Yukari::Maths;
 using namespace Yukari::IMU;
 using namespace Yukari::Triggers;
 
@@ -44,8 +45,15 @@ namespace CaptureApp
 
     /* Get IMU grabber */
     IIMUGrabber_sptr imu = IMUGrabberFactory::Create(config["imugrabber"].as<std::string>());
-    if (!imu)
+    if (imu)
+    {
+      // TODO
+      imu->setOrientation(Quaternion(Vector3(0.0f, 1.0f, 0.0f), -90.0f, DEGREES));
+    }
+    else
+    {
       logger->error("Failed to create IMU grabber");
+    }
     retVal->setIMUGrabber(imu);
 
     /* Get transformation option */

@@ -95,7 +95,7 @@ namespace MSP
         q[i] = -4 + q[i];
     }
 
-    quat = Quaternion(q[0], q[1], q[2], q[3]);
+    quat = Quaternion(q[0], -q[1], q[3], q[2]);
 
     return true;
   }
