@@ -103,6 +103,22 @@ namespace Common
       BOOST_CHECK_EQUAL(params["b"], std::string("def456"));
     }
 
+    BOOST_AUTO_TEST_CASE(ParseCommand_Slashes)
+    {
+      std::string in = "Teensy(port=/dev/ttyACM0, this=one\\the other)";
+
+      std::string cmd;
+      std::map<std::string, std::string> params;
+
+      BOOST_CHECK(StringParsers::ParseCommand(in, cmd, params));
+
+      BOOST_CHECK_EQUAL(cmd, std::string("Teensy"));
+
+      BOOST_CHECK_EQUAL(params.size(), 2);
+      BOOST_CHECK_EQUAL(params["port"], std::string("/dev/ttyACM0"));
+      BOOST_CHECK_EQUAL(params["this"], std::string("one\\the other"));
+    }
+
     BOOST_AUTO_TEST_SUITE_END()
   }
 }
