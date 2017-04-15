@@ -20,7 +20,7 @@ namespace CloudGrabberTest
     CloudGrabberVisualisation(GrabberPtr grabber, IMU::IIMUGrabber_sptr imu)
         : m_cloudViewer(new pcl::visualization::PCLVisualizer("Cloud grabber visualisation"))
         , m_grabber(grabber)
-      , m_imu(imu)
+        , m_imu(imu)
     {
     }
 
@@ -45,7 +45,9 @@ namespace CloudGrabberTest
           {
             auto imuFrame = m_imu->grabFrame();
             if (imuFrame)
-              pcl::transformPointCloud(*cloud, *cloud, imuFrame->position().toEigen(), Processing::SpatialOperations::RotateQuaternionForCloud(imuFrame->orientation().toEigen()));
+              pcl::transformPointCloud(*cloud, *cloud, imuFrame->position().toEigen(),
+                                       Processing::SpatialOperations::RotateQuaternionForCloud(
+                                           imuFrame->orientation().toEigen()));
           }
 
           if (!cloudInit)

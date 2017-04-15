@@ -21,7 +21,7 @@ namespace CaptureApp
   class CaptureController
   {
   public:
-    enum class TransformMode: uint8_t
+    enum class TransformMode : uint8_t
     {
       SAVE_TRANSFORM,
       TRANSFORM_NOW

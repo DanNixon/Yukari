@@ -58,7 +58,8 @@ namespace CaptureApp
 
     /* Get transformation option */
     bool transformNow = config.count("transform") != 0;
-    retVal->setTransformMode(transformNow ? CaptureController::TransformMode::TRANSFORM_NOW : CaptureController::TransformMode::SAVE_TRANSFORM);
+    retVal->setTransformMode(transformNow ? CaptureController::TransformMode::TRANSFORM_NOW
+                                          : CaptureController::TransformMode::SAVE_TRANSFORM);
 
     /* Get capture triggers */
     ITrigger_sptr trigger = TriggerFactory::Create(config["capturetrigger"].as<std::string>());

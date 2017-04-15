@@ -14,11 +14,11 @@ namespace Processing
     static Eigen::Quaternionf RotateQuaternionForCloud(const Eigen::Quaternionf &q)
     {
       Eigen::Quaternionf retVal(q);
-      
+
       /* Reflect in XZ azis */
       retVal.x() = -retVal.x();
       retVal.z() = -retVal.z();
-      
+
       return retVal;
     }
   };

@@ -4,8 +4,8 @@
 
 #include <typeinfo>
 
-#include <pcl/io/pcd_io.h>
 #include <pcl/common/transforms.h>
+#include <pcl/io/pcd_io.h>
 
 #include <YukariIMU/IMUFrame.h>
 #include <YukariProcessing/SpatialOperations.h>
@@ -22,7 +22,7 @@ namespace CaptureApp
   CaptureController::CaptureController()
       : m_logger(LoggingService::Instance().getLogger("CaptureController"))
       , m_isRunning(false)
-    , m_transformMode(TransformMode::SAVE_TRANSFORM)
+      , m_transformMode(TransformMode::SAVE_TRANSFORM)
   {
   }
 
@@ -205,7 +205,9 @@ namespace CaptureApp
     if (m_imuGrabber && m_transformMode == TransformMode::TRANSFORM_NOW)
     {
       m_logger->trace("Transforming cloud by IMU");
-      pcl::transformPointCloud(*cloud, *cloud, imu->position().toEigen(), SpatialOperations::RotateQuaternionForCloud(imu->orientation().toEigen()));
+      pcl::transformPointCloud(
+          *cloud, *cloud, imu->position().toEigen(),
+          SpatialOperations::RotateQuaternionForCloud(imu->orientation().toEigen()));
     }
 
     /* Save cloud */
