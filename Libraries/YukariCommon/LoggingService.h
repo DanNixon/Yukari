@@ -35,7 +35,7 @@ namespace Common
     ~LoggingService();
 
   public:
-    void configure(boost::program_options::variables_map & args);
+    void configure(boost::program_options::variables_map &args);
 
     inline void setLevel(spdlog::level::level_enum level)
     {

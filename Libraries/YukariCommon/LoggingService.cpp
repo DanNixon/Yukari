@@ -52,7 +52,7 @@ namespace Common
     flush();
   }
 
-  void LoggingService::configure(boost::program_options::variables_map & args)
+  void LoggingService::configure(boost::program_options::variables_map &args)
   {
     if (args.count("loglevel"))
     {
