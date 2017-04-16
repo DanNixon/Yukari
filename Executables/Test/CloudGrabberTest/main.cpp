@@ -29,6 +29,7 @@ int main(int argc, char **argv)
   // clang-format off
   desc.add_options()
     ("help", "Show brief usage message")
+    ("loglevel", po::value<std::string>()->default_value("debug"), "Global log level")
     ("grabber", po::value<std::string>()->default_value("dummy"), "Cloud grabber type")
     ("imugrabber", po::value<std::string>(), "IMU grabber to use");
   // clang-format on
@@ -50,6 +51,9 @@ int main(int argc, char **argv)
     std::cout << desc << "\n";
     return 1;
   }
+
+  /* Configure logging */
+  LoggingService::Instance().configure(args);
 
   /* Create cloud grabber */
   typename ICloudGrabber<pcl::PointXYZRGBA>::Ptr grabber =

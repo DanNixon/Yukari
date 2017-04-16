@@ -52,6 +52,15 @@ namespace Common
     flush();
   }
 
+  void LoggingService::configure(boost::program_options::variables_map & args)
+  {
+    if (args.count("loglevel"))
+    {
+      auto level = GetLogLevelFromStr(args["loglevel"].as<std::string>());
+      setLevel(level);
+    }
+  }
+
   LoggingService::Logger LoggingService::getLogger(const std::string &name)
   {
     auto logger = spdlog::get(name);

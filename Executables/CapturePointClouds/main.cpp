@@ -15,6 +15,8 @@ namespace po = boost::program_options;
 
 int main(int argc, char **argv)
 {
+  auto logger = LoggingService::Instance().getLogger("YukariCaptureApp");
+
   /* Init command line */
   po::options_description desc("Allowed options");
   po::variables_map args;
@@ -22,6 +24,7 @@ int main(int argc, char **argv)
   // clang-format off
   desc.add_options()
     ("help", "Show brief usage message")
+    ("loglevel", po::value<std::string>()->default_value("debug"), "Global log level")
     ("cli", "Start with CLI enabled")
     ("dir", po::value<std::string>()->default_value("."), "Root output directory")
     ("cloudgrabber", po::value<std::string>()->default_value("dummy"), "Cloud grabber to use")
@@ -49,7 +52,7 @@ int main(int argc, char **argv)
   }
 
   /* Configure logging */
-  auto logger = LoggingService::Instance().getLogger("YukariCaptureApp");
+  LoggingService::Instance().configure(args);
 
   /* Create capture controller */
   CaptureController_sptr captureController = CaptureFactory::Create(args);

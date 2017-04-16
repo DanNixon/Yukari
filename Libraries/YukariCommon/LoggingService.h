@@ -4,6 +4,7 @@
 
 #include <memory>
 
+#include <boost/program_options.hpp>
 #include <spdlog/fmt/ostr.h>
 #include <spdlog/spdlog.h>
 
@@ -34,9 +35,12 @@ namespace Common
     ~LoggingService();
 
   public:
-    inline std::shared_ptr<NamedDistLogSink_mt> getSink()
+    void configure(boost::program_options::variables_map & args);
+
+    inline void setLevel(spdlog::level::level_enum level)
     {
-      return m_sink;
+      m_sink->set_level(level);
+      getLogger("LoggingService")->info("Global log level: {}", level);
     }
 
     inline void disable()
@@ -47,6 +51,11 @@ namespace Common
     inline void flush()
     {
       m_sink->flush();
+    }
+
+    inline std::shared_ptr<NamedDistLogSink_mt> getSink()
+    {
+      return m_sink;
     }
 
     Logger getLogger(const std::string &name);
