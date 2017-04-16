@@ -7,6 +7,8 @@
 #include <pcl/filters/filter.h>
 #include <pcl/point_types.h>
 
+#include <YukariCommon/LoggingService.h>
+
 namespace Yukari
 {
 namespace Processing
@@ -16,6 +18,7 @@ namespace Processing
   public:
     typedef pcl::PointCloud<POINT_TYPE> Cloud;
     typedef typename Cloud::Ptr CloudPtr;
+    typedef typename Cloud::ConstPtr CloudConstPtr;
 
   public:
     static CloudPtr ApplyTransformationToCloud(CloudPtr cloud, Eigen::Matrix4f transform)
@@ -49,6 +52,22 @@ namespace Processing
       pcl::removeNaNFromPointCloud(*cloud, *fc, indices);
 
       return fc;
+    }
+
+    static CloudPtr DownsampleVoxelFilter(CloudConstPtr cloud)
+    {
+      auto logger = Common::LoggingService::Instance().getLogger("CloudOperations_DownsampleVoxelFilter");
+      logger->debug("Input cloud size: {} points", cloud->size());
+
+      CloudPtr filteredInputCloud(new Cloud());
+      pcl::ApproximateVoxelGrid<POINT_TYPE> voxelFilter;
+      voxelFilter.setLeafSize(0.01, 0.01, 0.01); // TODO
+      voxelFilter.setInputCloud(cloud);
+      voxelFilter.filter(*filteredInputCloud);
+
+      logger->debug("Filtered input cloud size: {} points", filteredInputCloud->size());
+
+      return filteredInputCloud;
     }
   };
 }

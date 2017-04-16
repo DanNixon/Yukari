@@ -34,9 +34,9 @@
 * Modified from: https://github.com/PointCloudLibrary/pcl/blob/master/apps/src/openni_fast_mesh.cpp
 */
 
-#include <thread>
 #include <chrono>
 #include <mutex>
+#include <thread>
 
 #include <pcl/console/parse.h>
 #include <pcl/console/time.h>
@@ -86,7 +86,7 @@ public:
     pcl::Grabber *interface = new pcl::io::OpenNI2Grabber();
 
     boost::function<void(const CloudConstPtr &)> f =
-      boost::bind(&OpenNIFastMesh::cloud_cb, this, _1);
+        boost::bind(&OpenNIFastMesh::cloud_cb, this, _1);
     boost::signals2::connection c = interface->registerCallback(f);
 
     m_view.reset(new pcl::visualization::PCLVisualizer(argc, argv, "PCL OpenNI Mesh Viewer"));
@@ -106,15 +106,15 @@ public:
         continue;
       }
 
-      cloud.swap (m_cloud);
-      mesh.swap (m_mesh);
-      
+      cloud.swap(m_cloud);
+      mesh.swap(m_mesh);
+
       m_mtx.unlock();
 
-      //if (!m_view->updatePolygonMesh<PointType>(cloud, mesh->polygons, "surface"))
+      // if (!m_view->updatePolygonMesh<PointType>(cloud, mesh->polygons, "surface"))
       //{
-        m_view->removePolygonMesh ("surface");
-        m_view->addPolygonMesh<PointType>(cloud, mesh->polygons, "surface");
+      m_view->removePolygonMesh("surface");
+      m_view->addPolygonMesh<PointType>(cloud, mesh->polygons, "surface");
       //}
     }
 

@@ -1,116 +1,73 @@
 // http://pointclouds.org/documentation/tutorials/normal_distributions_transform.php
 
 #include <iostream>
+
+#include <pcl/filters/approximate_voxel_grid.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
-
 #include <pcl/registration/ndt.h>
-#include <pcl/filters/approximate_voxel_grid.h>
 
-#include <pcl/visualization/pcl_visualizer.h>
-#include <boost/thread/thread.hpp>
-
+#include <YukariCommon/LoggingService.h>
 #include <YukariProcessing/CloudOperations.h>
 
+using namespace Yukari::Common;
 using namespace Yukari::Processing;
 
-int
-main (int argc, char** argv)
+int main(int argc, char **argv)
 {
-  // Loading first scan of room.
-  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr target_cloud (new pcl::PointCloud<pcl::PointXYZRGBA>);
-  if (pcl::io::loadPCDFile<pcl::PointXYZRGBA> (argv[1], *target_cloud) == -1)
+  auto logger = LoggingService::Instance().getLogger("main");
+
+  /* Load target cloud */
+  std::string targetCloudFilename(argv[1]);
+  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr targetCloud(new pcl::PointCloud<pcl::PointXYZRGBA>);
+  if (pcl::io::loadPCDFile<pcl::PointXYZRGBA>(targetCloudFilename, *targetCloud) == -1)
   {
-    PCL_ERROR ("Couldn't read file 1\n");
-    return (-1);
+    logger->critical("Cannot read target cloud file \"{}\"", targetCloudFilename);
+    return 1;
   }
-  target_cloud = CloudOperations<pcl::PointXYZRGBA>::RemoveNaNFromCloud(target_cloud);
-  std::cout << "Loaded " << target_cloud->size () << " data points from file 1" << std::endl;
+  targetCloud = CloudOperations<pcl::PointXYZRGBA>::RemoveNaNFromCloud(targetCloud);
+  logger->info("Loaded target cloud \"{}\" of {} points", targetCloudFilename, targetCloud->size());
 
-  // Loading second scan of room from new perspective.
-  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr input_cloud (new pcl::PointCloud<pcl::PointXYZRGBA>);
-  if (pcl::io::loadPCDFile<pcl::PointXYZRGBA> (argv[2], *input_cloud) == -1)
+  /* Load input cloud */
+  std::string inputCloudFilename(argv[2]);
+  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr inputCloud(new pcl::PointCloud<pcl::PointXYZRGBA>);
+  if (pcl::io::loadPCDFile<pcl::PointXYZRGBA>(inputCloudFilename, *inputCloud) == -1)
   {
-    PCL_ERROR ("Couldn't read file 2\n");
-    return (-1);
+    logger->critical("Cannot read input cloud file \"{}\"", inputCloudFilename);
+    return 1;
   }
-  input_cloud = CloudOperations<pcl::PointXYZRGBA>::RemoveNaNFromCloud(input_cloud);
-  std::cout << "Loaded " << input_cloud->size () << " data points from file 2" << std::endl;
+  inputCloud = CloudOperations<pcl::PointXYZRGBA>::RemoveNaNFromCloud(inputCloud);
+  logger->info("Loaded input cloud \"{}\" of {} points", inputCloudFilename, inputCloud->size());
 
-  // Filtering input scan to roughly 10% of original size to increase speed of registration.
-  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr filtered_cloud (new pcl::PointCloud<pcl::PointXYZRGBA>);
-  pcl::ApproximateVoxelGrid<pcl::PointXYZRGBA> approximate_voxel_filter;
-  approximate_voxel_filter.setLeafSize (0.01, 0.01, 0.01);
-  approximate_voxel_filter.setInputCloud (input_cloud);
-  approximate_voxel_filter.filter (*filtered_cloud);
-  std::cout << "Filtered cloud contains " << filtered_cloud->size ()
-            << " data points from file 2" << std::endl;
+  /* FIlter (downsample) input cloud */
+  auto filteredInputCloud = CloudOperations<pcl::PointXYZRGBA>::DownsampleVoxelFilter(inputCloud);
 
-  // Initializing Normal Distributions Transform (NDT).
   pcl::NormalDistributionsTransform<pcl::PointXYZRGBA, pcl::PointXYZRGBA> ndt;
 
-  // Setting scale dependent NDT parameters
-  // Setting minimum transformation difference for termination condition.
-  ndt.setTransformationEpsilon (0.001);
-  // Setting maximum step size for More-Thuente line search.
-  ndt.setStepSize (0.01);
-  //Setting Resolution of NDT grid structure (VoxelGridCovariance).
-  ndt.setResolution (0.1);
+  ndt.setTransformationEpsilon(0.005);
+  ndt.setStepSize(0.01);
+  ndt.setResolution(0.1);
 
-  // Setting max number of registration iterations.
-  ndt.setMaximumIterations (35);
+  ndt.setMaximumIterations(35);
 
-  // Setting point cloud to be aligned.
-  ndt.setInputSource (filtered_cloud);
-  // Setting point cloud to be aligned to.
-  ndt.setInputTarget (target_cloud);
+  ndt.setInputSource(filteredInputCloud);
+  ndt.setInputTarget(targetCloud);
 
-  // Set initial alignment estimate found using robot odometry.
-  Eigen::Matrix4f init_guess;
-  init_guess.setIdentity();
+  /* Run alignment (operating on transformed point cloud so no/identity initial guess) */
+  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr transformedInputCloud(
+      new pcl::PointCloud<pcl::PointXYZRGBA>);
+  ndt.align(*transformedInputCloud, Eigen::Matrix4f::Identity());
 
-  // Calculating required rigid transform to align the input cloud to the target cloud.
-  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr output_cloud (new pcl::PointCloud<pcl::PointXYZRGBA>);
-  ndt.align (*output_cloud, init_guess);
+  if (ndt.hasConverged())
+    logger->info("Convergence reached");
+  else
+    logger->warn("Convergence not reached");
+  logger->info("Normal Distributions Transform score: {}", ndt.getFitnessScore());
 
-  std::cout << "Normal Distributions Transform has converged:" << ndt.hasConverged ()
-            << " score: " << ndt.getFitnessScore () << std::endl;
+  /* Transform the original input cloud */
+  pcl::transformPointCloud (*inputCloud, *transformedInputCloud, ndt.getFinalTransformation ());
 
-  // Transforming unfiltered, input cloud using found transform.
-  pcl::transformPointCloud (*input_cloud, *output_cloud, ndt.getFinalTransformation ());
+  pcl::io::savePCDFileASCII("transformed.pcd", *transformedInputCloud);
 
-  // Saving transformed input cloud.
-  pcl::io::savePCDFileASCII ("_transformed.pcd", *output_cloud);
-
-  // Initializing point cloud visualizer
-  boost::shared_ptr<pcl::visualization::PCLVisualizer>
-  viewer_final (new pcl::visualization::PCLVisualizer ("3D Viewer"));
-  viewer_final->setBackgroundColor (0, 0, 0);
-
-  // Coloring and visualizing target cloud (red).
-  pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZRGBA>
-  target_color (target_cloud, 255, 0, 0);
-  viewer_final->addPointCloud<pcl::PointXYZRGBA> (target_cloud, target_color, "target cloud");
-  viewer_final->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE,
-                                                  1, "target cloud");
-
-  // Coloring and visualizing transformed input cloud (green).
-  pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZRGBA>
-  output_color (output_cloud, 0, 255, 0);
-  viewer_final->addPointCloud<pcl::PointXYZRGBA> (output_cloud, output_color, "output cloud");
-  viewer_final->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE,
-                                                  1, "output cloud");
-
-  // Starting visualizer
-  viewer_final->addCoordinateSystem (1.0, "global");
-  viewer_final->initCameraParameters ();
-
-  // Wait until visualizer window is closed.
-  while (!viewer_final->wasStopped ())
-  {
-    viewer_final->spinOnce (100);
-    boost::this_thread::sleep (boost::posix_time::microseconds (100000));
-  }
-
-  return (0);
+  return 0;
 }
