@@ -33,9 +33,8 @@ namespace Triggers
     ITrigger_sptr trigger;
     if (lowerType == "periodic")
     {
-      int seconds =
-          std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "seconds", "10"));
-      trigger = std::make_shared<PeriodicTrigger>(std::chrono::seconds(seconds));
+      int seconds = std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "delay", "10"));
+      trigger = std::make_shared<PeriodicTrigger>(std::chrono::milliseconds(seconds));
     }
     else if (lowerType == "signal")
     {

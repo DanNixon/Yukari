@@ -10,18 +10,19 @@ namespace Yukari
 {
 namespace Triggers
 {
-  PeriodicTrigger::PeriodicTrigger(std::chrono::seconds duration)
+  PeriodicTrigger::PeriodicTrigger(std::chrono::milliseconds duration)
       : m_duration(duration)
       , m_enabled(false)
   {
     LoggingService::Instance()
         .getLogger("PeriodicTrigger")
-        ->debug("Init periodic trigger with duration {}s", m_duration.count());
+        ->debug("Init periodic trigger with duration {}ms", m_duration.count());
   }
 
   void PeriodicTrigger::enable()
   {
     m_enabled = true;
+
     m_worker = std::thread(&PeriodicTrigger::workerFunc, this);
   }
 
