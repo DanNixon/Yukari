@@ -26,7 +26,10 @@ namespace Processing
     };
 
   public:
-    GenerateMeshFromPointCloud();
+    GenerateMeshFromPointCloud()
+        : m_logger(Common::LoggingService::Instance().getLogger("GenerateMeshFromPointCloud"))
+    {
+    }
 
     pcl::PolygonMesh::Ptr estimateSingle(const CloudConstPtr cloud, const Parameters &params)
     {
