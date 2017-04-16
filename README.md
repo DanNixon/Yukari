@@ -6,14 +6,14 @@
 
 1. Install `libproj-dev libboost-all-dev libpcl1.7 libpcl-dev libeigen3-dev`
 2. `cmake ../Yukari -DCMAKE_BUILD_TYPE=Debug`
-  - May need to add `-DBOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu/` if Boost is
-    not found automatically
+   - May need to add `-DBOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu/` if Boost is
+     not found automatically
 3. `make`
 
 ## Building on Windows
 
 1. Install PCL and dependencies
-  - Simplest method is the all in one installers from
-    http://unanancyowen.com/en/pcl18/
+   - Simplest method is the all in one installers from
+     http://unanancyowen.com/en/pcl18/
 2. `cmake ../Yukari -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug`
-  - (for MSVC 14)
+   - (for MSVC 14)
