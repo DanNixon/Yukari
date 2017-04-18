@@ -56,7 +56,9 @@ int main(int argc, char **argv)
   desc.add_options()
     ("help", "Show brief usage message")
     ("loglevel", po::value<std::string>()->default_value("info"), "Global log level")
-    ("grabber", po::value<std::string>()->default_value("dummy"), "IMU grabber type");
+    ("grabber", po::value<std::string>()->default_value("dummy"), "IMU grabber type")
+    ("orientation", po::value<std::string>()->default_value("[0, 1, 0] -90"), "Relative IMU orientation as \"[axis] angle\"")
+    ("position", po::value<std::string>()->default_value("[0, 0, 0]"), "Relative IMU position as \"[position]\"");
   // clang-format on
 
   /* Parse command line args */
@@ -93,9 +95,8 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  // TODO
-  grabber->setPosition(Vector3(1.0f, 0.0f, 0.0f));
-  grabber->setOrientation(Quaternion(Vector3(0.0f, 1.0f, 0.0f), -90.0f, DEGREES));
+  /* Set relative IMU transform from command line args */
+  grabber->setTransform(Transform(args));
 
   /* Run visualisation */
   runGrabberVIsualisation(grabber);

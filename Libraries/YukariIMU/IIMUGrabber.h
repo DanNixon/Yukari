@@ -4,6 +4,8 @@
 
 #include <memory>
 
+#include <YukariMaths/Transform.h>
+
 #include "IMUFrame.h"
 
 namespace Yukari
@@ -38,10 +40,16 @@ namespace IMU
       m_cachedTransform = m_transform.toEigen();
     }
 
+    void setTransform(const Maths::Transform &t)
+    {
+      m_transform = t;
+      m_cachedTransform = m_transform.toEigen();
+    }
+
     virtual IMUFrame_sptr grabFrame() = 0;
 
   protected:
-    IMUFrame m_transform;
+    Maths::Transform m_transform;
     Eigen::Matrix4f m_cachedTransform;
   };
 

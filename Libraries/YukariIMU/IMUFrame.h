@@ -6,16 +6,13 @@
 #include <memory>
 #include <ostream>
 
-#include <Eigen/Geometry>
-
-#include <YukariMaths/Quaternion.h>
-#include <YukariMaths/Vector3.h>
+#include <YukariMaths/Transform.h>
 
 namespace Yukari
 {
 namespace IMU
 {
-  class IMUFrame
+  class IMUFrame : public Maths::Transform
   {
   public:
     typedef std::chrono::duration<float, std::milli> Duration;
@@ -30,34 +27,10 @@ namespace IMU
       return m_durationMs;
     }
 
-    inline Maths::Quaternion orientation() const
-    {
-      return m_orientation;
-    }
-
-    inline Maths::Quaternion &orientation()
-    {
-      return m_orientation;
-    }
-
-    inline Maths::Vector3 position() const
-    {
-      return m_position;
-    }
-
-    inline Maths::Vector3 &position()
-    {
-      return m_position;
-    }
-
-    Eigen::Matrix4f toEigen() const;
-
     friend std::ostream &operator<<(std::ostream &s, const IMUFrame &f);
 
   protected:
     Duration m_durationMs;
-    Maths::Quaternion m_orientation;
-    Maths::Vector3 m_position;
   };
 
   typedef std::shared_ptr<IMUFrame> IMUFrame_sptr;

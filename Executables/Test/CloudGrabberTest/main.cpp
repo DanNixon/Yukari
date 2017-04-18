@@ -31,7 +31,9 @@ int main(int argc, char **argv)
     ("help", "Show brief usage message")
     ("loglevel", po::value<std::string>()->default_value("debug"), "Global log level")
     ("grabber", po::value<std::string>()->default_value("dummy"), "Cloud grabber type")
-    ("imugrabber", po::value<std::string>(), "IMU grabber to use");
+    ("imugrabber", po::value<std::string>(), "IMU grabber to use")
+    ("orientation", po::value<std::string>()->default_value("[0, 1, 0] -90"), "Relative IMU orientation as \"[axis] angle\"")
+    ("position", po::value<std::string>()->default_value("[0, 0, 0]"), "Relative IMU position as \"[position]\"");
   // clang-format on
 
   /* Parse command line args */
@@ -68,8 +70,8 @@ int main(int argc, char **argv)
   IIMUGrabber_sptr imu = IMUGrabberFactory::Create(args["imugrabber"].as<std::string>());
   if (imu)
   {
-    // TODO
-    imu->setOrientation(Quaternion(Vector3(0.0f, 1.0f, 0.0f), -90.0f, DEGREES));
+    /* Set relative IMU transform from command line args */
+    imu->setTransform(Transform(args));
   }
   else
   {

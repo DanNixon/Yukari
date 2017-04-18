@@ -52,7 +52,9 @@ namespace IMU
     retVal->orientation() = q * m_transform.orientation();
 
     /* Set position */
-    // TODO
+    Vector3 position;
+    // TODO: testing only, position offset needs rotated by device orientation
+    retVal->position() = position - m_transform.position();
 
     return retVal;
   }
