@@ -12,5 +12,5 @@ function(AddTests PROJECT_UNDER_TEST TEST_FILES TEST_LIB_DEPS)
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test
     COMMAND ${CMAKE_BINARY_DIR}/test/${test_name})
 
-  set_target_properties(${test_name} PROPERTIES FOLDER Tests)
+  set_target_properties(${test_name} PROPERTIES FOLDER UnitTests)
 endfunction(AddTests)
