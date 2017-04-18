@@ -15,7 +15,7 @@ namespace CaptureApp
   class TaskSaveRawCloud : public IPostCaptureTask
   {
   public:
-    TaskSaveRawCloud(const boost::filesystem::path &path);
+    TaskSaveRawCloud(const boost::filesystem::path &path, bool transform = false);
 
     virtual int process(size_t frameNumber, CloudConstPtr cloud,
                         IMU::IMUFrame_const_sptr imuFrame) override;
@@ -24,6 +24,7 @@ namespace CaptureApp
     Common::LoggingService::Logger m_logger;
 
     boost::filesystem::path m_outputDirectory;
+    bool m_transform;
   };
 }
 }

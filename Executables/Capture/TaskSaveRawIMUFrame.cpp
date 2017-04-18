@@ -25,11 +25,12 @@ namespace CaptureApp
   {
     if (imuFrame)
     {
+      /* Generate filename */
       boost::filesystem::path imuFilename =
           m_outputDirectory / (std::to_string(frameNumber) + "_imu.txt");
 
+      /* Save IMU frame */
       m_logger->trace("Saving IMU frame for frame {}: {}", frameNumber, imuFilename);
-
       std::ofstream imuFile;
       imuFile.open(imuFilename.string());
       imuFile << *imuFrame << '\n';

@@ -4,15 +4,11 @@
 
 #include <typeinfo>
 
-#include <pcl/common/transforms.h>
-
 #include <YukariIMU/IMUFrame.h>
-#include <YukariProcessing/SpatialOperations.h>
 
 using namespace Yukari::Common;
 using namespace Yukari::IMU;
 using namespace Yukari::Triggers;
-using namespace Yukari::Processing;
 
 namespace Yukari
 {
@@ -195,15 +191,6 @@ namespace CaptureApp
       m_logger->info("No IMU grabber defined");
     }
 
-    /* Transform cloud */
-    if (m_imuGrabber)
-    {
-      m_logger->trace("Transforming cloud by IMU");
-      pcl::transformPointCloud(
-          *cloud, *cloud, imu->position().toEigen(),
-          SpatialOperations::RotateQuaternionForCloud(imu->orientation().toEigen()));
-    }
-
     /* Start post capture operations */
     m_logger->trace("Starting post capture operations");
     for (auto it = m_postCaptureOperations.begin(); it != m_postCaptureOperations.end(); ++it)
@@ -229,6 +216,15 @@ namespace CaptureApp
     {
       s << typeid(*(*(it++))).name();
       if (it != o.m_captureTriggers.end())
+        s << ", ";
+    }
+
+    s << "], post processing = [";
+
+    for (auto it = o.m_postCaptureOperations.begin(); it != o.m_postCaptureOperations.end(); ++it)
+    {
+      s << typeid(*(*(it++))).name();
+      if (it != o.m_postCaptureOperations.end())
         s << ", ";
     }
 
