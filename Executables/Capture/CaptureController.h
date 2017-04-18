@@ -5,13 +5,12 @@
 #include <memory>
 #include <vector>
 
-#include <boost/filesystem/path.hpp>
-
 #include <YukariCloudCapture/ICloudGrabber.h>
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/IIMUGrabber.h>
 #include <YukariTriggers/ITrigger.h>
 
+#include "IPostCaptureTask.h"
 #include "Types.h"
 
 namespace Yukari
@@ -20,13 +19,6 @@ namespace CaptureApp
 {
   class CaptureController
   {
-  public:
-    enum class TransformMode : uint8_t
-    {
-      SAVE_TRANSFORM,
-      TRANSFORM_NOW
-    };
-
   public:
     CaptureController();
 
@@ -40,16 +32,6 @@ namespace CaptureApp
       return m_isRunning;
     }
 
-    inline void setOutputDirectory(const boost::filesystem::path &root)
-    {
-      m_outputDirectory = root;
-    }
-
-    inline void setTransformMode(TransformMode mode)
-    {
-      m_transformMode = mode;
-    }
-
     inline void setCloudGrabber(CloudGrabberPtr grabber)
     {
       m_cloudGrabber = grabber;
@@ -58,6 +40,11 @@ namespace CaptureApp
     inline void setIMUGrabber(IMU::IIMUGrabber_sptr grabber)
     {
       m_imuGrabber = grabber;
+    }
+
+    inline void addPostCaptureTask(IPostCaptureTask_sptr task)
+    {
+      m_postCaptureOperations.push_back(task);
     }
 
     void addCaptureTrigger(Triggers::ITrigger_sptr trigger);
@@ -73,14 +60,12 @@ namespace CaptureApp
     bool m_isRunning;
     size_t m_currentFrameCount;
 
-    boost::filesystem::path m_outputDirectory;
-
-    TransformMode m_transformMode;
-
     CloudGrabberPtr m_cloudGrabber;
     IMU::IIMUGrabber_sptr m_imuGrabber;
 
     std::vector<Triggers::ITrigger_sptr> m_captureTriggers;
+
+    std::vector<IPostCaptureTask_sptr> m_postCaptureOperations;
   };
 
   typedef std::shared_ptr<CaptureController> CaptureController_sptr;

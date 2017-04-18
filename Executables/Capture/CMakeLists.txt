@@ -3,11 +3,16 @@ project(Capture)
 set(HEADERS
   CaptureController.h
   CaptureFactory.h
+  IPostCaptureTask.h
+  TaskSaveRawCloud.h
+  TaskSaveRawIMUFrame.h
   Types.h)
 
 set(SOURCES
   CaptureController.cpp
   CaptureFactory.cpp
+  TaskSaveRawCloud.cpp
+  TaskSaveRawIMUFrame.cpp
   main.cpp)
 
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})

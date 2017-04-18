@@ -5,7 +5,6 @@
 #include <typeinfo>
 
 #include <pcl/common/transforms.h>
-#include <pcl/io/pcd_io.h>
 
 #include <YukariIMU/IMUFrame.h>
 #include <YukariProcessing/SpatialOperations.h>
@@ -22,7 +21,6 @@ namespace CaptureApp
   CaptureController::CaptureController()
       : m_logger(LoggingService::Instance().getLogger("CaptureController"))
       , m_isRunning(false)
-      , m_transformMode(TransformMode::SAVE_TRANSFORM)
   {
   }
 
@@ -82,20 +80,6 @@ namespace CaptureApp
     m_logger->info("Enabling capture triggers");
     for (auto it = m_captureTriggers.begin(); it != m_captureTriggers.end(); ++it)
       (*it)->enable();
-
-    /* Generate capture root path name */
-    auto time = boost::posix_time::second_clock::local_time();
-    boost::posix_time::time_facet *facet = new boost::posix_time::time_facet();
-    facet->format("%Y-%m-%dT%H_%M_%S");
-
-    std::stringstream stream;
-    stream.imbue(std::locale(std::locale::classic(), facet));
-    stream << time;
-
-    /* Ensure capture directory exists */
-    m_logger->info("Capture path: {}", m_outputDirectory);
-    boost::filesystem::create_directories(m_outputDirectory);
-    m_logger->debug("Capture root directory created");
 
     /* Reset frrame count */
     m_currentFrameCount = 0;
@@ -202,7 +186,7 @@ namespace CaptureApp
     }
 
     /* Transform cloud */
-    if (m_imuGrabber && m_transformMode == TransformMode::TRANSFORM_NOW)
+    if (m_imuGrabber)
     {
       m_logger->trace("Transforming cloud by IMU");
       pcl::transformPointCloud(
@@ -210,25 +194,12 @@ namespace CaptureApp
           SpatialOperations::RotateQuaternionForCloud(imu->orientation().toEigen()));
     }
 
-    /* Save cloud */
-    boost::filesystem::path cloudFilename =
-        m_outputDirectory / (std::to_string(m_currentFrameCount) + "_cloud.pcd");
-
-    m_logger->trace("Saving point cloud for frame {}: {}", m_currentFrameCount, cloudFilename);
-    pcl::io::savePCDFileASCII(cloudFilename.string(), *cloud);
-
-    /* Save IMU frame */
-    if (m_imuGrabber && m_transformMode == TransformMode::SAVE_TRANSFORM)
+    /* Start post capture operations */
+    m_logger->trace("Starting post capture operations");
+    for (auto it = m_postCaptureOperations.begin(); it != m_postCaptureOperations.end(); ++it)
     {
-      boost::filesystem::path imuFilename =
-          m_outputDirectory / (std::to_string(m_currentFrameCount) + "_imu.txt");
-
-      m_logger->trace("Saving IMU frame for frame {}: {}", m_currentFrameCount, imuFilename);
-
-      std::ofstream imuFile;
-      imuFile.open(imuFilename.string());
-      imuFile << *imu << '\n';
-      imuFile.close();
+      // TODO: run each operation is own thread
+      (*it)->process(m_currentFrameCount, cloud, imu);
     }
 
     /* Increment frame counter */
@@ -239,8 +210,8 @@ namespace CaptureApp
 
   std::ostream &operator<<(std::ostream &s, const CaptureController &o)
   {
-    s << "CloudCapture[out dir = " << o.m_outputDirectory
-      << ", cloud grabber = " << typeid(*(o.m_cloudGrabber)).name()
+    s << "CloudCapture["
+      << "cloud grabber = " << typeid(*(o.m_cloudGrabber)).name()
       << ", IMU grabber = " << (o.m_imuGrabber ? typeid(*(o.m_imuGrabber)).name() : "none")
       << ", capture triggers = [";
 
@@ -251,7 +222,7 @@ namespace CaptureApp
         s << ", ";
     }
 
-    s << "], transform mode = " << (int)o.m_transformMode << "]";
+    s << "]]";
 
     return s;
   }

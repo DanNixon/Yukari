@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     ("cloudgrabber", po::value<std::string>()->default_value("dummy"), "Cloud grabber to use")
     ("imugrabber", po::value<std::string>(), "IMU grabber to use")
     ("capturetrigger", po::value<std::string>()->default_value("periodic(seconds=5)"), "Trigger for a single frame")
-    ("transform", "Transform the point cloud at time of capture (IMU frame is not saved when enabled)");
+    ("process", po::value<std::string>(), "TODO");
   // clang-format on
 
   /* Parse command line args */

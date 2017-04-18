@@ -31,7 +31,6 @@ namespace CaptureApp
     auto dir =
         boost::filesystem::absolute(boost::filesystem::path(config["dir"].as<std::string>()));
     logger->info("Absoluteoutput directory: {}", dir);
-    retVal->setOutputDirectory(dir);
 
     /* Get cloud grabber */
     CloudGrabberPtr grabber =
@@ -55,11 +54,6 @@ namespace CaptureApp
       logger->error("Failed to create IMU grabber");
     }
     retVal->setIMUGrabber(imu);
-
-    /* Get transformation option */
-    bool transformNow = config.count("transform") != 0;
-    retVal->setTransformMode(transformNow ? CaptureController::TransformMode::TRANSFORM_NOW
-                                          : CaptureController::TransformMode::SAVE_TRANSFORM);
 
     /* Get capture triggers */
     ITrigger_sptr trigger = TriggerFactory::Create(config["capturetrigger"].as<std::string>());
