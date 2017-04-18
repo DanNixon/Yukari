@@ -76,13 +76,13 @@ namespace CaptureApp
     }
     m_logger->debug("Cloud grabber opened");
 
+    /* Reset frrame count */
+    m_currentFrameCount = 0;
+
     /* Enable capture triggers */
     m_logger->info("Enabling capture triggers");
     for (auto it = m_captureTriggers.begin(); it != m_captureTriggers.end(); ++it)
       (*it)->enable();
-
-    /* Reset frrame count */
-    m_currentFrameCount = 0;
 
     /* Set running flags */
     m_isRunning = true;
@@ -153,16 +153,19 @@ namespace CaptureApp
     m_logger->trace("Capture triggered");
     LoggingService::Instance().flush();
 
-    /* Grab point cloud */
     static const size_t NUM_ATTEMPTS = 5;
-    size_t attempts = 0;
+    size_t attempts;
+
+    /* Grab point cloud */
     CloudPtr cloud;
+    attempts = 0;
     while (!cloud && attempts < NUM_ATTEMPTS)
     {
       m_logger->trace("Grabbing point cloud, attempt {}", attempts);
       cloud = m_cloudGrabber->grabCloud();
       attempts++;
     }
+
     if (!cloud)
     {
       m_logger->error("Failed to grab point cloud, frame will be skipped!");
@@ -173,7 +176,14 @@ namespace CaptureApp
     IMUFrame_sptr imu;
     if (m_imuGrabber)
     {
-      imu = m_imuGrabber->grabFrame();
+      attempts = 0;
+      while (!imu && attempts < NUM_ATTEMPTS)
+      {
+        m_logger->trace("Grabbing IMU frame, attempt {}", attempts);
+        imu = m_imuGrabber->grabFrame();
+        attempts++;
+      }
+      
       if (!imu)
       {
         m_logger->error("Failed to grab IMU frame, frame will be skipped!");

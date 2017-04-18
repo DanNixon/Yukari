@@ -27,7 +27,9 @@ int main(int argc, char **argv)
     ("dir", po::value<std::string>()->default_value("."), "Root output directory")
     ("cloudgrabber", po::value<std::string>()->default_value("dummy"), "Cloud grabber to use")
     ("imugrabber", po::value<std::string>(), "IMU grabber to use")
-    ("capturetrigger", po::value<std::string>()->default_value("periodic(seconds=5)"), "Trigger for a single frame")
+    ("orientation", po::value<std::string>()->default_value("[0, 1, 0] -90"), "Relative IMU orientation as \"[axis] angle\"")
+    ("position", po::value<std::string>()->default_value("[0, 0, 0]"), "Relative IMU position as \"[position]\"")
+    ("capturetrigger", po::value<std::string>()->default_value("periodic(delay=5000)"), "Trigger for a single frame")
     ("process", po::value<std::string>(), "TODO");
   // clang-format on
 

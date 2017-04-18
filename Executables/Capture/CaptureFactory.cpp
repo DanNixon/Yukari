@@ -10,6 +10,8 @@
 #include <YukariTriggers/TriggerFactory.h>
 
 #include "Types.h"
+#include "TaskSaveRawCloud.h"
+#include "TaskSaveRawIMUFrame.h"
 
 using namespace Yukari::CloudCapture;
 using namespace Yukari::Common;
@@ -30,7 +32,7 @@ namespace CaptureApp
     /* Get destination directory */
     auto dir =
         boost::filesystem::absolute(boost::filesystem::path(config["dir"].as<std::string>()));
-    logger->info("Absoluteoutput directory: {}", dir);
+    logger->info("Absolute output directory: {}", dir);
 
     /* Get cloud grabber */
     CloudGrabberPtr grabber =
@@ -46,8 +48,8 @@ namespace CaptureApp
     IIMUGrabber_sptr imu = IMUGrabberFactory::Create(config["imugrabber"].as<std::string>());
     if (imu)
     {
-      // TODO
-      imu->setOrientation(Quaternion(Vector3(0.0f, 1.0f, 0.0f), -90.0f, DEGREES));
+      /* Set relative IMU transform from command line args */
+      imu->setTransform(Transform(config));
     }
     else
     {
@@ -66,6 +68,11 @@ namespace CaptureApp
     {
       logger->warn("Failed to create capture trigger");
     }
+
+    /* Add post capture operations */
+    // TODO
+    retVal->addPostCaptureTask(std::make_shared<TaskSaveRawCloud>(dir));
+    retVal->addPostCaptureTask(std::make_shared<TaskSaveRawIMUFrame>(dir));
 
     logger->debug("Created: {}", *retVal);
 
