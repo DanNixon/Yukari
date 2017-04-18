@@ -26,7 +26,7 @@ namespace IMUGrabberTest
       return;
     }
 
-    m_logger->info("Frame: {}", (*frame));
+    m_logger->trace("Frame: {}", (*frame));
 
     /* Apply position */
     auto p = frame->position();
@@ -36,7 +36,7 @@ namespace IMUGrabberTest
     auto q = frame->orientation();
     float angle = q.getAngle(DEGREES);
     auto axis = q.getAxis();
-    m_logger->info("Angle={}, Axis={}", angle, axis);
+    m_logger->debug("Angle={}, Axis={}", angle, axis);
 
     /* Apply orientation */
     m_actor->SetOrientation(0, 0, 0);

@@ -55,7 +55,7 @@ int main(int argc, char **argv)
   // clang-format off
   desc.add_options()
     ("help", "Show brief usage message")
-    ("loglevel", po::value<std::string>()->default_value("debug"), "Global log level")
+    ("loglevel", po::value<std::string>()->default_value("info"), "Global log level")
     ("grabber", po::value<std::string>()->default_value("dummy"), "IMU grabber type");
   // clang-format on
 
