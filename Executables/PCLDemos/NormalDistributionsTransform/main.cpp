@@ -65,7 +65,7 @@ int main(int argc, char **argv)
   logger->info("Normal Distributions Transform score: {}", ndt.getFitnessScore());
 
   /* Transform the original input cloud */
-  pcl::transformPointCloud (*inputCloud, *transformedInputCloud, ndt.getFinalTransformation ());
+  pcl::transformPointCloud(*inputCloud, *transformedInputCloud, ndt.getFinalTransformation());
 
   pcl::io::savePCDFileASCII("transformed.pcd", *transformedInputCloud);
 

@@ -56,7 +56,8 @@ namespace Processing
 
     static CloudPtr DownsampleVoxelFilter(CloudConstPtr cloud)
     {
-      auto logger = Common::LoggingService::Instance().getLogger("CloudOperations_DownsampleVoxelFilter");
+      auto logger =
+          Common::LoggingService::Instance().getLogger("CloudOperations_DownsampleVoxelFilter");
       logger->debug("Input cloud size: {} points", cloud->size());
 
       CloudPtr filteredInputCloud(new Cloud());
