@@ -36,9 +36,14 @@ namespace Triggers
 
   void PeriodicTrigger::workerFunc()
   {
+    auto nextWake = std::chrono::high_resolution_clock::now();
     while (m_enabled)
     {
-      std::this_thread::sleep_for(m_duration);
+      /* Sleep until *duration* from now */
+      std::this_thread::sleep_until(nextWake);
+      nextWake += m_duration;
+
+      /* Run handler */
       m_handlerFunc();
     }
   }
