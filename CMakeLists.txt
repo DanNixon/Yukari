@@ -62,7 +62,6 @@ include_directories(Libraries
 add_subdirectory(ThirdParty/serial)
 
 # Libraries
-add_subdirectory(Libraries/YukariCLI)
 add_subdirectory(Libraries/YukariCloudCapture)
 add_subdirectory(Libraries/YukariCommon)
 add_subdirectory(Libraries/YukariIMU)
@@ -72,7 +71,7 @@ add_subdirectory(Libraries/YukariProcessing)
 add_subdirectory(Libraries/YukariTriggers)
 
 # Executables
-add_subdirectory(Executables/CapturePointClouds)
+add_subdirectory(Executables/Capture)
 add_subdirectory(Executables/PCDViewer)
 
 add_subdirectory(Executables/Processing/PCDToMesh)
@@ -82,7 +81,6 @@ add_subdirectory(Executables/Test/CloudGrabberTest)
 add_subdirectory(Executables/Test/IMUGrabberTest)
 add_subdirectory(Executables/Test/TriggerTest)
 
-add_subdirectory(Executables/PCLDemos/FastMesh)
 add_subdirectory(Executables/PCLDemos/NormalDistributionsTransform)
 
 # Docs

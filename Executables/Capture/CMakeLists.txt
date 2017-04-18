@@ -1,4 +1,4 @@
-project(CapturePointClouds)
+project(Capture)
 
 set(HEADERS
   CaptureController.h

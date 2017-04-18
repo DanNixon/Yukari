@@ -1,20 +1,17 @@
 project(YukariTriggers)
 
 set(HEADERS
-  CLITrigger.h
   ITrigger.h
   PeriodicTrigger.h
   SignalTrigger.h
   TriggerFactory.h)
 
 set(SOURCES
-  CLITrigger.cpp
   PeriodicTrigger.cpp
   SignalTrigger.cpp
   TriggerFactory.cpp)
 
 set(LIB_DEPS
-  YukariCLI
   YukariCommon)
 
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
