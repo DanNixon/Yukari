@@ -187,7 +187,7 @@ namespace Maths
 
     BOOST_AUTO_TEST_CASE(Vector3_Stream_In)
     {
-      std::stringstream str("[1.1, 2.2, 3.3");
+      std::stringstream str("[1.1, 2.2, 3.3]");
       Vector3 v;
       str >> v;
       BOOST_CHECK(v == Vector3(1.1f, 2.2f, 3.3f));
