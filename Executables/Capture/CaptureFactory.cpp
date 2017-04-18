@@ -9,9 +9,10 @@
 #include <YukariIMU/IMUGrabberFactory.h>
 #include <YukariTriggers/TriggerFactory.h>
 
-#include "Types.h"
+#include "NDTIncrementalAlignment.h"
 #include "TaskSaveRawCloud.h"
 #include "TaskSaveRawIMUFrame.h"
+#include "Types.h"
 
 using namespace Yukari::CloudCapture;
 using namespace Yukari::Common;
@@ -73,6 +74,7 @@ namespace CaptureApp
     // TODO
     retVal->addPostCaptureTask(std::make_shared<TaskSaveRawCloud>(dir));
     retVal->addPostCaptureTask(std::make_shared<TaskSaveRawIMUFrame>(dir));
+    retVal->addPostCaptureTask(std::make_shared<NDTIncrementalAlignment>());
 
     logger->debug("Created: {}", *retVal);
 

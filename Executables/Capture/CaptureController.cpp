@@ -183,7 +183,7 @@ namespace CaptureApp
         imu = m_imuGrabber->grabFrame();
         attempts++;
       }
-      
+
       if (!imu)
       {
         m_logger->error("Failed to grab IMU frame, frame will be skipped!");
