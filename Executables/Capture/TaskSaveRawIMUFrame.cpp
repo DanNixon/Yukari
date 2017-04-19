@@ -11,13 +11,9 @@ namespace Yukari
 namespace CaptureApp
 {
   TaskSaveRawIMUFrame::TaskSaveRawIMUFrame(const boost::filesystem::path &path)
-      : m_logger(LoggingService::Instance().getLogger("TaskSaveRawIMUFrame"))
-      , m_outputDirectory(path)
+      : IPostCaptureTask(path)
+      , m_logger(LoggingService::Instance().getLogger("TaskSaveRawIMUFrame"))
   {
-    /* Ensure output directory exists */
-    m_logger->info("Save path: {}", m_outputDirectory);
-    boost::filesystem::create_directories(m_outputDirectory);
-    m_logger->debug("Directory created");
   }
 
   int TaskSaveRawIMUFrame::process(size_t frameNumber, CloudConstPtr cloud,

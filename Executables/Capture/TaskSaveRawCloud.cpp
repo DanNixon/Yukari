@@ -15,14 +15,10 @@ namespace Yukari
 namespace CaptureApp
 {
   TaskSaveRawCloud::TaskSaveRawCloud(const boost::filesystem::path &path, bool transform)
-      : m_logger(LoggingService::Instance().getLogger("TaskSaveRawCloud"))
-      , m_outputDirectory(path)
+      : IPostCaptureTask(path)
+      , m_logger(LoggingService::Instance().getLogger("TaskSaveRawCloud"))
       , m_transform(transform)
   {
-    /* Ensure capture directory exists */
-    m_logger->info("Capture path: {}", m_outputDirectory);
-    boost::filesystem::create_directories(m_outputDirectory);
-    m_logger->debug("Capture root directory created");
   }
 
   int TaskSaveRawCloud::process(size_t frameNumber, CloudConstPtr cloud,

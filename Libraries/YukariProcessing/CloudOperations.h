@@ -4,6 +4,7 @@
 
 #include <Eigen/Geometry>
 #include <pcl/common/transforms.h>
+#include <pcl/filters/approximate_voxel_grid.h>
 #include <pcl/filters/filter.h>
 #include <pcl/point_types.h>
 

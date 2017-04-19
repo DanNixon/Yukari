@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-#include <pcl/filters/approximate_voxel_grid.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
 #include <pcl/registration/ndt.h>
@@ -39,7 +38,7 @@ int main(int argc, char **argv)
   inputCloud = CloudOperations<pcl::PointXYZRGBA>::RemoveNaNFromCloud(inputCloud);
   logger->info("Loaded input cloud \"{}\" of {} points", inputCloudFilename, inputCloud->size());
 
-  /* FIlter (downsample) input cloud */
+  /* Filter (downsample) input cloud */
   auto filteredInputCloud = CloudOperations<pcl::PointXYZRGBA>::DownsampleVoxelFilter(inputCloud);
 
   pcl::NormalDistributionsTransform<pcl::PointXYZRGBA, pcl::PointXYZRGBA> ndt;

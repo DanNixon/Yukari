@@ -76,7 +76,7 @@ namespace CaptureApp
     retVal->addPostCaptureTask(
         std::make_shared<TaskSaveRawCloud>(dir / "transformed_clouds", true));
     retVal->addPostCaptureTask(std::make_shared<TaskSaveRawIMUFrame>(dir / "imu"));
-    retVal->addPostCaptureTask(std::make_shared<NDTIncrementalAlignment>());
+    retVal->addPostCaptureTask(std::make_shared<NDTIncrementalAlignment>(dir / "alignment"));
 
     logger->debug("Created: {}", *retVal);
 

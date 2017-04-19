@@ -22,8 +22,6 @@ namespace CaptureApp
 
   private:
     Common::LoggingService::Logger m_logger;
-
-    boost::filesystem::path m_outputDirectory;
   };
 }
 }
