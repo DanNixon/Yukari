@@ -14,8 +14,8 @@ namespace IMU
   class IMUGrabberFactory
   {
   public:
-    static IIMUGrabber_sptr Create(const std::string &fullCommand);
-    static IIMUGrabber_sptr Create(const std::string &type,
+    static IIMUGrabber::Ptr Create(const std::string &fullCommand);
+    static IIMUGrabber::Ptr Create(const std::string &type,
                                    std::map<std::string, std::string> &parameters);
   };
 }

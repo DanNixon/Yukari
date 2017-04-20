@@ -15,7 +15,7 @@ namespace Yukari
 {
 namespace IMU
 {
-  IIMUGrabber_sptr IMUGrabberFactory::Create(const std::string &fullCommand)
+  IIMUGrabber::Ptr IMUGrabberFactory::Create(const std::string &fullCommand)
   {
     std::string type;
     std::map<std::string, std::string> params;
@@ -25,13 +25,13 @@ namespace IMU
     return Create(type, params);
   }
 
-  IIMUGrabber_sptr IMUGrabberFactory::Create(const std::string &type,
+  IIMUGrabber::Ptr IMUGrabberFactory::Create(const std::string &type,
                                              std::map<std::string, std::string> &parameters)
   {
     std::string lowerType = type;
     StringParsers::CleanString(lowerType);
 
-    IIMUGrabber_sptr grabber;
+    IIMUGrabber::Ptr grabber;
     if (lowerType == "dummy")
     {
       grabber = std::make_shared<DummyIMUGrabber>();

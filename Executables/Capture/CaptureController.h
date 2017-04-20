@@ -20,6 +20,9 @@ namespace CaptureApp
   class CaptureController
   {
   public:
+    typedef std::shared_ptr<CaptureController> Ptr;
+
+  public:
     CaptureController();
 
     int run();
@@ -37,7 +40,7 @@ namespace CaptureApp
       m_cloudGrabber = grabber;
     }
 
-    inline void setIMUGrabber(IMU::IIMUGrabber_sptr grabber)
+    inline void setIMUGrabber(IMU::IIMUGrabber::Ptr grabber)
     {
       m_imuGrabber = grabber;
     }
@@ -47,7 +50,7 @@ namespace CaptureApp
       m_postCaptureOperations.push_back(task);
     }
 
-    void addCaptureTrigger(Triggers::ITrigger_sptr trigger);
+    void addCaptureTrigger(Triggers::ITrigger::Ptr trigger);
 
   private:
     void triggerCapture();
@@ -61,13 +64,11 @@ namespace CaptureApp
     size_t m_currentFrameCount;
 
     CloudGrabberPtr m_cloudGrabber;
-    IMU::IIMUGrabber_sptr m_imuGrabber;
+    IMU::IIMUGrabber::Ptr m_imuGrabber;
 
-    std::vector<Triggers::ITrigger_sptr> m_captureTriggers;
+    std::vector<Triggers::ITrigger::Ptr> m_captureTriggers;
 
     std::vector<ProcessingTaskPtr> m_postCaptureOperations;
   };
-
-  typedef std::shared_ptr<CaptureController> CaptureController_sptr;
 }
 }

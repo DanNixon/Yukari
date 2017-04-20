@@ -17,13 +17,13 @@ namespace IMUGrabberTest
 
     virtual void OnKeyPress();
 
-    inline void setGrabber(Yukari::IMU::IIMUGrabber_sptr grabber)
+    inline void setGrabber(Yukari::IMU::IIMUGrabber::Ptr grabber)
     {
       m_grabber = std::dynamic_pointer_cast<Yukari::IMU::MSPGrabber>(grabber);
     }
 
   private:
-    Yukari::IMU::MSPGrabber_sptr m_grabber;
+    Yukari::IMU::MSPGrabber::Ptr m_grabber;
     Yukari::Common::LoggingService::Logger m_logger;
   };
 }

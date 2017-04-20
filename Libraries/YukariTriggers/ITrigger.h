@@ -14,6 +14,8 @@ namespace Triggers
   public:
     typedef std::function<void(void)> TriggerHandlerFunc;
 
+    typedef std::shared_ptr<ITrigger> Ptr;
+
   public:
     virtual void enable() = 0;
     virtual void disable() = 0;
@@ -26,7 +28,5 @@ namespace Triggers
   protected:
     TriggerHandlerFunc m_handlerFunc;
   };
-
-  typedef std::shared_ptr<ITrigger> ITrigger_sptr;
 }
 }

@@ -51,8 +51,5 @@ namespace Maths
     Quaternion m_orientation;
     Vector3 m_position;
   };
-
-  typedef std::shared_ptr<Transform> Transform_sptr;
-  typedef std::shared_ptr<const Transform> Transform_const_sptr;
 }
 }

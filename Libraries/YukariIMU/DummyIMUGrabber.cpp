@@ -33,7 +33,7 @@ namespace IMU
     return m_open;
   }
 
-  IMUFrame_sptr DummyIMUGrabber::grabFrame()
+  IMUFrame::Ptr DummyIMUGrabber::grabFrame()
   {
     /* Calculate timestep */
     auto timeNow = std::chrono::high_resolution_clock::now();

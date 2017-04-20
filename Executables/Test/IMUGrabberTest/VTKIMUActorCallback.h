@@ -25,7 +25,7 @@ namespace IMUGrabberTest
     virtual void Execute(vtkObject *caller, unsigned long vtkNotUsed(eventId),
                          void *vtkNotUsed(callData));
 
-    inline void setGrabber(Yukari::IMU::IIMUGrabber_sptr grabber)
+    inline void setGrabber(Yukari::IMU::IIMUGrabber::Ptr grabber)
     {
       m_grabber = grabber;
     }
@@ -36,7 +36,7 @@ namespace IMUGrabberTest
     }
 
   private:
-    Yukari::IMU::IIMUGrabber_sptr m_grabber;
+    Yukari::IMU::IIMUGrabber::Ptr m_grabber;
     vtkSmartPointer<vtkActor> m_actor;
     Yukari::Common::LoggingService::Logger m_logger;
   };

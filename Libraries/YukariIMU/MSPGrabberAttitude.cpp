@@ -28,7 +28,7 @@ namespace IMU
   {
   }
 
-  IMUFrame_sptr MSPGrabberAttitude::grabFrame()
+  IMUFrame::Ptr MSPGrabberAttitude::grabFrame()
   {
     m_mspPayload.clear();
 

@@ -13,7 +13,7 @@ namespace CaptureApp
   class CaptureFactory
   {
   public:
-    static CaptureController_sptr Create(boost::program_options::variables_map config);
+    static CaptureController::Ptr Create(boost::program_options::variables_map config);
   };
 }
 }

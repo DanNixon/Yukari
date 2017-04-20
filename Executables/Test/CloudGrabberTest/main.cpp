@@ -67,7 +67,7 @@ int main(int argc, char **argv)
   }
 
   /* Create IMU grabber */
-  IIMUGrabber_sptr imu = IMUGrabberFactory::Create(args["imugrabber"].as<std::string>());
+  IIMUGrabber::Ptr imu = IMUGrabberFactory::Create(args["imugrabber"].as<std::string>());
   if (imu)
   {
     /* Set relative IMU transform from command line args */

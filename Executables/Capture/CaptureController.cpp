@@ -130,7 +130,7 @@ namespace CaptureApp
     return true;
   }
 
-  void CaptureController::addCaptureTrigger(ITrigger_sptr trigger)
+  void CaptureController::addCaptureTrigger(ITrigger::Ptr trigger)
   {
     trigger->setHandler([this]() { triggerCapture(); });
     m_captureTriggers.push_back(trigger);
@@ -169,7 +169,7 @@ namespace CaptureApp
     }
 
     /* Grab IMU frame */
-    IMUFrame_sptr imu;
+    IMUFrame::Ptr imu;
     if (m_imuGrabber)
     {
       attempts = 0;

@@ -26,7 +26,7 @@ namespace IMU
   {
   }
 
-  IMUFrame_sptr TeensyIMUDevice::grabFrame()
+  IMUFrame::Ptr TeensyIMUDevice::grabFrame()
   {
     m_mspPayloadQuat.clear();
 

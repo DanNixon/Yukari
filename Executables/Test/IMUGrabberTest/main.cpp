@@ -41,8 +41,7 @@ using namespace Yukari::MSP;
 using namespace Yukari::IMUGrabberTest;
 namespace po = boost::program_options;
 
-int runRawData(const std::string &portName, unsigned int baud);
-int runGrabberVIsualisation(IIMUGrabber_sptr grabber);
+int runGrabberVIsualisation(IIMUGrabber::Ptr grabber);
 
 int main(int argc, char **argv)
 {
@@ -139,7 +138,7 @@ vtkPolyData *generateCube(Vector3 d)
   return cube;
 }
 
-int runGrabberVIsualisation(IIMUGrabber_sptr grabber)
+int runGrabberVIsualisation(IIMUGrabber::Ptr grabber)
 {
   auto logger = LoggingService::Instance().getLogger("runGrabber");
 

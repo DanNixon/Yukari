@@ -17,7 +17,7 @@ namespace CloudGrabberTest
     typedef typename CloudCapture::ICloudGrabber<POINT_TYPE>::Ptr GrabberPtr;
 
   public:
-    CloudGrabberVisualisation(GrabberPtr grabber, IMU::IIMUGrabber_sptr imu)
+    CloudGrabberVisualisation(GrabberPtr grabber, IMU::IIMUGrabber::Ptr imu)
         : m_cloudViewer(new pcl::visualization::PCLVisualizer("Cloud grabber visualisation"))
         , m_grabber(grabber)
         , m_imu(imu)
@@ -74,7 +74,7 @@ namespace CloudGrabberTest
     std::shared_ptr<pcl::visualization::PCLVisualizer> m_cloudViewer;
 
     GrabberPtr m_grabber;
-    IMU::IIMUGrabber_sptr m_imu;
+    IMU::IIMUGrabber::Ptr m_imu;
   };
 }
 }

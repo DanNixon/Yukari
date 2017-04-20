@@ -21,7 +21,7 @@ namespace IMU
     virtual void close() override;
     virtual bool isOpen() const override;
 
-    virtual IMUFrame_sptr grabFrame() override;
+    virtual IMUFrame::Ptr grabFrame() override;
 
   protected:
     bool m_open;

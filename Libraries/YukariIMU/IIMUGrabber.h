@@ -15,6 +15,9 @@ namespace IMU
   class IIMUGrabber
   {
   public:
+    typedef std::shared_ptr<IIMUGrabber> Ptr;
+
+  public:
     virtual void open()
     {
     }
@@ -46,13 +49,11 @@ namespace IMU
       m_cachedTransform = m_transform.toEigen();
     }
 
-    virtual IMUFrame_sptr grabFrame() = 0;
+    virtual IMUFrame::Ptr grabFrame() = 0;
 
   protected:
     Maths::Transform m_transform;
     Eigen::Matrix4f m_cachedTransform;
   };
-
-  typedef std::shared_ptr<IIMUGrabber> IIMUGrabber_sptr;
 }
 }

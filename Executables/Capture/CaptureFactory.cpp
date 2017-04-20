@@ -25,11 +25,11 @@ namespace Yukari
 {
 namespace CaptureApp
 {
-  CaptureController_sptr CaptureFactory::Create(boost::program_options::variables_map config)
+  CaptureController::Ptr CaptureFactory::Create(boost::program_options::variables_map config)
   {
     auto logger = LoggingService::Instance().getLogger("CaptureFactory");
 
-    CaptureController_sptr retVal = std::make_shared<CaptureController>();
+    CaptureController::Ptr retVal = std::make_shared<CaptureController>();
 
     /* Get destination directory */
     auto dir =
@@ -47,7 +47,7 @@ namespace CaptureApp
     retVal->setCloudGrabber(grabber);
 
     /* Get IMU grabber */
-    IIMUGrabber_sptr imu = IMUGrabberFactory::Create(config["imugrabber"].as<std::string>());
+    IIMUGrabber::Ptr imu = IMUGrabberFactory::Create(config["imugrabber"].as<std::string>());
     if (imu)
     {
       /* Set relative IMU transform from command line args */
@@ -60,7 +60,7 @@ namespace CaptureApp
     retVal->setIMUGrabber(imu);
 
     /* Get capture triggers */
-    ITrigger_sptr trigger = TriggerFactory::Create(config["capturetrigger"].as<std::string>());
+    ITrigger::Ptr trigger = TriggerFactory::Create(config["capturetrigger"].as<std::string>());
     if (trigger)
     {
       retVal->addCaptureTrigger(trigger);

@@ -50,7 +50,7 @@ int main(int argc, char **argv)
   LoggingService::Instance().configure(args);
 
   /* Get trigger */
-  ITrigger_sptr trigger = TriggerFactory::Create(args["trigger"].as<std::string>());
+  ITrigger::Ptr trigger = TriggerFactory::Create(args["trigger"].as<std::string>());
   if (!trigger)
   {
     logger->error("No trigger!");

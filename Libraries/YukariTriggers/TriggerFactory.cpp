@@ -14,7 +14,7 @@ namespace Yukari
 {
 namespace Triggers
 {
-  ITrigger_sptr TriggerFactory::Create(const std::string &fullCommand)
+  ITrigger::Ptr TriggerFactory::Create(const std::string &fullCommand)
   {
     std::string type;
     std::map<std::string, std::string> params;
@@ -24,13 +24,13 @@ namespace Triggers
     return Create(type, params);
   }
 
-  ITrigger_sptr TriggerFactory::Create(const std::string &type,
+  ITrigger::Ptr TriggerFactory::Create(const std::string &type,
                                        std::map<std::string, std::string> &parameters)
   {
     std::string lowerType = type;
     StringParsers::CleanString(lowerType);
 
-    ITrigger_sptr trigger;
+    ITrigger::Ptr trigger;
     if (lowerType == "periodic")
     {
       int seconds = std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "delay", "10"));

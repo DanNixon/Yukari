@@ -17,6 +17,9 @@ namespace IMU
   class MSPGrabber : public IIMUGrabber
   {
   public:
+    typedef std::shared_ptr<MSPGrabber> Ptr;
+
+  public:
     MSPGrabber(const std::string &port, unsigned int baud = 115200);
     virtual ~MSPGrabber();
 
@@ -24,7 +27,7 @@ namespace IMU
     virtual void close() override;
     virtual bool isOpen() const override;
 
-    virtual IMUFrame_sptr grabFrame() override = 0;
+    virtual IMUFrame::Ptr grabFrame() override = 0;
 
     bool calibrateAccelerometer();
     bool calibrateMagnetometer();
@@ -39,7 +42,5 @@ namespace IMU
 
     MSP::MSPClient::Payload m_mspPayload;
   };
-
-  typedef std::shared_ptr<MSPGrabber> MSPGrabber_sptr;
 }
 }

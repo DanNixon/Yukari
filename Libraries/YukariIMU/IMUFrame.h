@@ -17,6 +17,9 @@ namespace IMU
   public:
     typedef std::chrono::duration<float, std::milli> Duration;
 
+    typedef std::shared_ptr<IMUFrame> Ptr;
+    typedef std::shared_ptr<const IMUFrame> ConstPtr;
+
   public:
     IMUFrame(Duration frameDuration = Duration(0.0f),
              const Maths::Quaternion &orientation = Maths::Quaternion(),
@@ -32,8 +35,5 @@ namespace IMU
   protected:
     Duration m_durationMs;
   };
-
-  typedef std::shared_ptr<IMUFrame> IMUFrame_sptr;
-  typedef std::shared_ptr<const IMUFrame> IMUFrame_const_sptr;
 }
 }

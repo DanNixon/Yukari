@@ -27,7 +27,7 @@ namespace Processing
     }
 
     virtual int process(size_t frameNumber, CloudConstPtr cloud,
-                        IMU::IMUFrame_const_sptr imuFrame) override
+                        IMU::IMUFrame::ConstPtr imuFrame) override
     {
       if (cloud)
       {

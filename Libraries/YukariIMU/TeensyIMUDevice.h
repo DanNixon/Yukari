@@ -16,7 +16,7 @@ namespace IMU
     TeensyIMUDevice(const std::string &port, unsigned int baud = 115200);
     virtual ~TeensyIMUDevice();
 
-    virtual IMUFrame_sptr grabFrame() override;
+    virtual IMUFrame::Ptr grabFrame() override;
 
   protected:
     MSP::MSPClient::Payload m_mspPayloadQuat;

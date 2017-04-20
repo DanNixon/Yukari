@@ -55,7 +55,7 @@ int main(int argc, char **argv)
   LoggingService::Instance().configure(args);
 
   /* Create capture controller */
-  CaptureController_sptr captureController = CaptureFactory::Create(args);
+  CaptureController::Ptr captureController = CaptureFactory::Create(args);
   if (!captureController)
   {
     logger->error("Could not create capture controller!");

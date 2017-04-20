@@ -14,8 +14,8 @@ namespace Triggers
   class TriggerFactory
   {
   public:
-    static ITrigger_sptr Create(const std::string &fullCommand);
-    static ITrigger_sptr Create(const std::string &type,
+    static ITrigger::Ptr Create(const std::string &fullCommand);
+    static ITrigger::Ptr Create(const std::string &type,
                                 std::map<std::string, std::string> &parameters);
   };
 }
