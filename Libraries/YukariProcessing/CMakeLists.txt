@@ -18,7 +18,8 @@ set(LIB_DEPS
 
 set(TESTS
   test/CloudOperationsTest.cpp
-  test/GenerateMeshFromPointCloudTest.cpp)
+  test/GenerateMeshFromPointCloudTest.cpp
+  test/IFrameProcessingTaskTest.cpp)
 
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} ${LIB_DEPS})

@@ -9,11 +9,11 @@
 #include <queue>
 #include <thread>
 
-#include <YukariIMU/IMUFrame.h>
-
 #include <boost/filesystem.hpp>
+#include <pcl/point_cloud.h>
 
 #include <YukariCommon/LoggingService.h>
+#include <YukariIMU/IMUFrame.h>
 
 namespace Yukari
 {
@@ -37,14 +37,24 @@ namespace Processing
     };
 
   public:
-    IFrameProcessingTask(const boost::filesystem::path &path)
+    IFrameProcessingTask(const boost::filesystem::path &path = boost::filesystem::path(""))
         : m_logger(Common::LoggingService::Instance().getLogger("IFrameProcessingTask"))
         , m_outputDirectory(path)
     {
-      /* Ensure capture directory exists */
-      m_logger->info("Capture path: {}", m_outputDirectory);
-      boost::filesystem::create_directories(m_outputDirectory);
-      m_logger->debug("Capture root directory created");
+      /* Set running flag */
+      m_run.store(false);
+
+      /* Ensure capture directory exists if it has been provided */
+      if (!m_outputDirectory.empty())
+      {
+        m_logger->info("Capture path: {}", m_outputDirectory);
+        boost::filesystem::create_directories(m_outputDirectory);
+        m_logger->debug("Capture root directory created");
+      }
+      else
+      {
+        m_logger->trace("No output directory");
+      }
     }
 
     void postTask(Task t)
@@ -93,6 +103,17 @@ namespace Processing
       m_logger->trace("onStop result: {}", result);
     }
 
+    inline bool isRunning() const
+    {
+      return m_run.load();
+    }
+
+    inline size_t queueLength() const
+    {
+      std::lock_guard<std::mutex> lock(m_taskQueueMutex);
+      return m_taskQueue.size();
+    }
+
   private:
     void workerThreadFunc()
     {
@@ -103,12 +124,13 @@ namespace Processing
 
           if (!m_taskQueue.empty())
           {
+            m_logger->trace("Processing task (for frame {})", m_taskQueue.front().frameNumber);
             process(m_taskQueue.front());
             m_taskQueue.pop();
           }
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
       }
     }
 
