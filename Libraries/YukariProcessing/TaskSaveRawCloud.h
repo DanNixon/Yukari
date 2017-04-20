@@ -26,29 +26,28 @@ namespace Processing
     {
     }
 
-    virtual int process(size_t frameNumber, CloudConstPtr cloud,
-                        IMU::IMUFrame::ConstPtr imuFrame) override
+    virtual int process(Task t) override
     {
-      if (cloud)
+      if (t.cloud)
       {
         /* Generate filename */
         boost::filesystem::path cloudFilename =
-            m_outputDirectory / (std::to_string(frameNumber) + "_cloud.pcd");
+            m_outputDirectory / (std::to_string(t.frameNumber) + "_cloud.pcd");
 
         if (m_transform)
         {
           /* Transform cloud */
           m_logger->trace("Transforming cloud by IMU");
           auto c = new Cloud();
-          pcl::transformPointCloud(*cloud, *c, imuFrame->position().toEigen(),
+          pcl::transformPointCloud(*t.cloud, *c, t.imuFrame->position().toEigen(),
                                    Processing::SpatialOperations::RotateQuaternionForCloud(
-                                       imuFrame->orientation().toEigen()));
-          cloud = CloudConstPtr(c);
+                                       t.imuFrame->orientation().toEigen()));
+          t.cloud = CloudConstPtr(c);
         }
 
         /* Save cloud */
-        m_logger->trace("Saving point cloud for frame {}: {}", frameNumber, cloudFilename);
-        pcl::io::savePCDFileBinaryCompressed(cloudFilename.string(), *cloud);
+        m_logger->trace("Saving point cloud for frame {}: {}", t.frameNumber, cloudFilename);
+        pcl::io::savePCDFileBinaryCompressed(cloudFilename.string(), *t.cloud);
       }
       else
       {

@@ -75,6 +75,11 @@ namespace CaptureApp
     /* Reset frrame count */
     m_currentFrameCount = 0;
 
+    /* Start operation workers */
+    m_logger->trace("Starting post capture operation workers");
+    for (auto it = m_postCaptureOperations.begin(); it != m_postCaptureOperations.end(); ++it)
+      (*it)->start();
+
     /* Enable capture triggers */
     m_logger->info("Enabling capture triggers");
     for (auto it = m_captureTriggers.begin(); it != m_captureTriggers.end(); ++it)
@@ -126,6 +131,11 @@ namespace CaptureApp
       m_logger->error("Failed to close cloud grabber!");
       return false;
     }
+
+    /* Stop operation workers */
+    m_logger->trace("Stopping post capture operation workers");
+    for (auto it = m_postCaptureOperations.begin(); it != m_postCaptureOperations.end(); ++it)
+      (*it)->stop();
 
     return true;
   }
@@ -191,13 +201,10 @@ namespace CaptureApp
       m_logger->info("No IMU grabber defined");
     }
 
-    /* Start post capture operations */
-    m_logger->trace("Starting post capture operations");
+    /* Queue post capture operations */
+    m_logger->trace("Queueing post capture operations");
     for (auto it = m_postCaptureOperations.begin(); it != m_postCaptureOperations.end(); ++it)
-    {
-      // TODO: run each operation is own thread
-      (*it)->process(m_currentFrameCount, cloud, imu);
-    }
+      (*it)->postTask({m_currentFrameCount, cloud, imu});
 
     /* Increment frame counter */
     m_currentFrameCount++;

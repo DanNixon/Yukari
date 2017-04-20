@@ -22,20 +22,19 @@ namespace Processing
     {
     }
 
-    virtual int process(size_t frameNumber, CloudConstPtr cloud,
-                        IMU::IMUFrame::ConstPtr imuFrame) override
+    virtual int process(Task t) override
     {
-      if (imuFrame)
+      if (t.imuFrame)
       {
         /* Generate filename */
         boost::filesystem::path imuFilename =
-            m_outputDirectory / (std::to_string(frameNumber) + "_imu.txt");
+            m_outputDirectory / (std::to_string(t.frameNumber) + "_imu.txt");
 
         /* Save IMU frame */
-        m_logger->trace("Saving IMU frame for frame {}: {}", frameNumber, imuFilename);
+        m_logger->trace("Saving IMU frame for frame {}: {}", t.frameNumber, imuFilename);
         std::ofstream imuFile;
         imuFile.open(imuFilename.string());
-        imuFile << *imuFrame << '\n';
+        imuFile << *t.imuFrame << '\n';
         imuFile.close();
       }
       else

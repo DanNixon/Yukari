@@ -33,10 +33,9 @@ namespace Processing
       return m_worldCloud;
     }
 
-    virtual int process(size_t frameNumber, CloudConstPtr cloud,
-                        IMU::IMUFrame::ConstPtr imuFrame) override
+    virtual int process(Task t) override
     {
-      if (!(cloud && imuFrame))
+      if (!(t.cloud && t.imuFrame))
       {
         m_logger->error("Do not have both cloud and IMU frame");
         return 1;
@@ -46,9 +45,9 @@ namespace Processing
 
       /* Transform cloud */
       m_logger->trace("Transforming cloud by IMU");
-      pcl::transformPointCloud(*cloud, *inputCloud, imuFrame->position().toEigen(),
+      pcl::transformPointCloud(*t.cloud, *inputCloud, t.imuFrame->position().toEigen(),
                                Processing::SpatialOperations::RotateQuaternionForCloud(
-                                   imuFrame->orientation().toEigen()));
+                                   t.imuFrame->orientation().toEigen()));
 
       if (!m_worldCloud)
       {
