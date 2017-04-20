@@ -4,7 +4,7 @@ set(HEADERS
   CaptureController.h
   CaptureFactory.h
   IPostCaptureTask.h
-  NDTIncrementalAlignment.h
+  TaskNDTIncrementalAlignment.h
   TaskSaveRawCloud.h
   TaskSaveRawIMUFrame.h
   Types.h)
@@ -12,9 +12,6 @@ set(HEADERS
 set(SOURCES
   CaptureController.cpp
   CaptureFactory.cpp
-  NDTIncrementalAlignment.cpp
-  TaskSaveRawCloud.cpp
-  TaskSaveRawIMUFrame.cpp
   main.cpp)
 
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
