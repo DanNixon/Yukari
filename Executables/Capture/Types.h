@@ -5,6 +5,7 @@
 #include <pcl/point_types.h>
 
 #include <YukariCloudCapture/ICloudGrabber.h>
+#include <YukariProcessing/IFrameProcessingTask.h>
 
 namespace Yukari
 {
@@ -18,5 +19,7 @@ namespace CaptureApp
   typedef pcl::PointCloud<PointType> Cloud;
   typedef typename Cloud::Ptr CloudPtr;
   typedef typename Cloud::ConstPtr CloudConstPtr;
+
+  typedef Processing::IFrameProcessingTask<PointType>::Ptr ProcessingTaskPtr;
 }
 }

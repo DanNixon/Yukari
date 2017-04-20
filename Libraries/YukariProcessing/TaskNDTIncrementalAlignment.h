@@ -2,27 +2,27 @@
 
 #pragma once
 
-#include "IPostCaptureTask.h"
+#include "IFrameProcessingTask.h"
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/registration/ndt.h>
 
 #include <YukariCommon/LoggingService.h>
-#include <YukariProcessing/CloudOperations.h>
-#include <YukariProcessing/SpatialOperations.h>
 
-#include "Types.h"
+#include "CloudOperations.h"
+#include "SpatialOperations.h"
 
 namespace Yukari
 {
-namespace CaptureApp
+namespace Processing
 {
-  class TaskNDTIncrementalAlignment : public IPostCaptureTask
+  template <typename POINT_TYPE>
+  class TaskNDTIncrementalAlignment : public IFrameProcessingTask<POINT_TYPE>
   {
   public:
     TaskNDTIncrementalAlignment(const boost::filesystem::path &path)
-        : IPostCaptureTask(path)
+        : IFrameProcessingTask(path)
         , m_logger(Common::LoggingService::Instance().getLogger("NDTIncrementalAlignment"))
         , m_worldCloud()
     {
@@ -61,10 +61,10 @@ namespace CaptureApp
 
         /* Downsample the cloud for alignment */
         auto filteredInputCloud =
-            Processing::CloudOperations<PointType>::DownsampleVoxelFilter(inputCloud);
+            Processing::CloudOperations<POINT_TYPE>::DownsampleVoxelFilter(inputCloud);
 
         /* Perform alignment */
-        pcl::NormalDistributionsTransform<PointType, PointType> ndt;
+        pcl::NormalDistributionsTransform<POINT_TYPE, POINT_TYPE> ndt;
 
         ndt.setTransformationEpsilon(0.005);
         ndt.setStepSize(0.01);
@@ -76,8 +76,7 @@ namespace CaptureApp
         ndt.setInputTarget(m_worldCloud);
 
         /* Run alignment (operating on transformed point cloud so no/identity initial guess) */
-        pcl::PointCloud<pcl::PointXYZRGBA>::Ptr transformedInputCloud(
-            new pcl::PointCloud<pcl::PointXYZRGBA>);
+        CloudPtr transformedInputCloud(new Cloud());
         ndt.align(*transformedInputCloud, Eigen::Matrix4f::Identity());
 
         if (ndt.hasConverged())

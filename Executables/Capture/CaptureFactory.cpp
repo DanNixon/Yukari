@@ -7,11 +7,11 @@
 #include <YukariCloudCapture/CloudGrabberFactory.h>
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/IMUGrabberFactory.h>
+#include <YukariProcessing/TaskNDTIncrementalAlignment.h>
+#include <YukariProcessing/TaskSaveRawCloud.h>
+#include <YukariProcessing/TaskSaveRawIMUFrame.h>
 #include <YukariTriggers/TriggerFactory.h>
 
-#include "TaskNDTIncrementalAlignment.h"
-#include "TaskSaveRawCloud.h"
-#include "TaskSaveRawIMUFrame.h"
 #include "Types.h"
 
 using namespace Yukari::CloudCapture;
@@ -19,6 +19,7 @@ using namespace Yukari::Common;
 using namespace Yukari::Maths;
 using namespace Yukari::IMU;
 using namespace Yukari::Triggers;
+using namespace Yukari::Processing;
 
 namespace Yukari
 {
@@ -72,11 +73,12 @@ namespace CaptureApp
 
     /* Add post capture operations */
     // TODO
-    retVal->addPostCaptureTask(std::make_shared<TaskSaveRawCloud>(dir / "raw_clouds"));
+    retVal->addPostCaptureTask(std::make_shared<TaskSaveRawCloud<PointType>>(dir / "raw_clouds"));
     retVal->addPostCaptureTask(
-        std::make_shared<TaskSaveRawCloud>(dir / "transformed_clouds", true));
-    retVal->addPostCaptureTask(std::make_shared<TaskSaveRawIMUFrame>(dir / "imu"));
-    retVal->addPostCaptureTask(std::make_shared<TaskNDTIncrementalAlignment>(dir / "alignment"));
+        std::make_shared<TaskSaveRawCloud<PointType>>(dir / "transformed_clouds", true));
+    retVal->addPostCaptureTask(std::make_shared<TaskSaveRawIMUFrame<PointType>>(dir / "imu"));
+    retVal->addPostCaptureTask(
+        std::make_shared<TaskNDTIncrementalAlignment<PointType>>(dir / "alignment"));
 
     logger->debug("Created: {}", *retVal);
 

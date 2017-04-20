@@ -3,7 +3,11 @@ project(YukariProcessing)
 set(HEADERS
   CloudOperations.h
   GenerateMeshFromPointCloud.h
-  SpatialOperations.h)
+  IFrameProcessingTask.h
+  SpatialOperations.h
+  TaskNDTIncrementalAlignment.h
+  TaskSaveRawCloud.h
+  TaskSaveRawIMUFrame.h)
 
 set(SOURCES)
 

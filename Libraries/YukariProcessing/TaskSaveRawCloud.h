@@ -2,24 +2,25 @@
 
 #pragma once
 
-#include "IPostCaptureTask.h"
+#include "IFrameProcessingTask.h"
 
 #include <boost/filesystem/path.hpp>
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
 
 #include <YukariCommon/LoggingService.h>
-#include <YukariProcessing/SpatialOperations.h>
+
+#include "SpatialOperations.h"
 
 namespace Yukari
 {
-namespace CaptureApp
+namespace Processing
 {
-  class TaskSaveRawCloud : public IPostCaptureTask
+  template <typename POINT_TYPE> class TaskSaveRawCloud : public IFrameProcessingTask<POINT_TYPE>
   {
   public:
     TaskSaveRawCloud(const boost::filesystem::path &path, bool transform = false)
-        : IPostCaptureTask(path)
+        : IFrameProcessingTask(path)
         , m_logger(Common::LoggingService::Instance().getLogger("TaskSaveRawCloud"))
         , m_transform(transform)
     {

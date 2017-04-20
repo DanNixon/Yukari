@@ -3,10 +3,6 @@ project(Capture)
 set(HEADERS
   CaptureController.h
   CaptureFactory.h
-  IPostCaptureTask.h
-  TaskNDTIncrementalAlignment.h
-  TaskSaveRawCloud.h
-  TaskSaveRawIMUFrame.h
   Types.h)
 
 set(SOURCES

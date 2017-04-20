@@ -10,16 +10,21 @@
 
 #include <YukariCommon/LoggingService.h>
 
-#include "Types.h"
-
 namespace Yukari
 {
-namespace CaptureApp
+namespace Processing
 {
-  class IPostCaptureTask
+  template <typename POINT_TYPE> class IFrameProcessingTask
   {
   public:
-    IPostCaptureTask(const boost::filesystem::path &path)
+    typedef pcl::PointCloud<POINT_TYPE> Cloud;
+    typedef typename Cloud::Ptr CloudPtr;
+    typedef typename Cloud::ConstPtr CloudConstPtr;
+
+    typedef std::shared_ptr<IFrameProcessingTask<POINT_TYPE>> Ptr;
+
+  public:
+    IFrameProcessingTask(const boost::filesystem::path &path)
         : m_outputDirectory(path)
     {
       auto logger = Common::LoggingService::Instance().getLogger("IPostCaptureTask");
@@ -46,7 +51,5 @@ namespace CaptureApp
   protected:
     boost::filesystem::path m_outputDirectory;
   };
-
-  typedef std::shared_ptr<IPostCaptureTask> IPostCaptureTask_sptr;
 }
 }

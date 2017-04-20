@@ -8,9 +8,9 @@
 #include <YukariCloudCapture/ICloudGrabber.h>
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/IIMUGrabber.h>
+#include <YukariProcessing/IFrameProcessingTask.h>
 #include <YukariTriggers/ITrigger.h>
 
-#include "IPostCaptureTask.h"
 #include "Types.h"
 
 namespace Yukari
@@ -42,7 +42,7 @@ namespace CaptureApp
       m_imuGrabber = grabber;
     }
 
-    inline void addPostCaptureTask(IPostCaptureTask_sptr task)
+    inline void addPostCaptureTask(ProcessingTaskPtr task)
     {
       m_postCaptureOperations.push_back(task);
     }
@@ -65,7 +65,7 @@ namespace CaptureApp
 
     std::vector<Triggers::ITrigger_sptr> m_captureTriggers;
 
-    std::vector<IPostCaptureTask_sptr> m_postCaptureOperations;
+    std::vector<ProcessingTaskPtr> m_postCaptureOperations;
   };
 
   typedef std::shared_ptr<CaptureController> CaptureController_sptr;

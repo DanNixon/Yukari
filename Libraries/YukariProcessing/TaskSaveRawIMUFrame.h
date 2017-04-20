@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "IPostCaptureTask.h"
+#include "IFrameProcessingTask.h"
 
 #include <boost/filesystem/path.hpp>
 #include <pcl/io/pcd_io.h>
@@ -11,13 +11,13 @@
 
 namespace Yukari
 {
-namespace CaptureApp
+namespace Processing
 {
-  class TaskSaveRawIMUFrame : public IPostCaptureTask
+  template <typename POINT_TYPE> class TaskSaveRawIMUFrame : public IFrameProcessingTask<POINT_TYPE>
   {
   public:
     TaskSaveRawIMUFrame(const boost::filesystem::path &path)
-        : IPostCaptureTask(path)
+        : IFrameProcessingTask(path)
         , m_logger(Common::LoggingService::Instance().getLogger("TaskSaveRawIMUFrame"))
     {
     }
