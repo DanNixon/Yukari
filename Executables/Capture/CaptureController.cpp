@@ -219,19 +219,19 @@ namespace CaptureApp
       << ", IMU grabber = " << (o.m_imuGrabber ? typeid(*(o.m_imuGrabber)).name() : "none")
       << ", capture triggers = [";
 
-    for (auto it = o.m_captureTriggers.begin(); it != o.m_captureTriggers.end();)
+    for (auto it = o.m_captureTriggers.cbegin(); it != o.m_captureTriggers.cend();)
     {
       s << typeid(*(*(it++))).name();
-      if (it != o.m_captureTriggers.end())
+      if (it != o.m_captureTriggers.cend())
         s << ", ";
     }
 
     s << "], post processing = [";
 
-    for (auto it = o.m_postCaptureOperations.begin(); it != o.m_postCaptureOperations.end(); ++it)
+    for (auto it = o.m_postCaptureOperations.cbegin(); it != o.m_postCaptureOperations.cend();)
     {
       s << typeid(*(*(it++))).name();
-      if (it != o.m_postCaptureOperations.end())
+      if (it != o.m_postCaptureOperations.cend())
         s << ", ";
     }
 

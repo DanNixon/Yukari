@@ -124,8 +124,14 @@ namespace Processing
 
           if (!m_taskQueue.empty())
           {
-            m_logger->trace("Processing task (for frame {})", m_taskQueue.front().frameNumber);
+            m_logger->trace("Processing task started (for frame {})",
+                            m_taskQueue.front().frameNumber);
+
             process(m_taskQueue.front());
+
+            m_logger->trace("Processing task complete (for frame {})",
+                            m_taskQueue.front().frameNumber);
+
             m_taskQueue.pop();
           }
         }
