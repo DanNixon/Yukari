@@ -19,6 +19,11 @@ namespace Triggers
         ->debug("Init periodic trigger with duration {}ms", m_duration.count());
   }
 
+  PeriodicTrigger::~PeriodicTrigger()
+  {
+    disable();
+  }
+
   void PeriodicTrigger::enable()
   {
     m_enabled = true;

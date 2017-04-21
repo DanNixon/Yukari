@@ -15,6 +15,7 @@ namespace Triggers
   {
   public:
     PeriodicTrigger(std::chrono::milliseconds duration);
+    virtual ~PeriodicTrigger();
 
     virtual void enable() override;
     virtual void disable() override;
