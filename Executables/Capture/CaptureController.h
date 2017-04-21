@@ -7,10 +7,10 @@
 
 #include <YukariCloudCapture/ICloudGrabber.h>
 #include <YukariCommon/LoggingService.h>
+#include <YukariCommon/SignalBroker.h>
 #include <YukariIMU/IIMUGrabber.h>
 #include <YukariProcessing/IFrameProcessingTask.h>
 #include <YukariTriggers/ITrigger.h>
-#include <YukariCommon/SignalBroker.h>
 
 #include "Types.h"
 
@@ -18,7 +18,7 @@ namespace Yukari
 {
 namespace CaptureApp
 {
-  class CaptureController: public Common::ISignalSubscriber
+  class CaptureController : public Common::ISignalSubscriber
   {
   public:
     typedef std::shared_ptr<CaptureController> Ptr;

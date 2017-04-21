@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 
+#include <YukariCommon/LoggingService.h>
 #include <YukariCommon/MapHelpers.h>
 #include <YukariCommon/StringParsers.h>
 
@@ -55,8 +56,19 @@ namespace CloudCapture
         pcl::io::OpenNI2Grabber::Mode imageMode = pcl::io::OpenNI2Grabber::Mode(
             std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "imagemode", "0")));
 
-        grabber = std::make_shared<OpenNI2CloudGrabber<POINT_TYPE>>(
-            MapHelpers::Get<std::string, std::string>(parameters, "device"), depthMode, imageMode);
+        try
+        {
+          grabber = std::make_shared<OpenNI2CloudGrabber<POINT_TYPE>>(
+              MapHelpers::Get<std::string, std::string>(parameters, "device"), depthMode,
+              imageMode);
+        }
+        catch (const pcl::IOException &e)
+        {
+          grabber = nullptr;
+          Common::LoggingService::Instance()
+              .getLogger("CloudGrabberFactory")
+              ->error("Cannot create OpenNI2 grabber, IO error: {}", e.what());
+        }
       }
 
       return grabber;

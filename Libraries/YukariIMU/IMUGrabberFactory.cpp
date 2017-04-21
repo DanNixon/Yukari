@@ -28,6 +28,8 @@ namespace IMU
   IIMUGrabber::Ptr IMUGrabberFactory::Create(const std::string &type,
                                              std::map<std::string, std::string> &parameters)
   {
+    auto logger = Common::LoggingService::Instance().getLogger("IMUGrabberFactory");
+
     std::string lowerType = type;
     StringParsers::CleanString(lowerType);
 
@@ -41,14 +43,30 @@ namespace IMU
       std::string port = MapHelpers::Get<std::string, std::string>(parameters, "port");
       int baud = std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "baud", "115200"));
 
-      grabber = std::make_shared<MSPGrabberAttitude>(port, baud);
+      try
+      {
+        grabber = std::make_shared<MSPGrabberAttitude>(port, baud);
+      }
+      catch (const serial::IOException &e)
+      {
+        grabber = nullptr;
+        logger->error("Cannot create MSP attitude grabber, IO error: {}", e.what());
+      }
     }
     else if (lowerType == "teensy")
     {
       std::string port = MapHelpers::Get<std::string, std::string>(parameters, "port");
       int baud = std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "baud", "115200"));
 
-      grabber = std::make_shared<TeensyIMUDevice>(port, baud);
+      try
+      {
+        grabber = std::make_shared<TeensyIMUDevice>(port, baud);
+      }
+      catch (const serial::IOException &e)
+      {
+        grabber = nullptr;
+        logger->error("Cannot create Teensey grabber, IO error: {}", e.what());
+      }
     }
 
     return grabber;
