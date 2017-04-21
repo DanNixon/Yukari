@@ -16,8 +16,11 @@ namespace CaptureApp
 {
   CaptureController::CaptureController()
       : m_logger(LoggingService::Instance().getLogger("CaptureController"))
-      , m_isRunning(false)
   {
+    m_isRunning.store(false);
+
+    SignalBroker::SignalSubscribe(2);
+    SignalBroker::HandlerSubscribe(this);
   }
 
   int CaptureController::run()
@@ -25,7 +28,7 @@ namespace CaptureApp
     start();
 
     /* Wait for termination signal */
-    while (m_isRunning)
+    while (m_isRunning.load())
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     /* Ensure capture is stopped before exit */
@@ -39,7 +42,7 @@ namespace CaptureApp
 
   bool CaptureController::start()
   {
-    if (m_isRunning)
+    if (m_isRunning.load())
     {
       m_logger->error("Already running");
       return false;
@@ -86,21 +89,21 @@ namespace CaptureApp
       (*it)->enable();
 
     /* Set running flags */
-    m_isRunning = true;
+    m_isRunning.store(true);
 
     return true;
   }
 
   bool CaptureController::stop()
   {
-    if (!m_isRunning)
+    if (!m_isRunning.load())
     {
       m_logger->error("Already stopped");
       return false;
     }
 
     /* Clear running flag */
-    m_isRunning = false;
+    m_isRunning.store(false);
 
     /* Disable capture triggers */
     m_logger->info("Disabling capture triggers");
@@ -147,10 +150,19 @@ namespace CaptureApp
     m_logger->debug("Added capture trigger");
   }
 
+  void CaptureController::handleSignal(int signal)
+  {
+    if (signal == 2)
+    {
+      m_logger->info("Got signal {}, exiting...", signal);
+      m_isRunning.store(false);
+    }
+  }
+
   void CaptureController::triggerCapture()
   {
     /* Do nothing if capture is not started */
-    if (!m_isRunning)
+    if (!m_isRunning.load())
     {
       m_logger->warn("Capture was triggered but capture is not started");
       return;

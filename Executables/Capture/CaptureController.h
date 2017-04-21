@@ -10,6 +10,7 @@
 #include <YukariIMU/IIMUGrabber.h>
 #include <YukariProcessing/IFrameProcessingTask.h>
 #include <YukariTriggers/ITrigger.h>
+#include <YukariCommon/SignalBroker.h>
 
 #include "Types.h"
 
@@ -17,7 +18,7 @@ namespace Yukari
 {
 namespace CaptureApp
 {
-  class CaptureController
+  class CaptureController: public Common::ISignalSubscriber
   {
   public:
     typedef std::shared_ptr<CaptureController> Ptr;
@@ -52,6 +53,8 @@ namespace CaptureApp
 
     void addCaptureTrigger(Triggers::ITrigger::Ptr trigger);
 
+    virtual void handleSignal(int signal);
+
   private:
     void triggerCapture();
 
@@ -60,7 +63,7 @@ namespace CaptureApp
   private:
     Common::LoggingService::Logger m_logger;
 
-    bool m_isRunning;
+    std::atomic_bool m_isRunning;
     size_t m_currentFrameCount;
 
     CloudGrabberPtr m_cloudGrabber;

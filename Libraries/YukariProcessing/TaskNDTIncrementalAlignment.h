@@ -88,7 +88,7 @@ namespace Processing
         pcl::transformPointCloud(*inputCloud, *transformedInputCloud, ndt.getFinalTransformation());
 
         /* Add translated cloud to world cloud */
-        // TODO
+        *m_worldCloud += *transformedInputCloud;
       }
 
       return 0;
