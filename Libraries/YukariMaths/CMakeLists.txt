@@ -1,24 +1,17 @@
 project(YukariMaths)
 
 set(HEADERS
-  BaseMathType.h
-  Quaternion.h
   Transform.h
-  Units.h
-  Vector3.h)
+  Units.h)
 
 set(SOURCES
-  Quaternion.cpp
-  Transform.cpp
-  Vector3.cpp)
+  Transform.cpp)
 
 set(LIB_DEPS
   YukariCommon)
 
 set(TESTS
-  test/QuaternionTest.cpp
-  test/TransformTest.cpp
-  test/Vector3Test.cpp)
+  test/TransformTest.cpp)
 
 set(TEST_DEPS
   ${PROJECT_NAME}

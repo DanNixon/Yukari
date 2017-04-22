@@ -10,7 +10,7 @@ namespace Yukari
 {
 namespace Maths
 {
-  Transform::Transform(const Maths::Quaternion &orientation, const Maths::Vector3 &position)
+  Transform::Transform(const Eigen::Quaternionf &orientation, const Eigen::Vector3f &position)
       : m_orientation(orientation)
       , m_position(position)
   {
@@ -21,6 +21,7 @@ namespace Maths
       : m_orientation()
       , m_position()
   {
+    // TODO
     auto logger = Common::LoggingService::Instance().getLogger("Transform");
 
     /* Parse orientation */
@@ -31,7 +32,7 @@ namespace Maths
 
       if (!input.empty())
       {
-        Vector3 axis;
+        //Vector3 axis;
         float angle;
 
         boost::regex expression("(\\[.+\\])\\s*([\\-\\.\\w]+)");
@@ -41,15 +42,15 @@ namespace Maths
           angle = std::stof(what[2]);
 
           std::stringstream str(what[1]);
-          str >> axis;
+          //str >> axis;
         }
         else
         {
           logger->error("Could not parse regex");
         }
 
-        logger->debug("Axis: {}, Angle: {}", axis, angle);
-        m_orientation = Quaternion(axis, angle, DEGREES);
+        //logger->debug("Axis: {}, Angle: {}", axis, angle);
+        //m_orientation = Quaternion(axis, angle, DEGREES);
       }
       else
       {
@@ -66,7 +67,7 @@ namespace Maths
       if (!input.empty())
       {
         std::stringstream str(input);
-        str >> m_position;
+        //str >> m_position;
       }
       else
       {
@@ -78,8 +79,8 @@ namespace Maths
   Eigen::Matrix4f Transform::toEigen() const
   {
     Eigen::Matrix4f out = Eigen::Matrix4f::Identity();
-    out.block(0, 0, 3, 3) = m_orientation.toEigen().toRotationMatrix();
-    out.block(0, 3, 3, 1) = m_position.toEigen();
+    out.block(0, 0, 3, 3) = m_orientation.toRotationMatrix();
+    out.block(0, 3, 3, 1) = m_position;
     return out;
   }
 

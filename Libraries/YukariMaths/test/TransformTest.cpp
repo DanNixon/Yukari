@@ -6,11 +6,8 @@
 #include <boost/test/unit_test.hpp>
 #include <sstream>
 
-#include <YukariMaths/Quaternion.h>
 #include <YukariMaths/Transform.h>
-#include <YukariMaths/Vector3.h>
 
-using namespace boost::qvm;
 namespace po = boost::program_options;
 
 namespace Yukari

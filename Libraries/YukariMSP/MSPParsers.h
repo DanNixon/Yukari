@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <YukariMaths/Quaternion.h>
+#include <Eigen/Geometry>
 
 #include "MSPClient.h"
 
@@ -20,7 +20,7 @@ namespace MSP
 
     static bool ParseAttitudePayload(const MSPClient::Payload &payload, float *att);
 
-    static bool ParseQuaternion(const MSPClient::Payload &payload, Maths::Quaternion &quat);
+    static bool ParseQuaternion(const MSPClient::Payload &payload, Eigen::Quaternionf &quat);
   };
 }
 }

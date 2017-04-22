@@ -22,8 +22,8 @@ namespace IMU
 
   public:
     IMUFrame(Duration frameDuration = Duration(0.0f),
-             const Maths::Quaternion &orientation = Maths::Quaternion(),
-             const Maths::Vector3 &position = Maths::Vector3());
+             const Eigen::Quaternionf &orientation = Eigen::Quaternionf::Identity(),
+             const Eigen::Vector3f &position = Eigen::Vector3f::Zero());
 
     inline Duration duration() const
     {

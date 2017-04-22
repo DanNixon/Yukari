@@ -3,7 +3,6 @@
 #include <iostream>
 
 #include <boost/program_options.hpp>
-#include <boost/qvm/all.hpp>
 #include <serial/serial.h>
 
 #include <YukariCommon/LoggingService.h>

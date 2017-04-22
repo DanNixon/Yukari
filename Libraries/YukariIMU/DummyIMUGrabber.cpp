@@ -3,8 +3,6 @@
 #include "DummyIMUGrabber.h"
 
 #include <YukariCommon/LoggingService.h>
-#include <YukariMaths/Quaternion.h>
-#include <YukariMaths/Vector3.h>
 
 using namespace Yukari::Common;
 using namespace Yukari::Maths;
@@ -44,7 +42,7 @@ namespace IMU
 
     /* Random position */
     retVal->position() =
-        Vector3(10 * std::rand() / (RAND_MAX + 1.0f), 10 * std::rand() / (RAND_MAX + 1.0f),
+        Eigen::Vector3f(10 * std::rand() / (RAND_MAX + 1.0f), 10 * std::rand() / (RAND_MAX + 1.0f),
                 10 * std::rand() / (RAND_MAX + 1.0f));
 
     return retVal;

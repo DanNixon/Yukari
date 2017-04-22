@@ -5,7 +5,6 @@
 #include <YukariCommon/LoggingService.h>
 
 using namespace Yukari::Common;
-using namespace Yukari::Maths;
 
 namespace Yukari
 {
@@ -76,7 +75,7 @@ namespace MSP
     return true;
   }
 
-  bool MSPParsers::ParseQuaternion(const MSPClient::Payload &payload, Quaternion &quat)
+  bool MSPParsers::ParseQuaternion(const MSPClient::Payload &payload, Eigen::Quaternionf &quat)
   {
     if (payload.size() != 8)
       return false;
@@ -95,7 +94,7 @@ namespace MSP
         q[i] = -4 + q[i];
     }
 
-    quat = Quaternion(q[0], -q[1], q[3], q[2]);
+    quat = Eigen::Quaternionf(q[0], -q[1], q[3], q[2]);
 
     return true;
   }

@@ -6,8 +6,6 @@
 #include <sstream>
 
 #include <YukariIMU/IMUFrame.h>
-#include <YukariMaths/Quaternion.h>
-#include <YukariMaths/Vector3.h>
 
 using namespace Yukari::Maths;
 
@@ -32,7 +30,7 @@ namespace IMU
     BOOST_AUTO_TEST_CASE(IMUFrame_Stream_Out)
     {
       IMUFrame f(IMUFrame::Duration(250.0f));
-      f.orientation() = Quaternion(Vector3(30.0f, 30.0f, 30.0f), Quaternion::ZYX, DEGREES);
+      f.orientation() = Eigen::Quaternionf(Vector3(30.0f, 30.0f, 30.0f), Quaternion::ZYX, DEGREES);
       f.position() = Vector3(5.5f, 7.8f, 2.1f);
 
       std::stringstream str;

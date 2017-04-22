@@ -8,9 +8,6 @@
 #include <Eigen/Geometry>
 #include <boost/program_options.hpp>
 
-#include "Quaternion.h"
-#include "Vector3.h"
-
 namespace Yukari
 {
 namespace Maths
@@ -18,27 +15,27 @@ namespace Maths
   class Transform
   {
   public:
-    Transform(const Quaternion &orientation = Quaternion(), const Vector3 &position = Vector3());
+    Transform(const Eigen::Quaternionf &orientation = Eigen::Quaternionf::Identity(), const Eigen::Vector3f &position = Eigen::Vector3f::Zero());
     Transform(const boost::program_options::variables_map &args,
               const std::string &orientationName = "orientation",
               const std::string &positionName = "position");
 
-    inline Quaternion orientation() const
+    inline Eigen::Quaternionf orientation() const
     {
       return m_orientation;
     }
 
-    inline Quaternion &orientation()
+    inline Eigen::Quaternionf &orientation()
     {
       return m_orientation;
     }
 
-    inline Vector3 position() const
+    inline Eigen::Vector3f position() const
     {
       return m_position;
     }
 
-    inline Vector3 &position()
+    inline Eigen::Vector3f &position()
     {
       return m_position;
     }
@@ -48,8 +45,8 @@ namespace Maths
     friend std::ostream &operator<<(std::ostream &s, const Transform &t);
 
   protected:
-    Quaternion m_orientation;
-    Vector3 m_position;
+    Eigen::Quaternionf m_orientation;
+    Eigen::Vector3f m_position;
   };
 }
 }

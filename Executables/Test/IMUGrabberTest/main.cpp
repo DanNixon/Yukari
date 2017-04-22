@@ -9,7 +9,6 @@
 #include <thread>
 
 #include <boost/program_options.hpp>
-#include <boost/qvm/all.hpp>
 #include <serial/serial.h>
 #include <vtkActor.h>
 #include <vtkAxes.h>

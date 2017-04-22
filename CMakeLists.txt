@@ -51,7 +51,6 @@ endif()
 
 # Includes
 include_directories(Libraries
-  ThirdParty/boost_qvm
   ThirdParty/serial/include
   ThirdParty/spdlog
   ${Boost_INCLUDE_DIRS}

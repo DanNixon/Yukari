@@ -31,13 +31,13 @@ namespace IMU
       return true;
     }
 
-    void setPosition(const Maths::Vector3 &pos)
+    void setPosition(const Eigen::Vector3f &pos)
     {
       m_transform.position() = pos;
       m_cachedTransform = m_transform.toEigen();
     }
 
-    void setOrientation(const Maths::Quaternion &orientation)
+    void setOrientation(const Eigen::Quaternionf &orientation)
     {
       m_transform.orientation() = orientation;
       m_cachedTransform = m_transform.toEigen();
