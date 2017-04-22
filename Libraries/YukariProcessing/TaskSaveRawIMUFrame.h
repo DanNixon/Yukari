@@ -39,7 +39,7 @@ namespace Processing
       }
       else
       {
-        m_logger->error("No IMU frame cloud, cannot save");
+        m_logger->error("No IMU frame, cannot save");
         return 1;
       }
 

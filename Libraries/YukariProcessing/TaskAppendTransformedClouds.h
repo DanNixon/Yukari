@@ -6,11 +6,9 @@
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
-#include <pcl/registration/ndt.h>
 
 #include <YukariCommon/LoggingService.h>
 
-#include "CloudOperations.h"
 #include "SpatialOperations.h"
 
 namespace Yukari
@@ -18,12 +16,12 @@ namespace Yukari
 namespace Processing
 {
   template <typename POINT_TYPE>
-  class TaskNDTIncrementalAlignment : public IFrameProcessingTask<POINT_TYPE>
+  class TaskAppendTransformedClouds : public IFrameProcessingTask<POINT_TYPE>
   {
   public:
-    TaskNDTIncrementalAlignment(const boost::filesystem::path &path)
+    TaskAppendTransformedClouds(const boost::filesystem::path &path)
         : IFrameProcessingTask(path)
-        , m_logger(Common::LoggingService::Instance().getLogger("TaskNDTIncrementalAlignment"))
+        , m_logger(Common::LoggingService::Instance().getLogger("TaskAppendTransformedClouds"))
         , m_worldCloud()
     {
     }
@@ -56,39 +54,8 @@ namespace Processing
       }
       else
       {
-        /* Otherwise alignment is required */
-
-        /* Downsample the cloud for alignment */
-        auto filteredInputCloud =
-            Processing::CloudOperations<POINT_TYPE>::DownsampleVoxelFilter(inputCloud);
-
-        /* Perform alignment */
-        pcl::NormalDistributionsTransform<POINT_TYPE, POINT_TYPE> ndt;
-
-        ndt.setTransformationEpsilon(0.005);
-        ndt.setStepSize(0.01);
-        ndt.setResolution(0.1);
-
-        ndt.setMaximumIterations(35);
-
-        ndt.setInputSource(filteredInputCloud);
-        ndt.setInputTarget(m_worldCloud);
-
-        /* Run alignment (operating on transformed point cloud so no/identity initial guess) */
-        CloudPtr transformedInputCloud(new Cloud());
-        ndt.align(*transformedInputCloud, Eigen::Matrix4f::Identity());
-
-        if (ndt.hasConverged())
-          m_logger->info("Convergence reached");
-        else
-          m_logger->warn("Convergence not reached");
-        m_logger->info("Normal Distributions Transform score: {}", ndt.getFitnessScore());
-
-        /* Translate full input cloud */
-        pcl::transformPointCloud(*inputCloud, *transformedInputCloud, ndt.getFinalTransformation());
-
         /* Add translated cloud to world cloud */
-        *m_worldCloud += *transformedInputCloud;
+        *m_worldCloud += *inputCloud;
       }
 
       return 0;

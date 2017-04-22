@@ -5,6 +5,7 @@ set(HEADERS
   GenerateMeshFromPointCloud.h
   IFrameProcessingTask.h
   SpatialOperations.h
+  TaskAppendTransformedClouds.h
   TaskNDTIncrementalAlignment.h
   TaskSaveRawCloud.h
   TaskSaveRawIMUFrame.h)

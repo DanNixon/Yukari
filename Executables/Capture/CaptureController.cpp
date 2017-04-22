@@ -4,6 +4,8 @@
 
 #include <typeinfo>
 
+#include <pcl/filters/filter.h>
+
 #include <YukariIMU/IMUFrame.h>
 
 using namespace Yukari::Common;
@@ -215,6 +217,11 @@ namespace CaptureApp
     {
       m_logger->info("No IMU grabber defined");
     }
+
+    /* Filter NaN alues from point cloud */
+    m_logger->trace("Removing NaN values from captured cloud");
+    std::vector<int> indices;
+    pcl::removeNaNFromPointCloud(*cloud, *cloud, indices);
 
     /* Queue post capture operations */
     m_logger->trace("Queueing post capture operations");

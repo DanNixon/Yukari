@@ -7,12 +7,12 @@
 #include <YukariCloudCapture/CloudGrabberFactory.h>
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/IMUGrabberFactory.h>
+#include <YukariProcessing/TaskAppendTransformedClouds.h>
 #include <YukariProcessing/TaskNDTIncrementalAlignment.h>
 #include <YukariProcessing/TaskSaveRawCloud.h>
 #include <YukariProcessing/TaskSaveRawIMUFrame.h>
-#include <YukariTriggers/TriggerFactory.h>
-
 #include <YukariTriggers/SignalTrigger.h>
+#include <YukariTriggers/TriggerFactory.h>
 
 #include "Types.h"
 
@@ -84,7 +84,9 @@ namespace CaptureApp
         std::make_shared<TaskSaveRawCloud<PointType>>(dir / "transformed_clouds", true));
     retVal->addPostCaptureTask(std::make_shared<TaskSaveRawIMUFrame<PointType>>(dir / "imu"));
     retVal->addPostCaptureTask(
-        std::make_shared<TaskNDTIncrementalAlignment<PointType>>(dir / "alignment"));
+        std::make_shared<TaskNDTIncrementalAlignment<PointType>>(dir / "world_aligned"));
+    retVal->addPostCaptureTask(
+        std::make_shared<TaskAppendTransformedClouds<PointType>>(dir / "world_appended"));
 
     logger->debug("Created: {}", *retVal);
 

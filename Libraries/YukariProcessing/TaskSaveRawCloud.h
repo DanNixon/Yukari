@@ -36,13 +36,20 @@ namespace Processing
 
         if (m_transform)
         {
-          /* Transform cloud */
-          m_logger->trace("Transforming cloud by IMU");
-          auto c = new Cloud();
-          pcl::transformPointCloud(*t.cloud, *c, t.imuFrame->position().toEigen(),
-                                   Processing::SpatialOperations::RotateQuaternionForCloud(
-                                       t.imuFrame->orientation().toEigen()));
-          t.cloud = CloudConstPtr(c);
+          if (t.imuFrame)
+          {
+            /* Transform cloud */
+            m_logger->trace("Transforming cloud by IMU");
+            auto c = new Cloud();
+            pcl::transformPointCloud(*t.cloud, *c, t.imuFrame->position().toEigen(),
+                                     Processing::SpatialOperations::RotateQuaternionForCloud(
+                                         t.imuFrame->orientation().toEigen()));
+            t.cloud = CloudConstPtr(c);
+          }
+          else
+          {
+            m_logger->warn("Requested transform but no IMU frame");
+          }
         }
 
         /* Save cloud */
