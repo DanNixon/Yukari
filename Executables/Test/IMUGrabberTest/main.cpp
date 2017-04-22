@@ -32,7 +32,6 @@
 #include "VTKIMUActorCallback.h"
 #include "VTKIMUCalibrationInteractionStyle.h"
 
-using namespace boost::qvm;
 using namespace Yukari::Common;
 using namespace Yukari::IMU;
 using namespace Yukari::Maths;
@@ -103,7 +102,7 @@ int main(int argc, char **argv)
   return 0;
 }
 
-vtkPolyData *generateCube(Vector3 d)
+vtkPolyData *generateCube(Eigen::Vector3f d)
 {
   d /= 2.0f;
 
@@ -152,7 +151,7 @@ int runGrabberVIsualisation(IIMUGrabber::Ptr grabber)
     return 2;
   }
 
-  vtkPolyData *cube = generateCube(Vector3(1.0f, 0.1f, 1.0f));
+  vtkPolyData *cube = generateCube(Eigen::Vector3f(1.0f, 0.1f, 1.0f));
 
   vtkPolyDataMapper *cubeMapper = vtkPolyDataMapper::New();
   cubeMapper->SetScalarRange(0, 1);

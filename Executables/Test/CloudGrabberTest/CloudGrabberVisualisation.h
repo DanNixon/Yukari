@@ -45,9 +45,9 @@ namespace CloudGrabberTest
           {
             auto imuFrame = m_imu->grabFrame();
             if (imuFrame)
-              pcl::transformPointCloud(*cloud, *cloud, imuFrame->position().toEigen(),
-                                       Processing::SpatialOperations::RotateQuaternionForCloud(
-                                           imuFrame->orientation().toEigen()));
+              pcl::transformPointCloud(
+                  *cloud, *cloud, imuFrame->position(),
+                  Processing::SpatialOperations::RotateQuaternionForCloud(imuFrame->orientation()));
           }
 
           if (!cloudInit)

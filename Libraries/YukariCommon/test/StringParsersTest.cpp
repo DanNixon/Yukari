@@ -119,6 +119,29 @@ namespace Common
       BOOST_CHECK_EQUAL(params["this"], std::string("one\\the other"));
     }
 
+    BOOST_AUTO_TEST_CASE(ParseQuaternion)
+    {
+      std::string in = "[5, -3, 9.9, 1.0]";
+
+      Eigen::Quaternionf q = StringParsers::ParseQuaternion(in);
+
+      BOOST_CHECK_EQUAL(q.w(), 1.0f);
+      BOOST_CHECK_EQUAL(q.x(), 5.0f);
+      BOOST_CHECK_EQUAL(q.y(), -3.0f);
+      BOOST_CHECK_EQUAL(q.z(), 9.9f);
+    }
+
+    BOOST_AUTO_TEST_CASE(ParseVector)
+    {
+      std::string in = "[5, -3, 9.9]";
+
+      Eigen::Vector3f v = StringParsers::ParseVector(in);
+
+      BOOST_CHECK_EQUAL(v.x(), 5.0f);
+      BOOST_CHECK_EQUAL(v.y(), -3.0f);
+      BOOST_CHECK_EQUAL(v.z(), 9.9f);
+    }
+
     BOOST_AUTO_TEST_SUITE_END()
   }
 }

@@ -4,6 +4,8 @@
 
 #include <Eigen/Geometry>
 
+using namespace Yukari::Maths;
+
 namespace Yukari
 {
 namespace IMU
@@ -17,9 +19,9 @@ namespace IMU
 
   std::ostream &operator<<(std::ostream &s, const IMUFrame &f)
   {
-    // TODO
-    //s << "(dt=" << f.m_durationMs.count() << ", o=" << f.m_orientation << ", p=" << f.m_position
-      //<< ")";
+    s << "(dt=" << f.m_durationMs.count()
+      << ", o=" << f.m_orientation.coeffs().format(Transform::EIGEN_FORMAT)
+      << ", p=" << f.m_position.format(Transform::EIGEN_FORMAT) << ")";
 
     return s;
   }

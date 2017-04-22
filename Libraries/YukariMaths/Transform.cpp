@@ -5,11 +5,19 @@
 #include <boost/regex.hpp>
 
 #include <YukariCommon/LoggingService.h>
+#include <YukariCommon/StringParsers.h>
+#include <YukariMaths/Units.h>
+
+using namespace Yukari::Common;
+using namespace Yukari::Maths;
 
 namespace Yukari
 {
 namespace Maths
 {
+  Eigen::IOFormat Transform::EIGEN_FORMAT(Eigen::StreamPrecision, Eigen::DontAlignCols, ",", ",",
+                                          "", "", "[", "]");
+
   Transform::Transform(const Eigen::Quaternionf &orientation, const Eigen::Vector3f &position)
       : m_orientation(orientation)
       , m_position(position)
@@ -18,11 +26,10 @@ namespace Maths
 
   Transform::Transform(const boost::program_options::variables_map &args,
                        const std::string &orientationName, const std::string &positionName)
-      : m_orientation()
-      , m_position()
+      : m_orientation(Eigen::Quaternionf::Identity())
+      , m_position(Eigen::Vector3f::Zero())
   {
-    // TODO
-    auto logger = Common::LoggingService::Instance().getLogger("Transform");
+    auto logger = LoggingService::Instance().getLogger("Transform");
 
     /* Parse orientation */
     if (args.count(orientationName))
@@ -32,25 +39,23 @@ namespace Maths
 
       if (!input.empty())
       {
-        //Vector3 axis;
+        Eigen::Vector3f axis;
         float angle;
 
         boost::regex expression("(\\[.+\\])\\s*([\\-\\.\\w]+)");
         boost::cmatch what;
         if (boost::regex_match(input.c_str(), what, expression))
         {
+          axis = StringParsers::ParseVector(what[1]);
           angle = std::stof(what[2]);
-
-          std::stringstream str(what[1]);
-          //str >> axis;
         }
         else
         {
           logger->error("Could not parse regex");
         }
 
-        //logger->debug("Axis: {}, Angle: {}", axis, angle);
-        //m_orientation = Quaternion(axis, angle, DEGREES);
+        logger->debug("Axis: {}, Angle: {}", axis, angle);
+        m_orientation = Eigen::AngleAxisf(angle * DEG_TO_RAD, axis);
       }
       else
       {
@@ -66,8 +71,7 @@ namespace Maths
 
       if (!input.empty())
       {
-        std::stringstream str(input);
-        //str >> m_position;
+        m_position = StringParsers::ParseVector(input);
       }
       else
       {
@@ -86,7 +90,8 @@ namespace Maths
 
   std::ostream &operator<<(std::ostream &s, const Transform &t)
   {
-    s << "(o=" << t.m_orientation << ", p=" << t.m_position << ")";
+    s << "(o=" << t.m_orientation.coeffs().format(Transform::EIGEN_FORMAT)
+      << ", p=" << t.m_position.format(Transform::EIGEN_FORMAT) << ")";
 
     return s;
   }

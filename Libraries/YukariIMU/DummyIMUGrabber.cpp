@@ -43,7 +43,7 @@ namespace IMU
     /* Random position */
     retVal->position() =
         Eigen::Vector3f(10 * std::rand() / (RAND_MAX + 1.0f), 10 * std::rand() / (RAND_MAX + 1.0f),
-                10 * std::rand() / (RAND_MAX + 1.0f));
+                        10 * std::rand() / (RAND_MAX + 1.0f));
 
     return retVal;
   }

@@ -55,5 +55,54 @@ namespace Common
 
     return !parameters.empty();
   }
+
+  Eigen::Quaternionf StringParsers::ParseQuaternion(const std::string &input)
+  {
+    boost::regex expression("\\[\\s*([\\.\\-\\w]+)\\s*\\,\\s*([\\.\\-\\w]+)\\s*\\,\\s*([\\.\\-\\w]+"
+                            ")\\s*\\,\\s*([\\.\\-\\w]+)\\s*\\]");
+
+    boost::cmatch what;
+    if (!input.empty() && boost::regex_match(input.c_str(), what, expression))
+    {
+      Eigen::Quaternionf retVal;
+      retVal.x() = std::stof(what[1]);
+      retVal.y() = std::stof(what[2]);
+      retVal.z() = std::stof(what[3]);
+      retVal.w() = std::stof(what[4]);
+
+      return retVal;
+    }
+    else
+    {
+      LoggingService::Instance()
+          .getLogger("StringParsers")
+          ->error("Could not parse regex for quaternion");
+      return Eigen::Quaternionf::Identity();
+    }
+  }
+
+  Eigen::Vector3f StringParsers::ParseVector(const std::string &input)
+  {
+    boost::regex expression(
+        "\\[\\s*([\\.\\-\\w]+)\\s*\\,\\s*([\\.\\-\\w]+)\\s*\\,\\s*([\\.\\-\\w]+)\\s*\\]");
+
+    boost::cmatch what;
+    if (!input.empty() && boost::regex_match(input.c_str(), what, expression))
+    {
+      Eigen::Vector3f retVal;
+      retVal.x() = std::stof(what[1]);
+      retVal.y() = std::stof(what[2]);
+      retVal.z() = std::stof(what[3]);
+
+      return retVal;
+    }
+    else
+    {
+      LoggingService::Instance()
+          .getLogger("StringParsers")
+          ->error("Could not parse regex for quaternion");
+      return Eigen::Vector3f::Zero();
+    }
+  }
 }
 }

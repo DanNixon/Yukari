@@ -43,9 +43,9 @@ namespace Processing
 
       /* Transform cloud */
       m_logger->trace("Transforming cloud by IMU");
-      pcl::transformPointCloud(*t.cloud, *inputCloud, t.imuFrame->position().toEigen(),
-                               Processing::SpatialOperations::RotateQuaternionForCloud(
-                                   t.imuFrame->orientation().toEigen()));
+      pcl::transformPointCloud(
+          *t.cloud, *inputCloud, t.imuFrame->position(),
+          Processing::SpatialOperations::RotateQuaternionForCloud(t.imuFrame->orientation()));
 
       if (!m_worldCloud)
       {

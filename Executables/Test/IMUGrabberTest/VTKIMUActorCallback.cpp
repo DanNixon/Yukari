@@ -1,5 +1,7 @@
 #include "VTKIMUActorCallback.h"
 
+#include <YukariMaths/Units.h>
+
 using namespace Yukari::Common;
 using namespace Yukari::IMU;
 using namespace Yukari::Maths;
@@ -33,9 +35,10 @@ namespace IMUGrabberTest
     m_actor->SetPosition(p.x(), p.y(), p.z());
 
     /* Obtain orientation as axis angle */
-    auto q = frame->orientation();
-    float angle = q.getAngle(DEGREES);
-    auto axis = q.getAxis();
+    Eigen::AngleAxisf rot;
+    rot = frame->orientation();
+    float angle = rot.angle() * RAD_TO_DEG;
+    Eigen::Vector3f axis = rot.axis();
     m_logger->debug("Angle={}, Axis={}", angle, axis);
 
     /* Apply orientation */

@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include <YukariMaths/Transform.h>
+#include <YukariMaths/Units.h>
 
 namespace po = boost::program_options;
 
@@ -25,20 +26,22 @@ namespace Maths
       std::stringstream str;
       str << t;
 
-      BOOST_CHECK_EQUAL(str.str(), "(o=[1, 0, 0, 0], p=[0, 0, 0])");
+      BOOST_CHECK_EQUAL(str.str(), "(o=[0, 0, 0, 1], p=[0, 0, 0])");
     }
 
     BOOST_AUTO_TEST_CASE(Transform_Stream_Out)
     {
       Transform t;
-      t.orientation() = Quaternion(Vector3(30.0f, 30.0f, 30.0f), Quaternion::ZYX, DEGREES);
-      t.position() = Vector3(5.5f, 7.8f, 2.1f);
+      t.orientation() = Eigen::AngleAxisf(30.0f * DEG_TO_RAD, Eigen::Vector3f::UnitZ()) *
+                        Eigen::AngleAxisf(30.0f * DEG_TO_RAD, Eigen::Vector3f::UnitY()) *
+                        Eigen::AngleAxisf(30.0f * DEG_TO_RAD, Eigen::Vector3f::UnitX());
+      t.position() = Eigen::Vector3f(5.5f, 7.8f, 2.1f);
 
       std::stringstream str;
       str << t;
 
       BOOST_CHECK_EQUAL(str.str(),
-                        "(o=[0.918559, 0.176777, 0.306186, 0.176777], p=[5.5, 7.8, 2.1])");
+                        "(o=[0.176777, 0.306186, 0.176777, 0.918559], p=[5.5, 7.8, 2.1])");
     }
 
     BOOST_AUTO_TEST_CASE(Transform_From_Boost_Args_Orientation_Only)
@@ -49,11 +52,12 @@ namespace Maths
 
       Transform t(args);
 
-      Quaternion expectedQuat(Vector3(0.0f, 0.0f, 1.0f), -90.5f, DEGREES);
+      Eigen::Quaternionf expectedQuat;
+      expectedQuat = Eigen::AngleAxisf(-90.5f * DEG_TO_RAD, Eigen::Vector3f::UnitZ());
       BOOST_CHECK_EQUAL(expectedQuat.w(), t.orientation().w());
-      BOOST_CHECK_EQUAL(expectedQuat.i(), t.orientation().i());
-      BOOST_CHECK_EQUAL(expectedQuat.j(), t.orientation().j());
-      BOOST_CHECK_EQUAL(expectedQuat.k(), t.orientation().k());
+      BOOST_CHECK_EQUAL(expectedQuat.x(), t.orientation().x());
+      BOOST_CHECK_EQUAL(expectedQuat.y(), t.orientation().y());
+      BOOST_CHECK_EQUAL(expectedQuat.z(), t.orientation().z());
 
       BOOST_CHECK_EQUAL(t.position().x(), 0.0f);
       BOOST_CHECK_EQUAL(t.position().y(), 0.0f);
@@ -68,11 +72,11 @@ namespace Maths
 
       Transform t(args);
 
-      Quaternion expectedQuat;
+      Eigen::Quaternionf expectedQuat = Eigen::Quaternionf::Identity();
       BOOST_CHECK_EQUAL(expectedQuat.w(), t.orientation().w());
-      BOOST_CHECK_EQUAL(expectedQuat.i(), t.orientation().i());
-      BOOST_CHECK_EQUAL(expectedQuat.j(), t.orientation().j());
-      BOOST_CHECK_EQUAL(expectedQuat.k(), t.orientation().k());
+      BOOST_CHECK_EQUAL(expectedQuat.x(), t.orientation().x());
+      BOOST_CHECK_EQUAL(expectedQuat.y(), t.orientation().y());
+      BOOST_CHECK_EQUAL(expectedQuat.z(), t.orientation().z());
 
       BOOST_CHECK_EQUAL(t.position().x(), 1.0f);
       BOOST_CHECK_EQUAL(t.position().y(), 4.5f);
@@ -89,11 +93,12 @@ namespace Maths
 
       Transform t(args);
 
-      Quaternion expectedQuat(Vector3(0.0f, 0.0f, 1.0f), 90.0f, DEGREES);
+      Eigen::Quaternionf expectedQuat;
+      expectedQuat = Eigen::AngleAxisf(90.0f * DEG_TO_RAD, Eigen::Vector3f::UnitZ());
       BOOST_CHECK_EQUAL(expectedQuat.w(), t.orientation().w());
-      BOOST_CHECK_EQUAL(expectedQuat.i(), t.orientation().i());
-      BOOST_CHECK_EQUAL(expectedQuat.j(), t.orientation().j());
-      BOOST_CHECK_EQUAL(expectedQuat.k(), t.orientation().k());
+      BOOST_CHECK_EQUAL(expectedQuat.x(), t.orientation().x());
+      BOOST_CHECK_EQUAL(expectedQuat.y(), t.orientation().y());
+      BOOST_CHECK_EQUAL(expectedQuat.z(), t.orientation().z());
 
       BOOST_CHECK_EQUAL(t.position().x(), 1.0f);
       BOOST_CHECK_EQUAL(t.position().y(), 4.5f);
@@ -110,11 +115,11 @@ namespace Maths
 
       Transform t(args);
 
-      Quaternion expectedQuat;
+      Eigen::Quaternionf expectedQuat = Eigen::Quaternionf::Identity();
       BOOST_CHECK_EQUAL(expectedQuat.w(), t.orientation().w());
-      BOOST_CHECK_EQUAL(expectedQuat.i(), t.orientation().i());
-      BOOST_CHECK_EQUAL(expectedQuat.j(), t.orientation().j());
-      BOOST_CHECK_EQUAL(expectedQuat.k(), t.orientation().k());
+      BOOST_CHECK_EQUAL(expectedQuat.x(), t.orientation().x());
+      BOOST_CHECK_EQUAL(expectedQuat.y(), t.orientation().y());
+      BOOST_CHECK_EQUAL(expectedQuat.z(), t.orientation().z());
 
       BOOST_CHECK_EQUAL(t.position().x(), 0.0f);
       BOOST_CHECK_EQUAL(t.position().y(), 0.0f);

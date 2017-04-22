@@ -15,7 +15,12 @@ namespace Maths
   class Transform
   {
   public:
-    Transform(const Eigen::Quaternionf &orientation = Eigen::Quaternionf::Identity(), const Eigen::Vector3f &position = Eigen::Vector3f::Zero());
+    static Eigen::IOFormat EIGEN_FORMAT;
+
+  public:
+    Transform(const Eigen::Quaternionf &orientation = Eigen::Quaternionf::Identity(),
+              const Eigen::Vector3f &position = Eigen::Vector3f::Zero());
+
     Transform(const boost::program_options::variables_map &args,
               const std::string &orientationName = "orientation",
               const std::string &positionName = "position");
