@@ -5,14 +5,12 @@ set(HEADERS
   Quaternion.h
   Transform.h
   Units.h
-  Vector3.h
-  Vector4.h)
+  Vector3.h)
 
 set(SOURCES
   Quaternion.cpp
   Transform.cpp
-  Vector3.cpp
-  Vector4.cpp)
+  Vector3.cpp)
 
 set(LIB_DEPS
   YukariCommon)
@@ -20,8 +18,7 @@ set(LIB_DEPS
 set(TESTS
   test/QuaternionTest.cpp
   test/TransformTest.cpp
-  test/Vector3Test.cpp
-  test/Vector4Test.cpp)
+  test/Vector3Test.cpp)
 
 set(TEST_DEPS
   ${PROJECT_NAME}
