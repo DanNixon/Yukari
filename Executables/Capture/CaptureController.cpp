@@ -33,6 +33,24 @@ namespace CaptureApp
     return 0;
   }
 
+  void CaptureController::addCaptureTrigger(ITrigger::Ptr trigger)
+  {
+    trigger->setHandler([this]() { triggerCapture(); });
+    m_captureTriggers.push_back(trigger);
+    m_logger->debug("Added capture trigger");
+  }
+
+  void CaptureController::addExitTrigger(ITrigger::Ptr trigger)
+  {
+    trigger->setHandler([this]() {
+      m_logger->info("Got exit trigger, exiting...");
+      m_isRunning.store(false);
+    });
+
+    m_exitTriggers.push_back(trigger);
+    m_logger->debug("Added exit trigger");
+  }
+
   bool CaptureController::start()
   {
     if (m_isRunning.load())
@@ -100,12 +118,6 @@ namespace CaptureApp
 
   bool CaptureController::stop()
   {
-    if (!m_isRunning.load())
-    {
-      m_logger->error("Already stopped");
-      //      return false;
-    }
-
     /* Clear running flag */
     m_isRunning.store(false);
 
@@ -148,24 +160,6 @@ namespace CaptureApp
     LoggingService::Instance().flush();
 
     return true;
-  }
-
-  void CaptureController::addCaptureTrigger(ITrigger::Ptr trigger)
-  {
-    trigger->setHandler([this]() { triggerCapture(); });
-    m_captureTriggers.push_back(trigger);
-    m_logger->debug("Added capture trigger");
-  }
-
-  void CaptureController::addExitTrigger(ITrigger::Ptr trigger)
-  {
-    trigger->setHandler([this]() {
-      m_logger->info("Got exit trigger, exiting...");
-      m_isRunning.store(false);
-    });
-
-    m_exitTriggers.push_back(trigger);
-    m_logger->debug("Added exit trigger");
   }
 
   void CaptureController::triggerCapture()

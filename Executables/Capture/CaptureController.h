@@ -27,9 +27,6 @@ namespace CaptureApp
 
     int run();
 
-    bool start();
-    bool stop();
-
     inline bool isRunning() const
     {
       return m_isRunning;
@@ -54,6 +51,9 @@ namespace CaptureApp
     void addExitTrigger(Triggers::ITrigger::Ptr trigger);
 
   private:
+    bool start();
+    bool stop();
+
     void triggerCapture();
 
     friend std::ostream &operator<<(std::ostream &s, const CaptureController &o);
