@@ -52,6 +52,9 @@ namespace IMU
         Eigen::AngleAxisf(-m_attitude[2] * DEG_TO_RAD, Eigen::Vector3f::UnitZ());
     retVal->orientation() = rot * m_transform.orientation();
 
+    /* Set empty position */
+    retVal->position() = Eigen::Vector3f::Zero();
+
     return retVal;
   }
 }

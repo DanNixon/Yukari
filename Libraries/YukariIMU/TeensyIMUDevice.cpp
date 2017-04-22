@@ -50,7 +50,8 @@ namespace IMU
 
     /* Set position */
     Eigen::Vector3f position;
-    // TODO: testing only, position offset needs rotated by device orientation
+    // TODO: testing only
+    position = Eigen::Vector3f::Zero();
     retVal->position() = position - m_transform.position();
 
     return retVal;
