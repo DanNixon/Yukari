@@ -140,27 +140,6 @@ namespace Maths
       BOOST_CHECK_CLOSE(q.k(), 0.378644f, 0.01f);
     }
 
-    BOOST_AUTO_TEST_CASE(Quaternion_Rotate_Vector_90Deg_X)
-    {
-      Quaternion q(Vector3(0.0f, 1.0f, 0.0f), 90.0f, DEGREES);
-      Vector3 v(1.0f, 0.0f, 0.0f);
-      v = q.rotate(v);
-      BOOST_CHECK_CLOSE(v.x(), 0.0f, TOL);
-      BOOST_CHECK_CLOSE(v.y(), 0.0f, TOL);
-      BOOST_CHECK_CLOSE(v.z(), -1.0f, TOL);
-    }
-
-    BOOST_AUTO_TEST_CASE(Quaternion_Rotate_Vector_45Deg_Z)
-    {
-      Quaternion q(Vector3(0.0f, 0.0f, 1.0f), 45.0f, DEGREES);
-      Vector3 v(1.0f, 0.0f, 0.0f);
-      v = q.rotate(v);
-      const double h = sqrt(2.0) / 2;
-      BOOST_CHECK_CLOSE(v.x(), h, TOL);
-      BOOST_CHECK_CLOSE(v.y(), h, TOL);
-      BOOST_CHECK_CLOSE(v.z(), 0.0f, TOL);
-    }
-
     BOOST_AUTO_TEST_CASE(Quaternion_ToEigen)
     {
       Quaternion q1(0.354f, 0.354f, 0.146f, 0.854f);

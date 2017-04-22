@@ -81,14 +81,5 @@ namespace Maths
     float f = 1.0f / (std::sqrt(1.0f - std::pow(m_values[0], 2)));
     return Vector3(m_values[1] * f, m_values[2] * f, m_values[3] * f);
   }
-
-  Vector3 Quaternion::rotate(const Vector3 &v) const
-  {
-    const Quaternion inv = inverse(*this);
-    Quaternion pos(0.0f, v.x(), v.y(), v.z());
-    pos = pos * inv;
-    pos = (*this) * pos;
-    return Vector3(pos.i(), pos.j(), pos.k());
-  }
 }
 }
