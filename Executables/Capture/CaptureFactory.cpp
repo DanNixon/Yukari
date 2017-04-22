@@ -12,6 +12,8 @@
 #include <YukariProcessing/TaskSaveRawIMUFrame.h>
 #include <YukariTriggers/TriggerFactory.h>
 
+#include <YukariTriggers/SignalTrigger.h>
+
 #include "Types.h"
 
 using namespace Yukari::CloudCapture;
@@ -70,6 +72,10 @@ namespace CaptureApp
     {
       logger->warn("Failed to create capture trigger");
     }
+
+    /* Get exit triggers */
+    // TODO
+    retVal->addExitTrigger(std::make_shared<SignalTrigger>(2));
 
     /* Add post capture operations */
     // TODO

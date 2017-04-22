@@ -18,9 +18,6 @@ namespace CaptureApp
       : m_logger(LoggingService::Instance().getLogger("CaptureController"))
   {
     m_isRunning.store(false);
-
-    SignalBroker::SignalSubscribe(2);
-    SignalBroker::HandlerSubscribe(this);
   }
 
   int CaptureController::run()
@@ -43,6 +40,14 @@ namespace CaptureApp
       m_logger->error("Already running");
       return false;
     }
+
+    if (m_exitTriggers.empty())
+      m_logger->warn("No exit triggers defined");
+
+    /* Enable capture triggers */
+    m_logger->info("Enabling exit triggers");
+    for (auto it = m_exitTriggers.begin(); it != m_exitTriggers.end(); ++it)
+      (*it)->enable();
 
     /* Open IMU grabber */
     m_logger->info("Opening IMU grabber");
@@ -71,7 +76,7 @@ namespace CaptureApp
     }
     m_logger->debug("Cloud grabber opened");
 
-    /* Reset frrame count */
+    /* Reset frame count */
     m_currentFrameCount = 0;
 
     /* Start operation workers */
@@ -98,7 +103,7 @@ namespace CaptureApp
     if (!m_isRunning.load())
     {
       m_logger->error("Already stopped");
-      return false;
+      //      return false;
     }
 
     /* Clear running flag */
@@ -152,13 +157,15 @@ namespace CaptureApp
     m_logger->debug("Added capture trigger");
   }
 
-  void CaptureController::handleSignal(int signal)
+  void CaptureController::addExitTrigger(ITrigger::Ptr trigger)
   {
-    if (signal == 2)
-    {
-      m_logger->info("Got signal {}, exiting...", signal);
+    trigger->setHandler([this]() {
+      m_logger->info("Got exit trigger, exiting...");
       m_isRunning.store(false);
-    }
+    });
+
+    m_exitTriggers.push_back(trigger);
+    m_logger->debug("Added exit trigger");
   }
 
   void CaptureController::triggerCapture()

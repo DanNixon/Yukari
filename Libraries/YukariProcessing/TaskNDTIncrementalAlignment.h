@@ -96,6 +96,12 @@ namespace Processing
 
     virtual int onStop() override
     {
+      if (!m_worldCloud)
+      {
+        m_logger->warn("No world cloud, nothing saved");
+        return 1;
+      }
+
       /* Generate filename */
       boost::filesystem::path cloudFilename = m_outputDirectory / "world_cloud.pcd";
 

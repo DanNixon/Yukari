@@ -7,7 +7,6 @@
 
 #include <YukariCloudCapture/ICloudGrabber.h>
 #include <YukariCommon/LoggingService.h>
-#include <YukariCommon/SignalBroker.h>
 #include <YukariIMU/IIMUGrabber.h>
 #include <YukariProcessing/IFrameProcessingTask.h>
 #include <YukariTriggers/ITrigger.h>
@@ -18,7 +17,7 @@ namespace Yukari
 {
 namespace CaptureApp
 {
-  class CaptureController : public Common::ISignalSubscriber
+  class CaptureController
   {
   public:
     typedef std::shared_ptr<CaptureController> Ptr;
@@ -52,8 +51,7 @@ namespace CaptureApp
     }
 
     void addCaptureTrigger(Triggers::ITrigger::Ptr trigger);
-
-    virtual void handleSignal(int signal);
+    void addExitTrigger(Triggers::ITrigger::Ptr trigger);
 
   private:
     void triggerCapture();
@@ -70,6 +68,7 @@ namespace CaptureApp
     IMU::IIMUGrabber::Ptr m_imuGrabber;
 
     std::vector<Triggers::ITrigger::Ptr> m_captureTriggers;
+    std::vector<Triggers::ITrigger::Ptr> m_exitTriggers;
 
     std::vector<ProcessingTaskPtr> m_postCaptureOperations;
   };
