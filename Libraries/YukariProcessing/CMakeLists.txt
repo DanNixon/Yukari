@@ -6,7 +6,7 @@ set(HEADERS
   IFrameProcessingTask.h
   SpatialOperations.h
   TaskAppendTransformedClouds.h
-  TaskNDTIncrementalAlignment.h
+  TaskNDTWorldAlignment.h
   TaskSaveRawCloud.h
   TaskSaveRawIMUFrame.h)
 
@@ -18,7 +18,6 @@ set(LIB_DEPS
   ${PCL_LIBRARIES})
 
 set(TESTS
-  test/CloudOperationsTest.cpp
   test/GenerateMeshFromPointCloudTest.cpp
   test/IFrameProcessingTaskTest.cpp)
 

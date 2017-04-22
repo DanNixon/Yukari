@@ -18,12 +18,12 @@ namespace Yukari
 namespace Processing
 {
   template <typename POINT_TYPE>
-  class TaskNDTIncrementalAlignment : public IFrameProcessingTask<POINT_TYPE>
+  class TaskNDTWorldAlignment : public IFrameProcessingTask<POINT_TYPE>
   {
   public:
-    TaskNDTIncrementalAlignment(const boost::filesystem::path &path)
+    TaskNDTWorldAlignment(const boost::filesystem::path &path)
         : IFrameProcessingTask(path)
-        , m_logger(Common::LoggingService::Instance().getLogger("TaskNDTIncrementalAlignment"))
+        , m_logger(Common::LoggingService::Instance().getLogger("TaskNDTWorldAlignment"))
         , m_worldCloud()
     {
     }

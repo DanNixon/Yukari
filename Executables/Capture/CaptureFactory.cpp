@@ -8,7 +8,7 @@
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/IMUGrabberFactory.h>
 #include <YukariProcessing/TaskAppendTransformedClouds.h>
-#include <YukariProcessing/TaskNDTIncrementalAlignment.h>
+#include <YukariProcessing/TaskNDTWorldAlignment.h>
 #include <YukariProcessing/TaskSaveRawCloud.h>
 #include <YukariProcessing/TaskSaveRawIMUFrame.h>
 #include <YukariTriggers/SignalTrigger.h>
@@ -84,7 +84,7 @@ namespace CaptureApp
         std::make_shared<TaskSaveRawCloud<PointType>>(dir / "transformed_clouds", true));
     retVal->addPostCaptureTask(std::make_shared<TaskSaveRawIMUFrame<PointType>>(dir / "imu"));
     retVal->addPostCaptureTask(
-        std::make_shared<TaskNDTIncrementalAlignment<PointType>>(dir / "world_aligned"));
+        std::make_shared<TaskNDTWorldAlignment<PointType>>(dir / "world_aligned"));
     retVal->addPostCaptureTask(
         std::make_shared<TaskAppendTransformedClouds<PointType>>(dir / "world_appended"));
 
