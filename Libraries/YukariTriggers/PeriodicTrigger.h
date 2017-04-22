@@ -4,6 +4,7 @@
 
 #include "ITrigger.h"
 
+#include <atomic>
 #include <chrono>
 #include <thread>
 
@@ -26,7 +27,7 @@ namespace Triggers
   private:
     std::chrono::milliseconds m_duration;
 
-    bool m_enabled;
+    std::atomic_bool m_enabled;
     std::thread m_worker;
   };
 }

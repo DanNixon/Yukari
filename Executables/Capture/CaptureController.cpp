@@ -31,11 +31,7 @@ namespace CaptureApp
     while (m_isRunning.load())
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    /* Ensure capture is stopped before exit */
     stop();
-
-    /* Ensure log is flushed before exiting */
-    LoggingService::Instance().flush();
 
     return 0;
   }
@@ -91,6 +87,9 @@ namespace CaptureApp
     /* Set running flags */
     m_isRunning.store(true);
 
+    m_logger->info("Capture started");
+    LoggingService::Instance().flush();
+
     return true;
   }
 
@@ -139,6 +138,9 @@ namespace CaptureApp
     m_logger->trace("Stopping post capture operation workers");
     for (auto it = m_postCaptureOperations.begin(); it != m_postCaptureOperations.end(); ++it)
       (*it)->stop();
+
+    m_logger->info("Capture stopped");
+    LoggingService::Instance().flush();
 
     return true;
   }

@@ -57,11 +57,6 @@ namespace Processing
       }
     }
 
-    virtual ~IFrameProcessingTask()
-    {
-      stop();
-    }
-
     void postTask(Task t)
     {
       std::lock_guard<std::mutex> lock(m_taskQueueMutex);

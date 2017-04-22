@@ -12,8 +12,9 @@ namespace Triggers
 {
   PeriodicTrigger::PeriodicTrigger(std::chrono::milliseconds duration)
       : m_duration(duration)
-      , m_enabled(false)
   {
+    m_enabled.store(false);
+
     LoggingService::Instance()
         .getLogger("PeriodicTrigger")
         ->debug("Init periodic trigger with duration {}ms", m_duration.count());
@@ -26,14 +27,20 @@ namespace Triggers
 
   void PeriodicTrigger::enable()
   {
-    m_enabled = true;
+    if (m_enabled.load())
+      return;
+
+    m_enabled.store(true);
 
     m_worker = std::thread(&PeriodicTrigger::workerFunc, this);
   }
 
   void PeriodicTrigger::disable()
   {
-    m_enabled = false;
+    if (!m_enabled.load())
+      return;
+
+    m_enabled.store(false);
 
     if (m_worker.joinable())
       m_worker.join();
@@ -42,7 +49,7 @@ namespace Triggers
   void PeriodicTrigger::workerFunc()
   {
     auto nextWake = std::chrono::high_resolution_clock::now();
-    while (m_enabled)
+    while (m_enabled.load())
     {
       /* Sleep until *duration* from now */
       std::this_thread::sleep_until(nextWake);
