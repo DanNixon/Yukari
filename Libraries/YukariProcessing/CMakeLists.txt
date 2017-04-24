@@ -9,6 +9,7 @@ set(HEADERS
   TaskAppendTransformedClouds.h
   TaskNDTIncrementalAlignment.h
   TaskNDTWorldAlignment.h
+  TaskNDTWorldSegmentAlignment.h
   TaskSaveRawCloud.h
   TaskSaveRawIMUFrame.h)
 

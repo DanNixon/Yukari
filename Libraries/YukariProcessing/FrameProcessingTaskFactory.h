@@ -10,6 +10,7 @@
 #include <YukariProcessing/TaskAppendTransformedClouds.h>
 #include <YukariProcessing/TaskNDTIncrementalAlignment.h>
 #include <YukariProcessing/TaskNDTWorldAlignment.h>
+#include <YukariProcessing/TaskNDTWorldSegmentAlignment.h>
 #include <YukariProcessing/TaskSaveRawCloud.h>
 #include <YukariProcessing/TaskSaveRawIMUFrame.h>
 
@@ -58,9 +59,9 @@ namespace Processing
       {
         task = std::make_shared<TaskNDTWorldAlignment<POINT_TYPE>>(outDir);
       }
-      else if (lowerType == "saveimu")
+      else if (lowerType == "ndtworldsegment")
       {
-        task = std::make_shared<TaskSaveRawIMUFrame<POINT_TYPE>>(outDir);
+        task = std::make_shared<TaskNDTWorldSegmentAlignment<POINT_TYPE>>(outDir);
       }
       else if (lowerType == "savecloud")
       {
@@ -70,6 +71,10 @@ namespace Processing
         bool transform = transformParam == "true";
 
         task = std::make_shared<TaskSaveRawCloud<POINT_TYPE>>(outDir, transform);
+      }
+      else if (lowerType == "saveimu")
+      {
+        task = std::make_shared<TaskSaveRawIMUFrame<POINT_TYPE>>(outDir);
       }
 
       return task;
