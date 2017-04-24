@@ -6,7 +6,7 @@ sudo: required
 before_install:
   - sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl -y
   - sudo apt-get -qq update
-  - sudo apt-get install -y cmake libboost-all-dev libpcl-all libeigen3-dev
+  - sudo apt-get install -y cmake libboost-all-dev libpcl-all libeigen3-dev doxygen graphviz
   - pip install -U platformio
   - cmake --version
 
@@ -15,6 +15,7 @@ script:
   - cd build
   - cmake .. -DCMAKE_BUILD_TYPE=Debug -DBOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu/
   - make -j4
+  - make doc
   - ctest -VV
   - cd ..
   - cd TeensyIMUDevice
