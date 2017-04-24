@@ -34,11 +34,16 @@ uint16_t g_dmpFIFOBufferSize;
 uint8_t g_dmpFIFOBuffer[64];
 volatile bool g_mpuInterrupt = false;
 
+// DMP packets use 1g = 4096 (AFS_SEL=2)
+const float ACCEL_COEFF = 9.81f / 4096.0f;
+
 Quaternion g_quat;
-VectorFloat m_gravity;
-VectorInt16 m_accel;
-VectorInt16 m_realAccel;
-VectorInt16 m_worldAccel;
+VectorFloat g_gravity;
+VectorInt16 g_accel;
+VectorInt16 g_realAccel;
+VectorInt16 g_worldAccel;
+VectorFloat g_displacement;
+uint32_t g_displacementLastTime;
 #endif /* DISABLE_IMU */
 
 #ifdef TEAPOT
@@ -96,10 +101,29 @@ void taskDMP()
     g_dmpFIFOBufferSize -= g_dmpFIFOPacketSize;
 
     g_imu.dmpGetQuaternion(&g_quat, g_dmpFIFOBuffer);
-    g_imu.dmpGetAccel(&m_accel, g_dmpFIFOBuffer);
-    g_imu.dmpGetGravity(&m_gravity, &g_quat);
-    g_imu.dmpGetLinearAccel(&m_realAccel, &m_accel, &m_gravity);
-    g_imu.dmpGetLinearAccelInWorld(&m_worldAccel, &m_realAccel, &g_quat);
+    g_imu.dmpGetAccel(&g_accel, g_dmpFIFOBuffer);
+    g_imu.dmpGetGravity(&g_gravity, &g_quat);
+    g_imu.dmpGetLinearAccel(&g_realAccel, &g_accel, &g_gravity);
+    g_imu.dmpGetLinearAccelInWorld(&g_worldAccel, &g_realAccel, &g_quat);
+
+    // Calculate displacement
+    uint32_t now = micros();
+    if (g_displacementLastTime != 0)
+    {
+      float deltaTime = (float)(now - g_displacementLastTime) * 1e-9;
+      VectorFloat accelInG =
+          VectorFloat(g_worldAccel.x, g_worldAccel.y, g_worldAccel.z) * ACCEL_COEFF;
+
+      DEBUG_SERIAL.print("accel in G: \t");
+      DEBUG_SERIAL.print(accelInG.x);
+      DEBUG_SERIAL.print("\t");
+      DEBUG_SERIAL.print(accelInG.y);
+      DEBUG_SERIAL.print("\t");
+      DEBUG_SERIAL.println(accelInG.z);
+
+      g_displacement += accelInG * deltaTime * deltaTime;
+    }
+    g_displacementLastTime = now;
   }
 }
 #endif /* DISABLE_IMU */
@@ -129,16 +153,31 @@ void taskPrintData()
 {
 #ifndef DISABLE_IMU
   // Device orientation as quaternion
-  DEBUG_SERIAL.printf("quat\t%d\t%d\t%d\t%d\n", g_quat.w, g_quat.x, g_quat.z, g_quat.w);
+  DEBUG_SERIAL.printf("quat\t");
+  DEBUG_SERIAL.print(g_quat.w);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.print(g_quat.x);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.print(g_quat.y);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.println(g_quat.z);
 
   // Linear acceleration
-  DEBUG_SERIAL.printf("a\t%d\t%d\t%d\n", m_accel.x, m_accel.y, m_accel.z);
+  DEBUG_SERIAL.printf("a\t%d\t%d\t%d\n", g_accel.x, g_accel.y, g_accel.z);
 
   // Linear acceleration without gravity
-  DEBUG_SERIAL.printf("aReal\t%d\t%d\t%d\n", m_realAccel.x, m_realAccel.y, m_realAccel.z);
+  DEBUG_SERIAL.printf("aReal\t%d\t%d\t%d\n", g_realAccel.x, g_realAccel.y, g_realAccel.z);
 
   // Linear acceleration without gravity and corrected for orientation
-  DEBUG_SERIAL.printf("aWorld\t%d\t%d\t%d\n", m_worldAccel.x, m_worldAccel.y, m_worldAccel.z);
+  DEBUG_SERIAL.printf("aWorld\t%d\t%d\t%d\n", g_worldAccel.x, g_worldAccel.y, g_worldAccel.z);
+
+  // Displacement
+  DEBUG_SERIAL.printf("displacement\t");
+  DEBUG_SERIAL.print(g_displacement.x);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.print(g_displacement.y);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.println(g_displacement.z);
 #endif /* DISABLE_IMU */
 
 #ifndef DISABLE_BARO
@@ -177,7 +216,7 @@ void taskFeedGPS()
 }
 #endif /* DISABLE_GPS */
 
-#ifdef DEBUG
+#if defined(DEBUG) && !defined(DISABLE_GPS)
 void taskDebugPrintGPS()
 {
   DEBUG_SERIAL.printf("GPS stats\n");
@@ -203,7 +242,7 @@ void taskDebugPrintGPS()
   if (g_gps.speed.isUpdated())
     DEBUG_SERIAL.printf("Speed: %ld(knot/100)\n", g_gps.speed.value());
 }
-#endif /* DEBUG */
+#endif /* DEBUG && !DISABLE_GPS */
 
 void taskMSP()
 {
@@ -318,8 +357,8 @@ void setup()
   DEBUG_SERIAL.printf("IMU init: %d\n", g_imu.testConnection());
 #endif /* DEBUG */
 
-  g_imu.setFullScaleAccelRange(MPU9150_ACCEL_FS_16);
-  g_imu.setFullScaleGyroRange(MPU9150_GYRO_FS_2000);
+  // g_imu.setFullScaleAccelRange(MPU9150_ACCEL_FS_16);
+  // g_imu.setFullScaleGyroRange(MPU9150_GYRO_FS_2000);
 
   pinMode(MPU_INTERRUPT_PIN, INPUT);
 
@@ -333,6 +372,9 @@ void setup()
 
     g_dmpFIFOPacketSize = g_imu.dmpGetFIFOPacketSize();
   }
+
+  g_displacement = VectorFloat(0.0f, 0.0f, 0.0f);
+  g_displacementLastTime = 0;
 #endif /* DISABLE_IMU */
 
 #ifndef DISABLE_BARO
@@ -361,7 +403,9 @@ void setup()
 #endif /* DISABLE_BARO */
 #ifdef DEBUG
   g_scheduler.addTask(&taskPrintData, Scheduler::HzToUsInterval(10.0f));
+#ifndef DISABLE_GPS
   g_scheduler.addTask(&taskDebugPrintGPS, Scheduler::HzToUsInterval(1.0f));
+#endif /* DISABLE_GPS */
   g_scheduler.print(DEBUG_SERIAL);
 #endif /* DEBUG */
 

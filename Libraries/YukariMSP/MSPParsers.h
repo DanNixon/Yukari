@@ -21,7 +21,7 @@ namespace MSP
     static bool ParseAttitudePayload(const MSPClient::Payload &payload, float *att);
 
     static bool ParseQuaternion(const MSPClient::Payload &payload, Eigen::Quaternionf &quat);
-	static bool ParseVector3(const MSPClient::Payload &payload, Eigen::Vector3f &vec);
+    static bool ParseVector3(const MSPClient::Payload &payload, Eigen::Vector3f &vec);
   };
 }
 }
