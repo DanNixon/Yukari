@@ -1,5 +1,15 @@
 /** @file */
 
+/*
+ Processing options:
+ --process saveimu(out=raw_imu)
+ --process savecloud(out=raw_clouds)
+ --process savecloud(out=transformed_clouds, transform=true)
+ --process appendtransformed(out=world_appended)
+ --process ndtworld(out=world_aligned)
+ --process ndtincremental(out=incremental_aligned)
+ */
+
 #include <iostream>
 
 #include <boost/program_options.hpp>
@@ -30,7 +40,8 @@ int main(int argc, char **argv)
     ("orientation", po::value<std::string>()->default_value("[0, 1, 0] -90"), "Relative IMU orientation as \"[axis] angle\"")
     ("position", po::value<std::string>()->default_value("[0, 0, 0]"), "Relative IMU position as \"[position]\"")
     ("capturetrigger", po::value<std::string>()->default_value("periodic(delay=5000)"), "Trigger for a single frame")
-    ("process", po::value<std::string>(), "TODO");
+    ("exittrigger", po::value<std::string>()->default_value("signal(signal=2)"), "Trigger for program exit")
+    ("process", po::value<std::vector<std::string>>()->multitoken(), "Add processing stage");
   // clang-format on
 
   /* Parse command line args */

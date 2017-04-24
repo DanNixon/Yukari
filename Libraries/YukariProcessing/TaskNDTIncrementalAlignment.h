@@ -18,19 +18,14 @@ namespace Yukari
 namespace Processing
 {
   template <typename POINT_TYPE>
-  class TaskNDTWorldAlignment : public IFrameProcessingTask<POINT_TYPE>
+  class TaskNDTIncrementalAlignment : public IFrameProcessingTask<POINT_TYPE>
   {
   public:
-    TaskNDTWorldAlignment(const boost::filesystem::path &path)
+    TaskNDTIncrementalAlignment(const boost::filesystem::path &path)
         : IFrameProcessingTask(path)
-        , m_logger(Common::LoggingService::Instance().getLogger("TaskNDTWorldAlignment"))
-        , m_worldCloud()
+        , m_logger(Common::LoggingService::Instance().getLogger("TaskNDTIncrementalAlignment"))
+        , m_previousCloud()
     {
-    }
-
-    inline CloudPtr worldCloud()
-    {
-      return m_worldCloud;
     }
 
     virtual int process(Task t) override
@@ -49,15 +44,16 @@ namespace Processing
           *t.cloud, *inputCloud, t.imuFrame->position(),
           Processing::SpatialOperations::RotateQuaternionForCloud(t.imuFrame->orientation()));
 
-      if (!m_worldCloud)
+      if (!m_previousCloud)
       {
-        /* If this is the first recored cloud simply set it as he "world" cloud */
-        m_worldCloud = CloudPtr(new Cloud(*inputCloud));
+        /* If no previous cloud exists set it */
+        m_previousCloud = CloudPtr(new Cloud(*inputCloud));
+
+        /* Save empty transform */
+        // TODO
       }
       else
       {
-        /* Otherwise alignment is required */
-
         /* Downsample the input cloud for alignment */
         auto filteredInputCloud =
             Processing::CloudOperations<POINT_TYPE>::DownsampleVoxelFilter(inputCloud);
@@ -72,7 +68,7 @@ namespace Processing
         ndt.setMaximumIterations(35);
 
         ndt.setInputSource(filteredInputCloud);
-        ndt.setInputTarget(m_worldCloud);
+        ndt.setInputTarget(m_previousCloud);
 
         /* Run alignment (operating on transformed point cloud so no/identity initial guess) */
         CloudPtr transformedInputCloud(new Cloud());
@@ -84,30 +80,10 @@ namespace Processing
           m_logger->warn("Convergence not reached");
         m_logger->info("Normal Distributions Transform score: {}", ndt.getFitnessScore());
 
-        /* Translate full input cloud */
-        pcl::transformPointCloud(*inputCloud, *transformedInputCloud, ndt.getFinalTransformation());
-
-        /* Add translated cloud to world cloud */
-        *m_worldCloud += *transformedInputCloud;
+        /* Save final transformation between the new cloud and previous cloud */
+        auto transform = ndt.getFinalTransformation();
+        // TODO
       }
-
-      return 0;
-    }
-
-    virtual int onStop() override
-    {
-      if (!m_worldCloud)
-      {
-        m_logger->warn("No world cloud, nothing saved");
-        return 1;
-      }
-
-      /* Generate filename */
-      boost::filesystem::path cloudFilename = m_outputDirectory / "world_cloud.pcd";
-
-      /* Save world cloud */
-      m_logger->trace("Saving world point cloud: {}", cloudFilename);
-      pcl::io::savePCDFileBinaryCompressed(cloudFilename.string(), *m_worldCloud);
 
       return 0;
     }
@@ -115,7 +91,7 @@ namespace Processing
   private:
     Common::LoggingService::Logger m_logger;
 
-    CloudPtr m_worldCloud;
+    CloudPtr m_previousCloud;
   };
 }
 }

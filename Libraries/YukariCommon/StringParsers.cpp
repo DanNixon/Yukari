@@ -13,7 +13,7 @@ namespace Common
   {
     auto log = LoggingService::Instance().getLogger("StringParsers");
 
-    boost::regex expression("(\\w+)\\s*(\\(\\s*(.*)\\s*\\))?");
+    boost::regex expression("\\s*(\\w+)\\s*(\\(\\s*(.*)\\s*\\))?\\s*");
 
     boost::cmatch what;
     if (boost::regex_match(input.c_str(), what, expression))

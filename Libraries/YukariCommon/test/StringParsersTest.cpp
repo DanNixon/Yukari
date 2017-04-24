@@ -87,6 +87,21 @@ namespace Common
       BOOST_CHECK_EQUAL(params["a"], std::string("abc123"));
     }
 
+    BOOST_AUTO_TEST_CASE(ParseCommand_SingleParameter_Spaces)
+    {
+      std::string in = " TestThing (a=abc123) ";
+
+      std::string cmd;
+      std::map<std::string, std::string> params;
+
+      BOOST_CHECK(StringParsers::ParseCommand(in, cmd, params));
+
+      BOOST_CHECK_EQUAL(cmd, std::string("TestThing"));
+
+      BOOST_CHECK_EQUAL(params.size(), 1);
+      BOOST_CHECK_EQUAL(params["a"], std::string("abc123"));
+    }
+
     BOOST_AUTO_TEST_CASE(ParseCommand_TwoParameters)
     {
       std::string in = "TestThing(a=abc123, b=def456)";

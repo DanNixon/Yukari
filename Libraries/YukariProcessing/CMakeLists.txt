@@ -2,10 +2,12 @@ project(YukariProcessing)
 
 set(HEADERS
   CloudOperations.h
+  FrameProcessingTaskFactory.h
   GenerateMeshFromPointCloud.h
   IFrameProcessingTask.h
   SpatialOperations.h
   TaskAppendTransformedClouds.h
+  TaskNDTIncrementalAlignment.h
   TaskNDTWorldAlignment.h
   TaskSaveRawCloud.h
   TaskSaveRawIMUFrame.h)

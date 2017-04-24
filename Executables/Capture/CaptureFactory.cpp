@@ -7,10 +7,7 @@
 #include <YukariCloudCapture/CloudGrabberFactory.h>
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/IMUGrabberFactory.h>
-#include <YukariProcessing/TaskAppendTransformedClouds.h>
-#include <YukariProcessing/TaskNDTWorldAlignment.h>
-#include <YukariProcessing/TaskSaveRawCloud.h>
-#include <YukariProcessing/TaskSaveRawIMUFrame.h>
+#include <YukariProcessing/FrameProcessingTaskFactory.h>
 #include <YukariTriggers/SignalTrigger.h>
 #include <YukariTriggers/TriggerFactory.h>
 
@@ -61,32 +58,52 @@ namespace CaptureApp
     }
     retVal->setIMUGrabber(imu);
 
-    /* Get capture triggers */
-    ITrigger::Ptr trigger = TriggerFactory::Create(config["capturetrigger"].as<std::string>());
-    if (trigger)
+    /* Get capture trigger */
     {
-      retVal->addCaptureTrigger(trigger);
-      logger->trace("Added capture trigger");
+      ITrigger::Ptr trigger = TriggerFactory::Create(config["capturetrigger"].as<std::string>());
+
+      if (trigger)
+        retVal->addCaptureTrigger(trigger);
+      else
+        logger->warn("Failed to create capture trigger");
+    }
+
+    /* Get exit trigger */
+    {
+      ITrigger::Ptr trigger = TriggerFactory::Create(config["exittrigger"].as<std::string>());
+
+      if (trigger)
+      {
+        retVal->addExitTrigger(trigger);
+      }
+      else
+      {
+        logger->error("Failed to create exit trigger");
+        return nullptr;
+      }
+    }
+
+    /* Add post capture operations */
+    std::vector<std::string> processingStages = config["process"].as<std::vector<std::string>>();
+    if (processingStages.empty())
+    {
+      logger->error("No processing stages are defined, this capture will be pointless");
+      return nullptr;
     }
     else
     {
-      logger->warn("Failed to create capture trigger");
+      logger->debug("Num processing stages defined: {}", processingStages.size());
+
+      for (auto it = processingStages.begin(); it != processingStages.end(); ++it)
+      {
+        auto task = FrameProcessingTaskFactory<PointType>::Create(*it, dir);
+
+        if (task)
+          retVal->addPostCaptureTask(task);
+        else
+          logger->warn("Failed to create task: \"{}\"", *it);
+      }
     }
-
-    /* Get exit triggers */
-    // TODO
-    retVal->addExitTrigger(std::make_shared<SignalTrigger>(2));
-
-    /* Add post capture operations */
-    // TODO
-    retVal->addPostCaptureTask(std::make_shared<TaskSaveRawCloud<PointType>>(dir / "raw_clouds"));
-    retVal->addPostCaptureTask(
-        std::make_shared<TaskSaveRawCloud<PointType>>(dir / "transformed_clouds", true));
-    retVal->addPostCaptureTask(std::make_shared<TaskSaveRawIMUFrame<PointType>>(dir / "imu"));
-    retVal->addPostCaptureTask(
-        std::make_shared<TaskNDTWorldAlignment<PointType>>(dir / "world_aligned"));
-    retVal->addPostCaptureTask(
-        std::make_shared<TaskAppendTransformedClouds<PointType>>(dir / "world_appended"));
 
     logger->debug("Created: {}", *retVal);
 
