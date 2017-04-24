@@ -8,7 +8,7 @@
 
 namespace Yukari
 {
-namespace CaptureApp
+namespace Capture
 {
   class CaptureFactory
   {

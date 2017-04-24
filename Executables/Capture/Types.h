@@ -9,7 +9,7 @@
 
 namespace Yukari
 {
-namespace CaptureApp
+namespace Capture
 {
   typedef pcl::PointXYZRGBA PointType;
 

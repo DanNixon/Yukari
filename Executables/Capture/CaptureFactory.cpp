@@ -22,7 +22,7 @@ using namespace Yukari::Processing;
 
 namespace Yukari
 {
-namespace CaptureApp
+namespace Capture
 {
   CaptureController::Ptr CaptureFactory::Create(boost::program_options::variables_map config)
   {

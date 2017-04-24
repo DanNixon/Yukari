@@ -15,7 +15,7 @@
 
 namespace Yukari
 {
-namespace CaptureApp
+namespace Capture
 {
   class CaptureController
   {

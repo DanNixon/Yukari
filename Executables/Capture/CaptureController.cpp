@@ -14,7 +14,7 @@ using namespace Yukari::Triggers;
 
 namespace Yukari
 {
-namespace CaptureApp
+namespace Capture
 {
   CaptureController::CaptureController()
       : m_logger(LoggingService::Instance().getLogger("CaptureController"))

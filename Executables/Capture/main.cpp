@@ -19,7 +19,7 @@
 #include "CaptureFactory.h"
 
 using namespace Yukari::Common;
-using namespace Yukari::CaptureApp;
+using namespace Yukari::Capture;
 namespace po = boost::program_options;
 
 int main(int argc, char **argv)
