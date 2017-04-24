@@ -273,6 +273,16 @@ void setup()
       g_msp.sendPacket(MSP::Command::Y_RAW_IMU, pkt, 8);
       break;
     }
+    case MSP::Command::Y_DISPLACEMENT:
+    {
+      /* TODO */
+      break;
+    }
+    case MSP::Command::Y_RESET_DISPLACEMENT:
+    {
+      /* TODO */
+      break;
+    }
     default:
       break;
     }
@@ -284,7 +294,7 @@ void setup()
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   /* Init i2c bus (Arduino) */
   Wire.begin();
-  Wire.setClock(400000); // 400kHz I2C clock. Comment this line if having compilation difficulties
+  Wire.setClock(400000); // 400kHz I2C clock
 #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
   /* Init i2c bus (Fast Wire) */
   Fastwire::setup(400, true);

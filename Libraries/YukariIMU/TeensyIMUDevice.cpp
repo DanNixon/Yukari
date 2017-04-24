@@ -23,6 +23,10 @@ namespace IMU
   {
   }
 
+  void TeensyIMUDevice::setDispacement(const Eigen::Vector3f &displacement)
+  {
+  }
+
   IMUFrame::Ptr TeensyIMUDevice::grabFrame()
   {
     m_mspPayloadQuat.clear();
