@@ -1,4 +1,4 @@
-#ifndef DOXYGEN_SKIP
+/** @file */
 
 #include <string>
 #include <vector>
@@ -115,5 +115,3 @@ namespace Processing
   };
 }
 }
-
-#endif

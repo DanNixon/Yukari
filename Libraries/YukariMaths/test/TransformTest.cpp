@@ -1,7 +1,5 @@
 /** @file */
 
-#ifndef DOXYGEN_SKIP
-
 #include <boost/program_options.hpp>
 #include <boost/test/unit_test.hpp>
 #include <sstream>
@@ -130,5 +128,3 @@ namespace Maths
   }
 }
 }
-
-#endif

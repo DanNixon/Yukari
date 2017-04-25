@@ -1,7 +1,5 @@
 /** @file */
 
-#ifndef DOXYGEN_SKIP
-
 #include <boost/test/unit_test.hpp>
 #include <sstream>
 
@@ -47,5 +45,3 @@ namespace IMU
   }
 }
 }
-
-#endif

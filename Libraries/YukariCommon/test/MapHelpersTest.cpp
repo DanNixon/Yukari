@@ -1,7 +1,5 @@
 /** @file */
 
-#ifndef DOXYGEN_SKIP
-
 #include <boost/test/unit_test.hpp>
 
 #include <YukariCommon/MapHelpers.h>
@@ -39,5 +37,3 @@ namespace Common
   }
 }
 }
-
-#endif

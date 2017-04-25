@@ -1,4 +1,4 @@
-#ifndef DOXYGEN_SKIP
+/** @file */
 
 #include <boost/test/unit_test.hpp>
 
@@ -21,5 +21,3 @@ namespace Processing
   };
 }
 }
-
-#endif

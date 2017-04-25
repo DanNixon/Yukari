@@ -1,7 +1,5 @@
 /** @file */
 
-#ifndef DOXYGEN_SKIP
-
 #include <boost/test/unit_test.hpp>
 
 #include <YukariMSP/MSPParsers.h>
@@ -75,5 +73,3 @@ namespace MSP
   }
 }
 }
-
-#endif
