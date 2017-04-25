@@ -2,13 +2,15 @@
 
 [![Build Status](https://travis-ci.com/DanNixon/Yukari.svg?token=hEeXj1er91qf6vBmhf9x&branch=master)](https://travis-ci.com/DanNixon/Yukari)
 
-## Building on Ubuntu 16.04
+## Building on Ubuntu 14.04
 
-1. Install `libproj-dev libboost-all-dev libpcl1.7 libpcl-dev libeigen3-dev`
-2. `cmake ../Yukari -DCMAKE_BUILD_TYPE=Debug`
+1. `sudo apt-get install cmake libproj-dev libboost-all-dev libeigen3-dev libpcl-1.7-all`
+2. `sudo apt-get install doxygen graphviz` to also build documentation
+3. `cmake ../Yukari -DCMAKE_BUILD_TYPE=Debug`
    - May need to add `-DBOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu/` if Boost is
      not found automatically
-3. `make`
+4. `make`
+5. `make doc` to build documentation
 
 ## Building on Windows
 
