@@ -27,7 +27,7 @@ set(Boost_DETAILED_FAILURE_MSG ON)
 
 # External library: PCL
 set(BOOST_INCLUDEDIR "${Boost_INCLUDE_DIR}")
-find_package(PCL 1.6 REQUIRED)
+find_package(PCL 1.7.2 REQUIRED)
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
