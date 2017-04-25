@@ -3,10 +3,16 @@
 #include <iostream>
 
 #include <boost/program_options.hpp>
-#include <pcl/io/auto_io.h>
+#include <pcl/pcl_config.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
 #include <pcl/visualization/cloud_viewer.h>
+
+#if PCL_VERSION_COMPARE(<, 1, 8, 0)
+#include <pcl/io/file_io.h>
+#else
+#include <pcl/io/auto_io.h>
+#endif
 
 #include <YukariCommon/LoggingService.h>
 #include <YukariProcessing/GenerateMeshFromPointCloud.h>
