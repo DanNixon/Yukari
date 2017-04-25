@@ -193,6 +193,13 @@ public:
     z = nz;
   }
 
+  void toZero()
+  {
+    x = 0.0f;
+    y = 0.0f;
+    z = 0.0f;
+  }
+
   float getMagnitude()
   {
     return sqrt(x * x + y * y + z * z);
