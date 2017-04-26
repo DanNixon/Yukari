@@ -52,8 +52,11 @@ namespace CloudCapture
       }
       else if (lowerType == "pcdfile")
       {
-        /* TODO */
-        grabber = std::make_shared<PCDFileCloudGrabber<POINT_TYPE>>();
+        boost::filesystem::path dir =
+          MapHelpers::Get<std::string, std::string>(parameters, "dir", ".");
+        std::string pattern = MapHelpers::Get<std::string, std::string>(parameters, "pattern");
+        float fps = std::stof(MapHelpers::Get<std::string, std::string>(parameters, "fps", "1.0"));
+        grabber = std::make_shared<PCDFileCloudGrabber<POINT_TYPE>>(dir, pattern, fps);
       }
       else if (lowerType == "openni2")
       {

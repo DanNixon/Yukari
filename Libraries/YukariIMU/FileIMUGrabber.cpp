@@ -18,6 +18,8 @@ namespace IMU
       , m_delay(delay)
   {
     FilesystemHelpers::FindByRegex(root, pattern, m_filenames);
+    m_logger->info("Found {} IMU files", m_filenames.size());
+
     m_currentFile = m_filenames.cbegin();
   }
 
