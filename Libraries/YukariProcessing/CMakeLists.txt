@@ -3,7 +3,6 @@ project(YukariProcessing)
 set(HEADERS
   CloudOperations.h
   FrameProcessingTaskFactory.h
-  GenerateMeshFromPointCloud.h
   IFrameProcessingTask.h
   SpatialOperations.h
   TaskAppendTransformedClouds.h
@@ -21,7 +20,6 @@ set(LIB_DEPS
   ${PCL_LIBRARIES})
 
 set(TESTS
-  test/GenerateMeshFromPointCloudTest.cpp
   test/IFrameProcessingTaskTest.cpp)
 
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
