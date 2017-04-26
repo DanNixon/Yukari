@@ -6,6 +6,7 @@
 #include <YukariCommon/StringParsers.h>
 
 #include "DummyIMUGrabber.h"
+#include "FileIMUGrabber.h"
 #include "MSPGrabberAttitude.h"
 #include "TeensyIMUDevice.h"
 
@@ -37,6 +38,11 @@ namespace IMU
     if (lowerType == "dummy")
     {
       grabber = std::make_shared<DummyIMUGrabber>();
+    }
+    else if (lowerType == "file")
+    {
+      /* TODO */
+      grabber = std::make_shared<FileIMUGrabber>();
     }
     else if (lowerType == "attitude")
     {

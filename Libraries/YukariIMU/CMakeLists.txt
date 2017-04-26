@@ -2,6 +2,7 @@ project(YukariIMU)
 
 set(HEADERS
   DummyIMUGrabber.h
+  FileIMUGrabber.h
   IIMUGrabber.h
   IMUFrame.h
   IMUGrabberFactory.h
@@ -11,6 +12,7 @@ set(HEADERS
 
 set(SOURCES
   DummyIMUGrabber.cpp
+  FileIMUGrabber.cpp
   IMUFrame.cpp
   IMUGrabberFactory.cpp
   MSPGrabber.cpp

@@ -5,6 +5,7 @@ set(HEADERS
   DummyCloudGrabber.h
   ICloudGrabber.h
   OpenNI2CloudGrabber.h
+  PCDFileCloudGrabber.h
   PCLCloudGrabberWrapper.h)
 
 set(SOURCES)

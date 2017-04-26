@@ -12,6 +12,7 @@
 #include "DummyCloudGrabber.h"
 #include "ICloudGrabber.h"
 #include "OpenNI2CloudGrabber.h"
+#include "PCDFileCloudGrabber.h"
 
 namespace Yukari
 {
@@ -48,6 +49,11 @@ namespace CloudCapture
             std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "height", "10"));
 
         grabber = std::make_shared<DummyCloudGrabber<POINT_TYPE>>(width, height);
+      }
+      else if (lowerType == "pcdfile")
+      {
+        /* TODO */
+        grabber = std::make_shared<PCDFileCloudGrabber<POINT_TYPE>>();
       }
       else if (lowerType == "openni2")
       {
