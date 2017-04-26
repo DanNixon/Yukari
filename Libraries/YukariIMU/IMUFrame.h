@@ -4,7 +4,7 @@
 
 #include <chrono>
 #include <memory>
-#include <ostream>
+#include <iostream>
 
 #include <YukariMaths/Transform.h>
 
@@ -25,6 +25,8 @@ namespace IMU
              const Eigen::Quaternionf &orientation = Eigen::Quaternionf::Identity(),
              const Eigen::Vector3f &position = Eigen::Vector3f::Zero());
 
+	IMUFrame(const std::string &str);
+
     inline Duration duration() const
     {
       return m_durationMs;
@@ -35,5 +37,7 @@ namespace IMU
   protected:
     Duration m_durationMs;
   };
+
+  std::istream &operator>>(std::istream &s, IMUFrame &f);
 }
 }

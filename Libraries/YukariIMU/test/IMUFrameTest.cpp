@@ -41,6 +41,32 @@ namespace IMU
                         "(dt=250, o=[0.176777, 0.306186, 0.176777, 0.918559], p=[5.5, 7.8, 2.1])");
     }
 
+    BOOST_AUTO_TEST_CASE(IMUFrame_Stream_In)
+    {
+      IMUFrame f;
+
+      std::stringstream in(
+          "(dt=250, o=[0.176777, 0.306186, 0.176777, 0.918559], p=[5.5, 7.8, 2.1])");
+      in >> f;
+
+      std::stringstream out;
+      out << f;
+
+      BOOST_CHECK_EQUAL(out.str(),
+                        "(dt=250, o=[0.176777, 0.306186, 0.176777, 0.918559], p=[5.5, 7.8, 2.1])");
+    }
+
+    BOOST_AUTO_TEST_CASE(IMUFrame_From_String)
+    {
+      IMUFrame f("(dt=250, o=[0.176777, 0.306186, 0.176777, 0.918559], p=[5.5, 7.8, 2.1])");
+
+      std::stringstream out;
+      out << f;
+
+      BOOST_CHECK_EQUAL(out.str(),
+                        "(dt=250, o=[0.176777, 0.306186, 0.176777, 0.918559], p=[5.5, 7.8, 2.1])");
+    }
+
     BOOST_AUTO_TEST_SUITE_END()
   }
 }

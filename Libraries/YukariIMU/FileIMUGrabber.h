@@ -11,10 +11,10 @@ namespace Yukari
 {
 namespace IMU
 {
-  class FIleIMUGrabber : public IIMUGrabber
+  class FileIMUGrabber : public IIMUGrabber
   {
   public:
-    FIleIMUGrabber();
+    FileIMUGrabber();
 
     virtual void open() override;
     virtual void close() override;

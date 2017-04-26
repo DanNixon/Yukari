@@ -80,6 +80,27 @@ namespace Maths
     }
   }
 
+  Transform::Transform(const std::string &str)
+      : m_orientation(Eigen::Quaternionf::Identity())
+      , m_position(Eigen::Vector3f::Zero())
+  {
+    auto logger = LoggingService::Instance().getLogger("Transform");
+
+    boost::regex expression("\\(\\s*o\\s*\\=\\s*(\\[[\\w\\.\\-\\,\\s]+\\])\\,\\s*p\\s*\\=\\s*(\\[["
+                            "\\w\\.\\-\\,\\s]+\\])\\)");
+
+    boost::cmatch what;
+    if (boost::regex_match(str.c_str(), what, expression))
+    {
+      m_orientation = StringParsers::ParseQuaternion(what[1]);
+      m_position = StringParsers::ParseVector(what[2]);
+    }
+    else
+    {
+      logger->error("Could not parse regex");
+    }
+  }
+
   Eigen::Matrix4f Transform::toEigen() const
   {
     Eigen::Matrix4f out = Eigen::Matrix4f::Identity();
@@ -93,6 +114,15 @@ namespace Maths
     s << "(o=" << t.m_orientation.coeffs().format(Transform::EIGEN_FORMAT)
       << ", p=" << t.m_position.format(Transform::EIGEN_FORMAT) << ")";
 
+    return s;
+  }
+
+  std::istream &operator>>(std::istream &s, Transform &t)
+  {
+    std::string str;
+    std::getline(s, str, ')');
+    str += ')';
+    t = Transform(str);
     return s;
   }
 }

@@ -3,7 +3,7 @@
 #pragma once
 
 #include <memory>
-#include <ostream>
+#include <iostream>
 
 #include <Eigen/Geometry>
 #include <boost/program_options.hpp>
@@ -24,6 +24,8 @@ namespace Maths
     Transform(const boost::program_options::variables_map &args,
               const std::string &orientationName = "orientation",
               const std::string &positionName = "position");
+
+	Transform(const std::string & str);
 
     inline Eigen::Quaternionf orientation() const
     {
@@ -53,5 +55,7 @@ namespace Maths
     Eigen::Quaternionf m_orientation;
     Eigen::Vector3f m_position;
   };
+
+  std::istream &operator>>(std::istream &s, Transform &t);
 }
 }

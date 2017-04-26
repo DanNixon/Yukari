@@ -18,12 +18,17 @@
 
 #include "CaptureFactory.h"
 
+#include "YukariIMU/FileIMUGrabber.h"
+
 using namespace Yukari::Common;
 using namespace Yukari::Capture;
 namespace po = boost::program_options;
 
 int main(int argc, char **argv)
 {
+  Yukari::IMU::FileIMUGrabber();
+  return 0;
+
   auto logger = LoggingService::Instance().getLogger("YukariCaptureApp");
 
   /* Init command line */
