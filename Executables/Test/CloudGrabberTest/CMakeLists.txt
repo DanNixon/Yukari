@@ -12,6 +12,7 @@ target_link_libraries(${PROJECT_NAME}
   YukariCommon
   YukariMaths
   YukariIMU
+  YukariTriggers
   serial
   ${PCL_LIBRARIES})
 

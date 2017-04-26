@@ -8,6 +8,7 @@
 
 #include <YukariCommon/FilesystemHelpers.h>
 #include <YukariCommon/LoggingService.h>
+#include <YukariTriggers/ProxyTrigger.h>
 
 namespace Yukari
 {
@@ -19,6 +20,7 @@ namespace CloudCapture
   public:
     PCDFileCloudGrabber(const boost::filesystem::path &root, const std::string &pattern, float fps)
         : PCLCloudGrabberWrapper(nullptr)
+        , m_trigger(std::make_shared<Triggers::ProxyTrigger>())
     {
       auto logger = Common::LoggingService::Instance().getLogger("PCDFileCloudGrabber");
 
@@ -32,8 +34,20 @@ namespace CloudCapture
     {
     }
 
+    virtual Triggers::ITrigger::Ptr trigger()
+    {
+      return m_trigger;
+    }
+
+  protected:
+    virtual void onCloud(CloudConstPtr cloud) override
+    {
+      m_trigger->trigger();
+    }
+
   private:
     Common::FilesystemHelpers::PathStringList m_filenames;
+    std::shared_ptr<Triggers::ProxyTrigger> m_trigger;
   };
 }
 }

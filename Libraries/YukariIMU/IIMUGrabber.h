@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <YukariMaths/Transform.h>
+#include <YukariTriggers/ITrigger.h>
 
 #include "IMUFrame.h"
 
@@ -29,6 +30,11 @@ namespace IMU
     virtual bool isOpen() const
     {
       return true;
+    }
+
+    virtual Triggers::ITrigger::Ptr trigger()
+    {
+      return nullptr;
     }
 
     void setPosition(const Eigen::Vector3f &pos)

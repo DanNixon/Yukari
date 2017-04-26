@@ -3,11 +3,13 @@ project(YukariTriggers)
 set(HEADERS
   ITrigger.h
   PeriodicTrigger.h
+  ProxyTrigger.h
   SignalTrigger.h
   TriggerFactory.h)
 
 set(SOURCES
   PeriodicTrigger.cpp
+  ProxyTrigger.cpp
   SignalTrigger.cpp
   TriggerFactory.cpp)
 

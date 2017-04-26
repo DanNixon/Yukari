@@ -64,7 +64,7 @@ namespace Capture
     if (m_exitTriggers.empty())
       m_logger->warn("No exit triggers defined");
 
-    /* Enable capture triggers */
+    /* Enable exit triggers */
     m_logger->info("Enabling exit triggers");
     for (auto it = m_exitTriggers.begin(); it != m_exitTriggers.end(); ++it)
       (*it)->enable();
@@ -86,6 +86,14 @@ namespace Capture
       m_logger->info("No IMU grabber defined");
     }
 
+    /* Check if IMU grabber provides a capture trigger */
+    ITrigger::Ptr imuGrabberTrigger = m_imuGrabber->trigger();
+    if (imuGrabberTrigger)
+    {
+      m_logger->info("Adding a capture trigger provided by IMU grabber");
+      addCaptureTrigger(imuGrabberTrigger);
+    }
+
     /* Open cloud grabber */
     m_logger->info("Opening cloud grabber");
     m_cloudGrabber->open();
@@ -95,6 +103,14 @@ namespace Capture
       return false;
     }
     m_logger->debug("Cloud grabber opened");
+
+    /* Check if cloud grabber provides a capture trigger */
+    ITrigger::Ptr cloudGrabberTrigger = m_cloudGrabber->trigger();
+    if (cloudGrabberTrigger)
+    {
+      m_logger->info("Adding a capture trigger provided by cloud grabber");
+      addCaptureTrigger(cloudGrabberTrigger);
+    }
 
     /* Reset frame count */
     m_currentFrameCount = 0;

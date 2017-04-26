@@ -6,6 +6,8 @@
 
 #include <pcl/point_cloud.h>
 
+#include <YukariTriggers/ITrigger.h>
+
 namespace Yukari
 {
 namespace CloudCapture
@@ -30,6 +32,11 @@ namespace CloudCapture
     virtual bool isOpen() const
     {
       return true;
+    }
+
+    virtual Triggers::ITrigger::Ptr trigger()
+    {
+      return nullptr;
     }
 
     virtual CloudPtr grabCloud() = 0;

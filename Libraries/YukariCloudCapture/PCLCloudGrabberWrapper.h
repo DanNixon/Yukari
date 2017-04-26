@@ -74,11 +74,19 @@ namespace CloudCapture
       m_cloudCBConnection = m_grabber->registerCallback(cloudCB);
     }
 
+    virtual void onCloud(CloudConstPtr cloud)
+    {
+    }
+
   private:
     void cloudCallback(CloudConstPtr cloud)
     {
-      std::lock_guard<std::mutex> lock(m_rawCloudMutex);
-      m_rawCloud = cloud;
+      {
+        std::lock_guard<std::mutex> lock(m_rawCloudMutex);
+        m_rawCloud = cloud;
+      }
+
+      onCloud(m_rawCloud);
     }
 
   protected:
