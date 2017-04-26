@@ -1,6 +1,8 @@
 project(YukariCommon)
 
 set(HEADERS
+  FilesystemHelpers.h
+  FilteredDirectoryIterator.h
   LoggingService.h
   MapHelpers.h
   NamedDistLogSink.h
@@ -8,6 +10,7 @@ set(HEADERS
   StringParsers.h)
 
 set(SOURCES
+  FilesystemHelpers.cpp
   LoggingService.cpp
   SignalBroker.cpp
   StringParsers.cpp)
