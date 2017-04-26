@@ -9,6 +9,7 @@
 #include <boost/filesystem.hpp>
 
 #include <YukariCommon/FilesystemHelpers.h>
+#include <YukariCommon/LoggingService.h>
 
 namespace Yukari
 {
@@ -21,6 +22,9 @@ namespace IMU
                    const std::chrono::milliseconds &delay = std::chrono::milliseconds(10));
 
     virtual IMUFrame::Ptr grabFrame() override;
+
+  private:
+    Common::LoggingService::Logger m_logger;
 
   protected:
     std::chrono::milliseconds m_delay;
