@@ -18,7 +18,7 @@ namespace CloudCapture
   public:
     PCLCloudGrabberWrapper(std::shared_ptr<pcl::Grabber> grabber,
                            Eigen::Matrix4f transform = Eigen::Matrix4f::Identity())
-        :m_cloudTransform(transform)
+        : m_cloudTransform(transform)
     {
       if (grabber)
         setGrabber(grabber);
@@ -70,7 +70,7 @@ namespace CloudCapture
       m_grabber = grabber;
 
       boost::function<void(const ICloudGrabber::Cloud::ConstPtr &)> cloudCB =
-        boost::bind(&PCLCloudGrabberWrapper::cloudCallback, this, _1);
+          boost::bind(&PCLCloudGrabberWrapper::cloudCallback, this, _1);
       m_cloudCBConnection = m_grabber->registerCallback(cloudCB);
     }
 

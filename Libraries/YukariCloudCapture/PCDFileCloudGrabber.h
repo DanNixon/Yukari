@@ -18,7 +18,7 @@ namespace CloudCapture
   {
   public:
     PCDFileCloudGrabber(const boost::filesystem::path &root, const std::string &pattern, float fps)
-      : PCLCloudGrabberWrapper(nullptr)
+        : PCLCloudGrabberWrapper(nullptr)
     {
       auto logger = Common::LoggingService::Instance().getLogger("PCDFileCloudGrabber");
 

@@ -21,7 +21,7 @@ namespace Common
                             PathList &out);
 
     static void FindByRegex(const boost::filesystem::path &root, const std::string &pattern,
-      PathStringList &out);
+                            PathStringList &out);
   };
 }
 }
