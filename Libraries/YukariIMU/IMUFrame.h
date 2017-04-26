@@ -3,8 +3,8 @@
 #pragma once
 
 #include <chrono>
-#include <memory>
 #include <iostream>
+#include <memory>
 
 #include <YukariMaths/Transform.h>
 
@@ -25,7 +25,7 @@ namespace IMU
              const Eigen::Quaternionf &orientation = Eigen::Quaternionf::Identity(),
              const Eigen::Vector3f &position = Eigen::Vector3f::Zero());
 
-	IMUFrame(const std::string &str);
+    IMUFrame(const std::string &str);
 
     inline Duration duration() const
     {

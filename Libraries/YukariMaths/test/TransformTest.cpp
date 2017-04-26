@@ -46,7 +46,7 @@ namespace Maths
     {
       Transform t;
 
-	  std::stringstream in("(o=[0.176777, 0.306186, 0.176777, 0.918559], p=[5.5, 7.8, 2.1])");
+      std::stringstream in("(o=[0.176777, 0.306186, 0.176777, 0.918559], p=[5.5, 7.8, 2.1])");
       in >> t;
 
       std::stringstream out;
@@ -56,16 +56,16 @@ namespace Maths
                         "(o=[0.176777, 0.306186, 0.176777, 0.918559], p=[5.5, 7.8, 2.1])");
     }
 
-	BOOST_AUTO_TEST_CASE(Transform_From_String)
-	{
-		Transform t("(o=[0.176777, 0.306186, 0.176777, 0.918559], p=[5.5, 7.8, 2.1])");
+    BOOST_AUTO_TEST_CASE(Transform_From_String)
+    {
+      Transform t("(o=[0.176777, 0.306186, 0.176777, 0.918559], p=[5.5, 7.8, 2.1])");
 
-		std::stringstream out;
-		out << t;
+      std::stringstream out;
+      out << t;
 
-		BOOST_CHECK_EQUAL(out.str(),
-			"(o=[0.176777, 0.306186, 0.176777, 0.918559], p=[5.5, 7.8, 2.1])");
-	}
+      BOOST_CHECK_EQUAL(out.str(),
+                        "(o=[0.176777, 0.306186, 0.176777, 0.918559], p=[5.5, 7.8, 2.1])");
+    }
 
     BOOST_AUTO_TEST_CASE(Transform_From_Boost_Args_Orientation_Only)
     {
