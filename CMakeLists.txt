@@ -71,7 +71,6 @@ add_subdirectory(Libraries/YukariTriggers)
 
 # Executables
 add_subdirectory(Executables/Capture)
-add_subdirectory(Executables/PCDToMesh)
 add_subdirectory(Executables/PCDViewer)
 add_subdirectory(Executables/PostProcessing)
 add_subdirectory(Executables/Test/CloudGrabberTest)
