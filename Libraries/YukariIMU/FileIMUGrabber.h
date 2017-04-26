@@ -5,7 +5,10 @@
 #include "IIMUGrabber.h"
 
 #include <chrono>
-#include <memory>
+
+#include <boost/filesystem.hpp>
+
+#include <YukariCommon/FilesystemHelpers.h>
 
 namespace Yukari
 {
@@ -14,17 +17,16 @@ namespace IMU
   class FileIMUGrabber : public IIMUGrabber
   {
   public:
-    FileIMUGrabber();
-
-    virtual void open() override;
-    virtual void close() override;
-    virtual bool isOpen() const override;
+    FileIMUGrabber(const boost::filesystem::path &root, const std::string &pattern,
+                   const std::chrono::milliseconds &delay = std::chrono::milliseconds(10));
 
     virtual IMUFrame::Ptr grabFrame() override;
 
   protected:
-    bool m_open;
-    std::chrono::time_point<std::chrono::high_resolution_clock> m_lastFrameTime;
+    std::chrono::milliseconds m_delay;
+
+    Common::FilesystemHelpers::PathList m_filenames;
+    Common::FilesystemHelpers::PathList::const_iterator m_currentFile;
   };
 }
 }

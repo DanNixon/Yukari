@@ -8,16 +8,13 @@ namespace Yukari
 {
 namespace Common
 {
-  std::vector<boost::filesystem::path>
-  FilesystemHelpers::FindByRegex(const boost::filesystem::path &root, const std::string &pattern)
+  void FilesystemHelpers::FindByRegex(const boost::filesystem::path &root,
+                                      const std::string &pattern, PathList &out)
   {
-    std::vector<boost::filesystem::path> matches;
     std::for_each(FilteredDirectoryIterator(".", ".*\..*"), FilteredDirectoryIterator(),
-                  [&matches](const FilteredDirectoryIterator::value_type &dirEntry) {
-                    matches.push_back(dirEntry.path());
+                  [&out](const FilteredDirectoryIterator::value_type &dirEntry) {
+                    out.push_back(dirEntry.path());
                   });
-
-    return matches;
   }
 }
 }

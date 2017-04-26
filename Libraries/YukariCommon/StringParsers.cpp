@@ -34,7 +34,7 @@ namespace Common
   {
     auto log = LoggingService::Instance().getLogger("StringParsers");
 
-    boost::regex expression("[\\s,]*([\\w\\.]+)\\s*\\=\\s*([\\w\\.\\/\\\\\\s]+)[\\s,]*");
+    boost::regex expression("[\\s,]*([\\w\\.]+)\\s*\\=\\s*([\\w\\.\\/\\\\\\s\*\+]+)[\\s,]*");
 
     auto start = input.cbegin();
     auto end = input.cend();

@@ -4,6 +4,9 @@
 
 #include "IFrameProcessingTask.h"
 
+#include <iomanip>
+#include <sstream>
+
 #include <boost/filesystem/path.hpp>
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
@@ -31,8 +34,9 @@ namespace Processing
       if (t.cloud)
       {
         /* Generate filename */
-        boost::filesystem::path cloudFilename =
-            m_outputDirectory / (std::to_string(t.frameNumber) + "_cloud.pcd");
+        std::stringstream ss;
+        ss << std::setw(5) << std::setfill('0') << t.frameNumber;
+        boost::filesystem::path cloudFilename = m_outputDirectory / (ss.str() + "_cloud.pcd");
 
         if (m_transform)
         {

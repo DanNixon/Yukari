@@ -25,7 +25,7 @@ namespace Common
   public:
     FilteredDirectoryIteratorTmpl()
         : it()
-        , filter([](const boost::filesystem::directory_entry & /*dirEntry*/) { return true; })
+        , filter([](const boost::filesystem::directory_entry &) { return true; })
     {
     }
 
@@ -37,7 +37,6 @@ namespace Common
     FilteredDirectoryIteratorTmpl(const path &iteratedDir, const boost::regex &regexMask)
         : it(NonFilteredIterator(iteratedDir))
         , filter([regexMask](const boost::filesystem::directory_entry &dirEntry) {
-          using std::endl;
           // return false to skip dirEntry if no match
           const std::string filename = dirEntry.path().filename().string();
           return boost::regex_match(filename, regexMask);

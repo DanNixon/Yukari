@@ -1,5 +1,6 @@
 /** @file */
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -12,8 +13,11 @@ namespace Common
   class FilesystemHelpers
   {
   public:
-    static std::vector<boost::filesystem::path> FindByRegex(const boost::filesystem::path &root,
-                                                            const std::string &pattern);
+    typedef std::vector<boost::filesystem::path> PathList;
+
+  public:
+    static void FindByRegex(const boost::filesystem::path &root, const std::string &pattern,
+                            PathList &out);
   };
 }
 }

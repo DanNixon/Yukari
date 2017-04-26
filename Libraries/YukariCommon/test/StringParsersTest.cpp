@@ -132,6 +132,22 @@ namespace Common
       BOOST_CHECK_EQUAL(params["this"], std::string("one\\the other"));
     }
 
+    BOOST_AUTO_TEST_CASE(ParseCommand_Regex)
+    {
+      std::string in = "file(pattern=.*\\_imu\\.txt, delay=1000)";
+
+      std::string cmd;
+      std::map<std::string, std::string> params;
+
+      BOOST_CHECK(StringParsers::ParseCommand(in, cmd, params));
+
+      BOOST_CHECK_EQUAL(cmd, std::string("file"));
+
+      BOOST_CHECK_EQUAL(params.size(), 2);
+      BOOST_CHECK_EQUAL(params["pattern"], std::string(".*\\_imu\\.txt"));
+      BOOST_CHECK_EQUAL(params["delay"], std::string("1000"));
+    }
+
     BOOST_AUTO_TEST_CASE(ParseQuaternion)
     {
       std::string in = "[5, -3, 9.9, 1.0]";

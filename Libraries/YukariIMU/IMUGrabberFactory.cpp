@@ -41,8 +41,11 @@ namespace IMU
     }
     else if (lowerType == "file")
     {
-      /* TODO */
-      grabber = std::make_shared<FileIMUGrabber>();
+      boost::filesystem::path dir =
+          MapHelpers::Get<std::string, std::string>(parameters, "dir", ".");
+      std::string pattern = MapHelpers::Get<std::string, std::string>(parameters, "pattern");
+      int delay = std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "delay", "10"));
+      grabber = std::make_shared<FileIMUGrabber>(dir, pattern, std::chrono::milliseconds(delay));
     }
     else if (lowerType == "attitude")
     {

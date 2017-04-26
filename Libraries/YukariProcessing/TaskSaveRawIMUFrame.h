@@ -4,6 +4,9 @@
 
 #include "IFrameProcessingTask.h"
 
+#include <iomanip>
+#include <sstream>
+
 #include <boost/filesystem/path.hpp>
 #include <pcl/io/pcd_io.h>
 
@@ -27,8 +30,9 @@ namespace Processing
       if (t.imuFrame)
       {
         /* Generate filename */
-        boost::filesystem::path imuFilename =
-            m_outputDirectory / (std::to_string(t.frameNumber) + "_imu.txt");
+        std::stringstream ss;
+        ss << std::setw(5) << std::setfill('0') << t.frameNumber;
+        boost::filesystem::path imuFilename = m_outputDirectory / (ss.str() + "_imu.txt");
 
         /* Save IMU frame */
         m_logger->trace("Saving IMU frame for frame {}: {}", t.frameNumber, imuFilename);
