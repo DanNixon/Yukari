@@ -189,7 +189,7 @@ namespace Capture
       return;
     }
 
-    m_logger->trace("Capture triggered");
+    m_logger->info("Frame capture triggered");
     LoggingService::Instance().flush();
 
     static const size_t NUM_ATTEMPTS = 5;
@@ -248,6 +248,7 @@ namespace Capture
     m_currentFrameCount++;
 
     LoggingService::Instance().flush();
+	m_logger->debug("Frame capture done");
   }
 
   std::ostream &operator<<(std::ostream &s, const CaptureController &o)

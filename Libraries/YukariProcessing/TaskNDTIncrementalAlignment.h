@@ -20,9 +20,12 @@ namespace Processing
   class TaskNDTIncrementalAlignment : public IFrameProcessingTask<POINT_TYPE>
   {
   public:
-    TaskNDTIncrementalAlignment(const boost::filesystem::path &path)
+    TaskNDTIncrementalAlignment(const boost::filesystem::path &path, bool saveTransforms,
+                                bool saveClouds)
         : IFrameProcessingTask(path)
         , m_logger(Common::LoggingService::Instance().getLogger("TaskNDTIncrementalAlignment"))
+        , m_saveTransforms(saveTransforms)
+        , m_saveClouds(saveClouds)
         , m_previousCloud()
         , m_previousCloudWorldTransform(Eigen::Matrix4f::Identity())
     {
@@ -87,21 +90,30 @@ namespace Processing
                                            m_previousCloudWorldTransform);
 
       /* Save transformed cloud */
-      boost::filesystem::path cloudFilename = m_outputDirectory / (frameNoStr + "_cloud.pcd");
-      m_logger->trace("Saving transformed point cloud for frame {}: {}", t.frameNumber,
-                      cloudFilename);
-      pcl::io::savePCDFileBinaryCompressed(cloudFilename.string(), *m_previousCloud);
+      if (m_saveTransforms)
+      {
+        boost::filesystem::path cloudFilename = m_outputDirectory / (frameNoStr + "_cloud.pcd");
+        m_logger->trace("Saving transformed point cloud for frame {}: {}", t.frameNumber,
+                        cloudFilename);
+        pcl::io::savePCDFileBinaryCompressed(cloudFilename.string(), *m_previousCloud);
+      }
 
       /* Save transformation */
-      IMUFrame transformFrame(m_previousCloudWorldTransform);
-      boost::filesystem::path imuFilename = m_outputDirectory / (frameNoStr + "_transform.txt");
-      transformFrame.save(imuFilename);
+      if (m_saveClouds)
+      {
+        IMUFrame transformFrame(m_previousCloudWorldTransform);
+        boost::filesystem::path imuFilename = m_outputDirectory / (frameNoStr + "_transform.txt");
+        transformFrame.save(imuFilename);
+      }
 
       return 0;
     }
 
   private:
     Common::LoggingService::Logger m_logger;
+
+    bool m_saveTransforms;
+    bool m_saveClouds;
 
     CloudPtr m_previousCloud;
     Eigen::Matrix4f m_previousCloudWorldTransform;

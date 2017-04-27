@@ -6,6 +6,9 @@ Capture point clouds from a Kinect and Teensy IMU every 5 seconds and save IMU f
 Transform saved point clouds and save:
 `Capture.exe --loglevel trace --cloudgrabber pcdfile(dir=./raw_clouds,pattern=.*_cloud\.pcd) --imugrabber file(dir=./imu,pattern=.*_imu\.txt)  --process savecloud(out=transformed_clouds,transform=true)`
 
+Incremental alignment:
+`--cloudgrabber openni2 --imugrabber teensy(port=COM5) --capturetrigger periodic(delay=10000) --process saveimu(out=raw_imu) --process savecloud(out=raw_clouds,transform=false) --process savecloud(out=transformed_clouds,transform=true) --process ndtincremental(out=incremental,cloud=true)`
+
 Test grabbing frames from a Kinect:
 `CloudGrabberTest.exe --loglevel trace --grabber openni2`
 
