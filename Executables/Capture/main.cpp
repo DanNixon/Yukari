@@ -1,15 +1,5 @@
 /** @file */
 
-/*
- Processing options:
- --process saveimu(out=raw_imu)
- --process savecloud(out=raw_clouds)
- --process savecloud(out=transformed_clouds, transform=true)
- --process appendtransformed(out=world_appended)
- --process ndtworld(out=world_aligned)
- --process ndtincremental(out=incremental_aligned)
- */
-
 #include <iostream>
 
 #include <boost/program_options.hpp>
