@@ -20,8 +20,9 @@ namespace Processing
   class TaskNDTWorldSegmentAlignment : public ITaskNDTAlignment<POINT_TYPE>
   {
   public:
-    TaskNDTWorldSegmentAlignment(const boost::filesystem::path &path)
-        : ITaskNDTAlignment(path)
+    TaskNDTWorldSegmentAlignment(const boost::filesystem::path &path,
+                                 std::map<std::string, std::string> &params)
+        : ITaskNDTAlignment(path, params)
         , m_logger(Common::LoggingService::Instance().getLogger("TaskNDTWorldSegmentAlignment"))
     {
     }

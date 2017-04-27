@@ -63,16 +63,16 @@ namespace Processing
         StringParsers::CleanString(saveCloudParam);
         bool saveClouds = saveCloudParam == "true";
 
-        task = std::make_shared<TaskNDTIncrementalAlignment<POINT_TYPE>>(outDir, saveTransforms,
-                                                                         saveClouds);
+        task = std::make_shared<TaskNDTIncrementalAlignment<POINT_TYPE>>(
+            outDir, parameters, saveTransforms, saveClouds);
       }
       else if (lowerType == "ndtworld")
       {
-        task = std::make_shared<TaskNDTWorldAlignment<POINT_TYPE>>(outDir);
+        task = std::make_shared<TaskNDTWorldAlignment<POINT_TYPE>>(outDir, parameters);
       }
       else if (lowerType == "ndtworldsegment")
       {
-        task = std::make_shared<TaskNDTWorldSegmentAlignment<POINT_TYPE>>(outDir);
+        task = std::make_shared<TaskNDTWorldSegmentAlignment<POINT_TYPE>>(outDir, parameters);
       }
       else if (lowerType == "savecloud")
       {

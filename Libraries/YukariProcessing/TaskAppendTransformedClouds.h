@@ -45,7 +45,7 @@ namespace Processing
 
       if (!m_worldCloud)
       {
-        /* If this is the first recored cloud simply set it as he "world" cloud */
+        /* If this is the first recored cloud simply set it as the "world" cloud */
         m_worldCloud = CloudPtr(new Cloud(*inputCloud));
       }
       else

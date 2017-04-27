@@ -16,12 +16,12 @@ namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE>
-  class TaskNDTWorldAlignment : public ITaskNDTAlignment<POINT_TYPE>
+  template <typename POINT_TYPE> class TaskNDTWorldAlignment : public ITaskNDTAlignment<POINT_TYPE>
   {
   public:
-    TaskNDTWorldAlignment(const boost::filesystem::path &path)
-        : ITaskNDTAlignment(path)
+    TaskNDTWorldAlignment(const boost::filesystem::path &path,
+                          std::map<std::string, std::string> &params)
+        : ITaskNDTAlignment(path, params)
         , m_logger(Common::LoggingService::Instance().getLogger("TaskNDTWorldAlignment"))
         , m_worldCloud()
     {
@@ -61,12 +61,7 @@ namespace Processing
 
         /* Perform alignment */
         pcl::NormalDistributionsTransform<POINT_TYPE, POINT_TYPE> ndt;
-
-        ndt.setTransformationEpsilon(0.005);
-        ndt.setStepSize(0.01);
-        ndt.setResolution(0.1);
-
-        ndt.setMaximumIterations(35);
+        setNDTParameters(ndt);
 
         ndt.setInputSource(filteredInputCloud);
         ndt.setInputTarget(m_worldCloud);

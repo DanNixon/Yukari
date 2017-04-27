@@ -20,9 +20,10 @@ namespace Processing
   class TaskNDTIncrementalAlignment : public ITaskNDTAlignment<POINT_TYPE>
   {
   public:
-    TaskNDTIncrementalAlignment(const boost::filesystem::path &path, bool saveTransforms,
+    TaskNDTIncrementalAlignment(const boost::filesystem::path &path,
+                                std::map<std::string, std::string> &params, bool saveTransforms,
                                 bool saveClouds)
-        : ITaskNDTAlignment(path)
+        : ITaskNDTAlignment(path, params)
         , m_logger(Common::LoggingService::Instance().getLogger("TaskNDTIncrementalAlignment"))
         , m_saveTransforms(saveTransforms)
         , m_saveClouds(saveClouds)
@@ -57,12 +58,7 @@ namespace Processing
 
         /* Perform alignment */
         pcl::NormalDistributionsTransform<POINT_TYPE, POINT_TYPE> ndt;
-
-        ndt.setTransformationEpsilon(0.005);
-        ndt.setStepSize(0.01);
-        ndt.setResolution(0.1);
-
-        ndt.setMaximumIterations(35);
+        setNDTParameters(ndt);
 
         ndt.setInputSource(filteredInputCloud);
         ndt.setInputTarget(m_previousCloud);
