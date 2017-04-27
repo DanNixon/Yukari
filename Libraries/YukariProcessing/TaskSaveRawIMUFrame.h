@@ -35,11 +35,7 @@ namespace Processing
         boost::filesystem::path imuFilename = m_outputDirectory / (ss.str() + "_imu.txt");
 
         /* Save IMU frame */
-        m_logger->trace("Saving IMU frame for frame {}: {}", t.frameNumber, imuFilename);
-        std::ofstream imuFile;
-        imuFile.open(imuFilename.string());
-        imuFile << *t.imuFrame << '\n';
-        imuFile.close();
+        t.imuFrame->save(imuFilename);
       }
       else
       {

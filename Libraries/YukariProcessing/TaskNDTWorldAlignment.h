@@ -11,7 +11,6 @@
 #include <YukariCommon/LoggingService.h>
 
 #include "CloudOperations.h"
-#include "SpatialOperations.h"
 
 namespace Yukari
 {
@@ -45,9 +44,7 @@ namespace Processing
 
       /* Transform cloud */
       m_logger->trace("Transforming cloud by IMU");
-      pcl::transformPointCloud(
-          *t.cloud, *inputCloud, t.imuFrame->position(),
-          Processing::SpatialOperations::RotateQuaternionForCloud(t.imuFrame->orientation()));
+      pcl::transformPointCloud(*t.cloud, *inputCloud, t.imuFrame->toCloudTransform());
 
       if (!m_worldCloud)
       {

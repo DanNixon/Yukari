@@ -8,7 +8,7 @@
 #include <YukariCommon/MapHelpers.h>
 #include <YukariCommon/StringParsers.h>
 #include <YukariProcessing/TaskAppendTransformedClouds.h>
-#include <YukariProcessing/TaskNDTIncrementalAlignment.h>
+//#include <YukariProcessing/TaskNDTIncrementalAlignment.h>
 #include <YukariProcessing/TaskNDTWorldAlignment.h>
 #include <YukariProcessing/TaskNDTWorldSegmentAlignment.h>
 #include <YukariProcessing/TaskSaveRawCloud.h>
@@ -53,7 +53,7 @@ namespace Processing
       }
       else if (lowerType == "ndtincremental")
       {
-        task = std::make_shared<TaskNDTIncrementalAlignment<POINT_TYPE>>(outDir);
+        // task = std::make_shared<TaskNDTIncrementalAlignment<POINT_TYPE>>(outDir);
       }
       else if (lowerType == "ndtworld")
       {

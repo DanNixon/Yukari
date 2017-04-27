@@ -18,6 +18,14 @@ namespace Maths
   Eigen::IOFormat Transform::EIGEN_FORMAT(Eigen::StreamPrecision, Eigen::DontAlignCols, ",", ",",
                                           "", "", "[", "]");
 
+  Transform::Transform(const Eigen::Matrix4f &mat)
+      : m_orientation(Eigen::Quaternionf::Identity())
+      , m_position(mat.block(0, 3, 3, 1))
+  {
+    Eigen::Matrix3f rm = mat.block(0, 0, 3, 3).matrix();
+    m_orientation = rm;
+  }
+
   Transform::Transform(const Eigen::Quaternionf &orientation, const Eigen::Vector3f &position)
       : m_orientation(orientation)
       , m_position(position)

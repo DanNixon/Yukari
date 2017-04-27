@@ -18,6 +18,8 @@ namespace Maths
     static Eigen::IOFormat EIGEN_FORMAT;
 
   public:
+    Transform(const Eigen::Matrix4f &mat);
+
     Transform(const Eigen::Quaternionf &orientation = Eigen::Quaternionf::Identity(),
               const Eigen::Vector3f &position = Eigen::Vector3f::Zero());
 

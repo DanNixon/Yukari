@@ -11,7 +11,6 @@
 #include <YukariCommon/LoggingService.h>
 
 #include "CloudOperations.h"
-#include "SpatialOperations.h"
 
 namespace Yukari
 {
@@ -36,21 +35,17 @@ namespace Processing
         return 1;
       }
 
-      CloudPtr inputCloud(new Cloud());
-
-      /* Transform cloud */
-      m_logger->trace("Transforming cloud by IMU");
-      pcl::transformPointCloud(
-          *t.cloud, *inputCloud, t.imuFrame->position(),
-          Processing::SpatialOperations::RotateQuaternionForCloud(t.imuFrame->orientation()));
-
       if (!m_previousCloud)
       {
         /* If no previous cloud exists set it */
-        m_previousCloud = CloudPtr(new Cloud(*inputCloud));
-
-        /* Save empty transform */
+        m_previousCloud = t.cloud;
         // TODO
+
+        /* Save raw IMU transform */
+        std::stringstream ss;
+        ss << std::setw(5) << std::setfill('0') << t.frameNumber;
+        boost::filesystem::path imuFilename = m_outputDirectory / (ss.str() + "_transform.txt");
+        t.imuFrame->save(imuFilename);
       }
       else
       {
@@ -81,8 +76,18 @@ namespace Processing
         m_logger->info("Normal Distributions Transform score: {}", ndt.getFitnessScore());
 
         /* Save final transformation between the new cloud and previous cloud */
-        auto transform = ndt.getFinalTransformation();
+        Eigen::Matrix4f transform = ndt.getFinalTransformation();
+        IMUFrame transformFrame(transform);
+
         // TODO
+
+        std::stringstream ss;
+        ss << std::setw(5) << std::setfill('0') << t.frameNumber;
+        boost::filesystem::path imuFilename = m_outputDirectory / (ss.str() + "_transform.txt");
+        transformFrame->save(imuFilename);
+
+        /* Set new previous frame */
+        m_previousCloud = inputCloud;
       }
 
       return 0;
@@ -92,6 +97,7 @@ namespace Processing
     Common::LoggingService::Logger m_logger;
 
     CloudPtr m_previousCloud;
+    Eigen::Matrix4f m_previousCloudWorldTransform;
   };
 }
 }

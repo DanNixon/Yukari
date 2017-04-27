@@ -13,8 +13,6 @@
 
 #include <YukariCommon/LoggingService.h>
 
-#include "SpatialOperations.h"
-
 namespace Yukari
 {
 namespace Processing
@@ -45,9 +43,7 @@ namespace Processing
             /* Transform cloud */
             m_logger->trace("Transforming cloud by IMU");
             auto c = new Cloud();
-            pcl::transformPointCloud(
-                *t.cloud, *c, t.imuFrame->position(),
-                Processing::SpatialOperations::RotateQuaternionForCloud(t.imuFrame->orientation()));
+            pcl::transformPointCloud(*t.cloud, *c, t.imuFrame->toCloudTransform());
             t.cloud = CloudConstPtr(c);
           }
           else

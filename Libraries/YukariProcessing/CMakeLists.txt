@@ -4,7 +4,6 @@ set(HEADERS
   CloudOperations.h
   FrameProcessingTaskFactory.h
   IFrameProcessingTask.h
-  SpatialOperations.h
   TaskAppendTransformedClouds.h
   TaskNDTIncrementalAlignment.h
   TaskNDTWorldAlignment.h

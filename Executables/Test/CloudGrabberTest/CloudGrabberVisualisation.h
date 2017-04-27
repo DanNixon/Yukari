@@ -5,7 +5,6 @@
 #include <pcl/visualization/pcl_visualizer.h>
 
 #include <YukariCloudCapture/ICloudGrabber.h>
-#include <YukariProcessing/SpatialOperations.h>
 
 namespace Yukari
 {
@@ -45,9 +44,7 @@ namespace CloudGrabberTest
           {
             auto imuFrame = m_imu->grabFrame();
             if (imuFrame)
-              pcl::transformPointCloud(
-                  *cloud, *cloud, imuFrame->position(),
-                  Processing::SpatialOperations::RotateQuaternionForCloud(imuFrame->orientation()));
+              pcl::transformPointCloud(*cloud, *cloud, imuFrame->toCloudTransform());
           }
 
           if (!cloudInit)

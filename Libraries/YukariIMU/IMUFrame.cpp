@@ -15,6 +15,12 @@ namespace Yukari
 {
 namespace IMU
 {
+  IMUFrame::IMUFrame(const Eigen::Matrix4f &mat, Duration frameDuration)
+      : Transform(mat)
+      , m_durationMs(frameDuration)
+  {
+  }
+
   IMUFrame::IMUFrame(Duration frameDuration, const Eigen::Quaternionf &orientation,
                      const Eigen::Vector3f &position)
       : Transform(orientation, position)
@@ -41,6 +47,30 @@ namespace IMU
     {
       logger->error("Could not parse regex");
     }
+  }
+
+  void IMUFrame::save(const boost::filesystem::path &path) const
+  {
+    auto logger = LoggingService::Instance().getLogger("IMUFrame");
+    logger->trace("Saving IMU frame to file \"{}\"", path);
+    std::ofstream imuFile;
+    imuFile.open(path.string());
+    imuFile << *this << '\n';
+    imuFile.close();
+  }
+
+  Eigen::Matrix4f IMUFrame::toCloudTransform() const
+  {
+    /* Reflect in XZ azis */
+    Eigen::Quaternionf quat(m_orientation);
+    quat.x() = -quat.x();
+    quat.z() = -quat.z();
+
+    Eigen::Matrix4f out = Eigen::Matrix4f::Identity();
+    out.block(0, 0, 3, 3) = quat.toRotationMatrix();
+    out.block(0, 3, 3, 1) = m_position;
+
+    return out;
   }
 
   std::ostream &operator<<(std::ostream &s, const IMUFrame &f)

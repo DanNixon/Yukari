@@ -11,7 +11,6 @@
 #include <YukariCommon/LoggingService.h>
 
 #include "CloudOperations.h"
-#include "SpatialOperations.h"
 
 namespace Yukari
 {
@@ -34,14 +33,6 @@ namespace Processing
         m_logger->error("Do not have both cloud and IMU frame");
         return 1;
       }
-
-      CloudPtr inputCloud(new Cloud());
-
-      /* Transform cloud */
-      m_logger->trace("Transforming cloud by IMU");
-      pcl::transformPointCloud(
-          *t.cloud, *inputCloud, t.imuFrame->position(),
-          Processing::SpatialOperations::RotateQuaternionForCloud(t.imuFrame->orientation()));
 
       /* TODO */
 
