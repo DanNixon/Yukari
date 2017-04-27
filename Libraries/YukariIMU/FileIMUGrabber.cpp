@@ -2,6 +2,8 @@
 
 #include "FileIMUGrabber.h"
 
+#include <fstream>
+
 #include <YukariCommon/LoggingService.h>
 
 using namespace Yukari::Common;

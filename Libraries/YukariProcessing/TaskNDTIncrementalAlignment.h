@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "IFrameProcessingTask.h"
+#include "ITaskNDTAlignment.h"
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
@@ -17,12 +17,12 @@ namespace Yukari
 namespace Processing
 {
   template <typename POINT_TYPE>
-  class TaskNDTIncrementalAlignment : public IFrameProcessingTask<POINT_TYPE>
+  class TaskNDTIncrementalAlignment : public ITaskNDTAlignment<POINT_TYPE>
   {
   public:
     TaskNDTIncrementalAlignment(const boost::filesystem::path &path, bool saveTransforms,
                                 bool saveClouds)
-        : IFrameProcessingTask(path)
+        : ITaskNDTAlignment(path)
         , m_logger(Common::LoggingService::Instance().getLogger("TaskNDTIncrementalAlignment"))
         , m_saveTransforms(saveTransforms)
         , m_saveClouds(saveClouds)

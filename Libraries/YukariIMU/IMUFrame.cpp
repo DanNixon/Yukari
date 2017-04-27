@@ -2,6 +2,8 @@
 
 #include "IMUFrame.h"
 
+#include <fstream>
+
 #include <Eigen/Geometry>
 #include <boost/regex.hpp>
 

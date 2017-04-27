@@ -4,6 +4,7 @@ set(HEADERS
   CloudOperations.h
   FrameProcessingTaskFactory.h
   IFrameProcessingTask.h
+  ITaskNDTAlignment.h
   TaskAppendTransformedClouds.h
   TaskNDTIncrementalAlignment.h
   TaskNDTWorldAlignment.h
@@ -19,7 +20,8 @@ set(LIB_DEPS
   ${PCL_LIBRARIES})
 
 set(TESTS
-  test/IFrameProcessingTaskTest.cpp)
+  test/IFrameProcessingTaskTest.cpp
+  test/ITaskNDTAlignmentTest.cpp)
 
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} ${LIB_DEPS})
