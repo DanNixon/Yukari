@@ -248,7 +248,7 @@ namespace Capture
     m_currentFrameCount++;
 
     LoggingService::Instance().flush();
-	m_logger->debug("Frame capture done");
+    m_logger->debug("Frame capture done");
   }
 
   std::ostream &operator<<(std::ostream &s, const CaptureController &o)

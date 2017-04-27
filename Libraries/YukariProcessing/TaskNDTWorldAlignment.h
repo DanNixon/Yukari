@@ -76,10 +76,10 @@ namespace Processing
         ndt.align(*transformedInputCloud, Eigen::Matrix4f::Identity());
 
         if (ndt.hasConverged())
-          m_logger->info("Convergence reached");
+          m_logger->debug("Convergence reached");
         else
           m_logger->warn("Convergence not reached");
-        m_logger->info("Normal Distributions Transform score: {}", ndt.getFitnessScore());
+        m_logger->debug("Normal Distributions Transform score: {}", ndt.getFitnessScore());
 
         /* Translate full input cloud */
         pcl::transformPointCloud(*inputCloud, *transformedInputCloud, ndt.getFinalTransformation());

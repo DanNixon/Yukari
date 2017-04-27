@@ -2,8 +2,6 @@
 
 #include "PeriodicTrigger.h"
 
-#include <YukariCommon/LoggingService.h>
-
 using namespace Yukari::Common;
 
 namespace Yukari
@@ -11,13 +9,11 @@ namespace Yukari
 namespace Triggers
 {
   PeriodicTrigger::PeriodicTrigger(std::chrono::milliseconds duration)
-      : m_duration(duration)
+      : m_logger(LoggingService::Instance().getLogger("PeriodicTrigger"))
+      , m_duration(duration)
   {
     m_enabled.store(false);
-
-    LoggingService::Instance()
-        .getLogger("PeriodicTrigger")
-        ->debug("Init periodic trigger with duration {}ms", m_duration.count());
+    m_logger->debug("Init periodic trigger with duration {}ms", m_duration.count());
   }
 
   PeriodicTrigger::~PeriodicTrigger()
@@ -53,7 +49,11 @@ namespace Triggers
     {
       /* Sleep until *duration* from now */
       std::this_thread::sleep_until(nextWake);
+
       nextWake += m_duration;
+      m_logger->trace("Next wake: {}ms", std::chrono::duration_cast<std::chrono::milliseconds>(
+                                             nextWake.time_since_epoch())
+                                             .count());
 
       /* Run handler */
       m_handlerFunc();

@@ -8,6 +8,8 @@
 #include <chrono>
 #include <thread>
 
+#include <YukariCommon/LoggingService.h>
+
 namespace Yukari
 {
 namespace Triggers
@@ -25,6 +27,8 @@ namespace Triggers
     void workerFunc();
 
   private:
+    Common::LoggingService::Logger m_logger;
+
     std::chrono::milliseconds m_duration;
 
     std::atomic_bool m_enabled;

@@ -73,10 +73,10 @@ namespace Processing
         ndt.align(*transformedInputCloud, initialGuess);
 
         if (ndt.hasConverged())
-          m_logger->info("Convergence reached");
+          m_logger->debug("Convergence reached");
         else
           m_logger->warn("Convergence not reached");
-        m_logger->info("Normal Distributions Transform score: {}", ndt.getFitnessScore());
+        m_logger->debug("Normal Distributions Transform score: {}", ndt.getFitnessScore());
 
         /* Get transform from world origin to inoput cloud position */
         m_previousCloudWorldTransform = ndt.getFinalTransformation();

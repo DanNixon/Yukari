@@ -43,6 +43,7 @@ namespace Processing
     {
       /* Set running flag */
       m_run.store(false);
+      m_terminate.store(false);
 
       /* Ensure capture directory exists if it has been provided */
       if (!m_outputDirectory.empty())
@@ -78,12 +79,13 @@ namespace Processing
 
       /* Set run flag */
       m_run.store(true);
+      m_terminate.store(false);
 
       /* Start worker thread */
       m_workerThread = std::thread(&IFrameProcessingTask::workerThreadFunc, this);
     }
 
-    void stop()
+    void stop(bool finishJobs = true)
     {
       if (!m_run.load())
       {
@@ -92,7 +94,10 @@ namespace Processing
       }
 
       /* Clear run flag */
-      m_run.store(false);
+      if (finishJobs)
+        m_terminate.store(true);
+      else
+        m_run.store(false);
 
       /* Join worker thread */
       if (m_workerThread.joinable())
@@ -117,27 +122,40 @@ namespace Processing
   private:
     void workerThreadFunc()
     {
-      while (m_run)
+      while (m_run.load())
       {
+        Task t;
+
         {
           std::lock_guard<std::mutex> lock(m_taskQueueMutex);
 
-          if (!m_taskQueue.empty())
+          /* Skip an empty queue */
+          if (m_taskQueue.empty())
           {
-            m_logger->trace("Processing task started (for frame {})",
-                            m_taskQueue.front().frameNumber);
+            /* If the queue is empty and we want to finish jobs then we are done */
+            if (m_terminate.load())
+            {
+              m_logger->trace("All jobs done, worker will exit now");
+              m_run.store(false);
+            }
 
-            process(m_taskQueue.front());
-
-            m_logger->trace("Processing task complete (for frame {})",
-                            m_taskQueue.front().frameNumber);
-
-            m_taskQueue.pop();
+            continue;
           }
+
+          /* Retrieve the task data */
+          t = m_taskQueue.front();
+          m_taskQueue.pop();
+
+          m_logger->debug("{} task(s) remiaining in queue", m_taskQueue.size());
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        /* Process the task */
+        m_logger->trace("Processing task started (for frame {})", t.frameNumber);
+        process(t);
+        m_logger->trace("Processing task complete (for frame {})", t.frameNumber);
       }
+
+      std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 
   protected:
@@ -158,6 +176,7 @@ namespace Processing
 
     std::thread m_workerThread;
     std::atomic_bool m_run;
+    std::atomic_bool m_terminate;
 
     std::mutex m_taskQueueMutex;
     std::queue<Task> m_taskQueue;
