@@ -24,6 +24,7 @@ namespace Processing
         : IFrameProcessingTask(path)
         , m_logger(Common::LoggingService::Instance().getLogger("TaskNDTIncrementalAlignment"))
         , m_previousCloud()
+        , m_previousCloudWorldTransform(Eigen::Matrix4f::Identity())
     {
     }
 
@@ -35,23 +36,21 @@ namespace Processing
         return 1;
       }
 
+      /* Format frame number */
+      std::stringstream ss;
+      ss << std::setw(5) << std::setfill('0') << t.frameNumber;
+      std::string frameNoStr = ss.str();
+
       if (!m_previousCloud)
       {
-        /* If no previous cloud exists set it */
-        m_previousCloud = t.cloud;
-        // TODO
-
-        /* Save raw IMU transform */
-        std::stringstream ss;
-        ss << std::setw(5) << std::setfill('0') << t.frameNumber;
-        boost::filesystem::path imuFilename = m_outputDirectory / (ss.str() + "_transform.txt");
-        t.imuFrame->save(imuFilename);
+        /* Set initial transform */
+        m_previousCloudWorldTransform = t.imuFrame->toCloudTransform();
       }
       else
       {
         /* Downsample the input cloud for alignment */
         auto filteredInputCloud =
-            Processing::CloudOperations<POINT_TYPE>::DownsampleVoxelFilter(inputCloud);
+            Processing::CloudOperations<POINT_TYPE>::DownsampleVoxelFilter(t.cloud);
 
         /* Perform alignment */
         pcl::NormalDistributionsTransform<POINT_TYPE, POINT_TYPE> ndt;
@@ -65,9 +64,10 @@ namespace Processing
         ndt.setInputSource(filteredInputCloud);
         ndt.setInputTarget(m_previousCloud);
 
-        /* Run alignment (operating on transformed point cloud so no/identity initial guess) */
+        /* Run alignment */
         CloudPtr transformedInputCloud(new Cloud());
-        ndt.align(*transformedInputCloud, Eigen::Matrix4f::Identity());
+        Eigen::Matrix4f initialGuess = t.imuFrame->toCloudTransform();
+        ndt.align(*transformedInputCloud, initialGuess);
 
         if (ndt.hasConverged())
           m_logger->info("Convergence reached");
@@ -75,20 +75,27 @@ namespace Processing
           m_logger->warn("Convergence not reached");
         m_logger->info("Normal Distributions Transform score: {}", ndt.getFitnessScore());
 
-        /* Save final transformation between the new cloud and previous cloud */
-        Eigen::Matrix4f transform = ndt.getFinalTransformation();
-        IMUFrame transformFrame(transform);
-
-        // TODO
-
-        std::stringstream ss;
-        ss << std::setw(5) << std::setfill('0') << t.frameNumber;
-        boost::filesystem::path imuFilename = m_outputDirectory / (ss.str() + "_transform.txt");
-        transformFrame->save(imuFilename);
-
-        /* Set new previous frame */
-        m_previousCloud = inputCloud;
+        /* Get transform from world origin to inoput cloud position */
+        m_previousCloudWorldTransform = ndt.getFinalTransformation();
       }
+
+      /* Set previous cloud */
+      m_previousCloud = CloudPtr(new Cloud(*t.cloud));
+
+      /* Transform the previous/target cloud by it's world position (for next frame) */
+      pcl::transformPointCloud<POINT_TYPE>(*m_previousCloud, *m_previousCloud,
+                                           m_previousCloudWorldTransform);
+
+      /* Save transformed cloud */
+      boost::filesystem::path cloudFilename = m_outputDirectory / (frameNoStr + "_cloud.pcd");
+      m_logger->trace("Saving transformed point cloud for frame {}: {}", t.frameNumber,
+                      cloudFilename);
+      pcl::io::savePCDFileBinaryCompressed(cloudFilename.string(), *m_previousCloud);
+
+      /* Save transformation */
+      IMUFrame transformFrame(m_previousCloudWorldTransform);
+      boost::filesystem::path imuFilename = m_outputDirectory / (frameNoStr + "_transform.txt");
+      transformFrame.save(imuFilename);
 
       return 0;
     }
