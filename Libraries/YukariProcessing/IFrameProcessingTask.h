@@ -95,9 +95,15 @@ namespace Processing
 
       /* Clear run flag */
       if (finishJobs)
+      {
+        m_logger->debug("Will wait for jobs to finish");
         m_terminate.store(true);
+      }
       else
+      {
+        m_logger->debug("Will terminate jobs");
         m_run.store(false);
+      }
 
       /* Join worker thread */
       if (m_workerThread.joinable())

@@ -35,6 +35,11 @@ namespace Capture
         boost::filesystem::absolute(boost::filesystem::path(config["dir"].as<std::string>()));
     logger->info("Absolute output directory: {}", dir);
 
+    /* Get termination wait flag */
+    bool forceExit = config.count("forceexit") > 0;
+    logger->info("Forced exit: {}", forceExit);
+    retVal->setForcedExit(forceExit);
+
     /* Get cloud grabber */
     CloudGrabberPtr grabber =
         CloudGrabberFactory<pcl::PointXYZRGBA>::Create(config["cloudgrabber"].as<std::string>());

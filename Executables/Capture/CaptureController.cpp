@@ -172,7 +172,7 @@ namespace Capture
     /* Stop operation workers */
     m_logger->trace("Stopping post capture operation workers");
     for (auto it = m_postCaptureOperations.begin(); it != m_postCaptureOperations.end(); ++it)
-      (*it)->stop();
+      (*it)->stop(!m_forceExit);
 
     m_logger->info("Capture stopped");
     LoggingService::Instance().flush();

@@ -32,6 +32,11 @@ namespace Capture
       return m_isRunning;
     }
 
+    inline void setForcedExit(bool forceExit)
+    {
+      m_forceExit = forceExit;
+    }
+
     inline void setCloudGrabber(CloudGrabberPtr grabber)
     {
       m_cloudGrabber = grabber;
@@ -63,6 +68,8 @@ namespace Capture
 
     std::atomic_bool m_isRunning;
     size_t m_currentFrameCount;
+
+    bool m_forceExit;
 
     CloudGrabberPtr m_cloudGrabber;
     IMU::IIMUGrabber::Ptr m_imuGrabber;
