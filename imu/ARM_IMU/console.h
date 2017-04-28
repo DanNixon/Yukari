@@ -35,13 +35,11 @@
  *		(may be on different alternate functions as well)
  */
 
-#define CONSOLE_UART_PORT_RCC RCC_GPIOB
 #define CONSOLE_UART_PORT GPIOB
 
 #define CONSOLE_UART_RX_PIN GPIO11
 #define CONSOLE_UART_TX_PIN GPIO10
 
-#define CONSOLE_UART_RCC RCC_USART3
 #define CONSOLE_UART USART3
 
 int _write(int fd, char *ptr, int len);

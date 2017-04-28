@@ -23,7 +23,6 @@
 #include <stdint.h>
 
 #include <libopencm3/stm32/gpio.h>
-#include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/usart.h>
 
 #include "clock.h"
@@ -174,13 +173,9 @@ int _read(int fd, char *ptr, int len)
 
 void console_setup(int baudrate)
 {
-  rcc_periph_clock_enable(CONSOLE_UART_PORT_RCC);
-
   /* Setup GPIO pins for CONSOLE_UART transmit and receive. */
   gpio_mode_setup(CONSOLE_UART_PORT, GPIO_MODE_AF, GPIO_PUPD_NONE, CONSOLE_UART_RX_PIN | CONSOLE_UART_TX_PIN);
   gpio_set_af(CONSOLE_UART_PORT, GPIO_AF7, CONSOLE_UART_RX_PIN | CONSOLE_UART_TX_PIN);
-
-  rcc_periph_clock_enable(CONSOLE_UART_RCC);
 
   /* Setup CONSOLE_UART parameters. */
   usart_set_baudrate(CONSOLE_UART, baudrate);
