@@ -6,6 +6,7 @@ set(HEADERS
   IFrameProcessingTask.h
   ITaskNDTAlignment.h
   TaskAppendTransformedClouds.h
+  TaskDownsampleCloud.h
   TaskNDTIncrementalAlignment.h
   TaskNDTWorldAlignment.h
   TaskNDTWorldSegmentAlignment.h

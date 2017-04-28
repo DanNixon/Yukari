@@ -87,11 +87,14 @@ namespace Capture
     }
 
     /* Check if IMU grabber provides a capture trigger */
-    ITrigger::Ptr imuGrabberTrigger = m_imuGrabber->trigger();
-    if (imuGrabberTrigger)
+    if (m_imuGrabber)
     {
-      m_logger->info("Adding a capture trigger provided by IMU grabber");
-      addCaptureTrigger(imuGrabberTrigger);
+      ITrigger::Ptr imuGrabberTrigger = m_imuGrabber->trigger();
+      if (imuGrabberTrigger)
+      {
+        m_logger->info("Adding a capture trigger provided by IMU grabber");
+        addCaptureTrigger(imuGrabberTrigger);
+      }
     }
 
     /* Open cloud grabber */

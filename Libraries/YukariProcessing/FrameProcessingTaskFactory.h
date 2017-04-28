@@ -8,6 +8,7 @@
 #include <YukariCommon/MapHelpers.h>
 #include <YukariCommon/StringParsers.h>
 #include <YukariProcessing/TaskAppendTransformedClouds.h>
+#include <YukariProcessing/TaskDownsampleCloud.h>
 #include <YukariProcessing/TaskNDTIncrementalAlignment.h>
 #include <YukariProcessing/TaskNDTWorldAlignment.h>
 #include <YukariProcessing/TaskNDTWorldSegmentAlignment.h>
@@ -50,6 +51,10 @@ namespace Processing
       if (lowerType == "appendtransformed")
       {
         task = std::make_shared<TaskAppendTransformedClouds<POINT_TYPE>>(outDir);
+      }
+      else if (lowerType == "downsample")
+      {
+        task = std::make_shared<TaskDownsampleCloud<POINT_TYPE>>(outDir, parameters);
       }
       else if (lowerType == "ndtincremental")
       {

@@ -51,17 +51,20 @@ namespace Capture
     retVal->setCloudGrabber(grabber);
 
     /* Get IMU grabber */
-    IIMUGrabber::Ptr imu = IMUGrabberFactory::Create(config["imugrabber"].as<std::string>());
+    IIMUGrabber::Ptr imu;
+    if (config.count("imugrabber"))
+      imu = IMUGrabberFactory::Create(config["imugrabber"].as<std::string>());
+
     if (imu)
     {
       /* Set relative IMU transform from command line args */
       imu->setTransform(Transform(config));
+      retVal->setIMUGrabber(imu);
     }
     else
     {
       logger->error("Failed to create IMU grabber");
     }
-    retVal->setIMUGrabber(imu);
 
     /* Get capture trigger */
     {
