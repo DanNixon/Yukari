@@ -1,7 +1,7 @@
 BINARY = main
-OBJS += $(BINARY).o
+OBJS += $(BINARY).o clock.o console.o mpu6000.o
 
-LDSCRIPT = stm32f4-discovery.ld
+LDSCRIPT = stm32f4.ld
 
 LIBNAME = opencm3_stm32f4
 DEFS += -DSTM32F4
@@ -27,4 +27,3 @@ BMP_PORT ?=
 
 
 include rules.mk
-

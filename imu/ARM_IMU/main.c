@@ -8,51 +8,31 @@
 #include <libopencm3/stm32/f4/rcc.h>
 #include <libopencm3/stm32/f4/spi.h>
 
+#include "clock.h"
+#include "console.h"
+#include "mpu6000.h"
+
 #define LED0_PORT GPIOB
 #define LED0_PIN GPIO5
 
-#define MPU6000_CS_PORT GPIOA
-#define MPU6000_CS_PIN GPIO4
-
-#define MPU6000_INT_PORT GPIOC
-#define MPU6000_INT_PIN GPIO4
-
-#define MPU6000_SPI_INSTANCE SPI1
-
-static void setup_main_clock(void)
-{
-  rcc_clock_setup_hse_3v3(&rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_168MHZ]);
-}
-
-static void setup_peripheral_clocks(void)
-{
-  rcc_periph_clock_enable(RCC_GPIOA);
-  rcc_periph_clock_enable(RCC_GPIOB);
-  rcc_periph_clock_enable(RCC_GPIOC);
-  rcc_periph_clock_enable(RCC_SPI1);
-}
-
 static void setup_leds(void)
 {
+  rcc_periph_clock_enable(RCC_GPIOB);
+
   gpio_mode_setup(LED0_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, LED0_PIN);
   gpio_set(LED0_PORT, LED0_PIN);
 }
 
 int main(void)
 {
-  int i;
-
-  setup_main_clock();
-  setup_peripheral_clocks();
+  clock_setup();
   setup_leds();
+  console_setup(115200);
+  mpu6000_init();
 
   while (1)
   {
     gpio_toggle(GPIOB, LED0_PIN);
-
-    for (i = 0; i < 6000000; i++)
-    {
-      __asm__("nop");
-    }
+    msleep(1000);
   }
 }
