@@ -27,7 +27,7 @@ namespace Processing
         , m_maxIterations(
               std::stoi(MapHelpers::Get<std::string, std::string>(params, "maxiter", "35")))
         , m_voxelDownsamplePercentage(
-              std::stod(MapHelpers::Get<std::string, std::string>(params, "downsample", "0.1")))
+              std::stod(MapHelpers::Get<std::string, std::string>(params, "downsample", "0.01")))
     {
     }
 

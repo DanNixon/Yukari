@@ -13,7 +13,7 @@ Transform a set of captured clouds by a set of IMU files:
 `Capture.exe --cloudgrabber pcdfile(dir=raw_clouds,pattern=.*_cloud\.pcd) --imugrabber file(dir=imu,pattern=.*_imu\.txt) --process savecloud(out=transformed_clouds,transform=true)`
 
 Downsample clouds:
-`Capture.exe --cloudgrabber openni2 --capturetrigger periodic(delay=5000) --process savecloud(out=raw_clouds,transform=false) --process downsample(out=downsample)`
+`Capture.exe --cloudgrabber openni2 --capturetrigger periodic(delay=5000) --process savecloud(out=raw_clouds,transform=false) --process downsample(out=downsample,downsample=0.01)`
 
 Test grabbing frames from a Kinect:
 `CloudGrabberTest.exe --loglevel trace --grabber openni2`
