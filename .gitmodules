@@ -1,0 +1,3 @@
+[submodule "imu/ARM_IMU/libopencm3"]
+	path = imu/ARM_IMU/libopencm3
+	url = https://github.com/libopencm3/libopencm3.git
