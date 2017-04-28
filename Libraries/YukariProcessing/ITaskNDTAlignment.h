@@ -26,6 +26,8 @@ namespace Processing
               std::stof(MapHelpers::Get<std::string, std::string>(params, "resolution", "0.01")))
         , m_maxIterations(
               std::stoi(MapHelpers::Get<std::string, std::string>(params, "maxiter", "35")))
+        , m_voxelDownsamplePercentage(
+              std::stod(MapHelpers::Get<std::string, std::string>(params, "downsample", "0.1")))
     {
     }
 
@@ -38,13 +40,13 @@ namespace Processing
       ndt.setMaximumIterations(m_maxIterations);
     }
 
-  private:
+  protected:
     double m_transformationEpsilon;
     double m_stepSize;
     double m_resolution;
     int m_maxIterations;
 
-    // TODO: voxel downsampling parameters
+    double m_voxelDownsamplePercentage;
   };
 }
 }

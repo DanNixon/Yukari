@@ -18,7 +18,7 @@ namespace Processing
     typedef typename Cloud::ConstPtr CloudConstPtr;
 
   public:
-    static CloudPtr DownsampleVoxelFilter(CloudConstPtr cloud)
+    static CloudPtr DownsampleVoxelFilter(CloudConstPtr cloud, double downsamplePercentage)
     {
       auto logger =
           Common::LoggingService::Instance().getLogger("CloudOperations_DownsampleVoxelFilter");

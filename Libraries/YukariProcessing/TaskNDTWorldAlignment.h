@@ -56,8 +56,8 @@ namespace Processing
         /* Otherwise alignment is required */
 
         /* Downsample the input cloud for alignment */
-        auto filteredInputCloud =
-            Processing::CloudOperations<POINT_TYPE>::DownsampleVoxelFilter(inputCloud);
+        auto filteredInputCloud = Processing::CloudOperations<POINT_TYPE>::DownsampleVoxelFilter(
+            inputCloud, m_voxelDownsamplePercentage);
 
         /* Perform alignment */
         pcl::NormalDistributionsTransform<POINT_TYPE, POINT_TYPE> ndt;
