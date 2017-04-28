@@ -10,7 +10,8 @@
 
 void mpu6000_init(void)
 {
-  rcc_periph_clock_enable(RCC_GPIOA | RCC_GPIOC | RCC_SPI1);
+  rcc_periph_clock_enable(MPU6000_CS_PORT_RCC);
+  rcc_periph_clock_enable(MPU6000_INT_PORT_RCC);
 
   /* Chip select pin */
   gpio_mode_setup(MPU6000_CS_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, MPU6000_CS_PIN);

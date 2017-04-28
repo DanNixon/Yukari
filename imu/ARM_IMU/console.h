@@ -35,15 +35,19 @@
  *		(may be on different alternate functions as well)
  */
 
-#define CONSOLE_UART USART2
+#define CONSOLE_UART_PORT_RCC RCC_GPIOB
+#define CONSOLE_UART_PORT GPIOB
 
-void console_putc(char c);
-char console_getc(int wait);
-void console_puts(char *s);
-int console_gets(char *s, int len);
+#define CONSOLE_UART_RX_PIN GPIO11
+#define CONSOLE_UART_TX_PIN GPIO10
+
+#define CONSOLE_UART_RCC RCC_USART3
+#define CONSOLE_UART USART3
+
+int _write(int fd, char *ptr, int len);
+int _read(int fd, char *ptr, int len);
+void get_buffered_line(void);
+
 void console_setup(int baudrate);
-
-/* this is for fun, if you type ^C to this example it will reset */
-#define RESET_ON_CTRLC
 
 #endif /* __CONSOLE_H */
