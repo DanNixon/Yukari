@@ -21,15 +21,25 @@ namespace Processing
   {
   public:
     TaskNDTIncrementalAlignment(const boost::filesystem::path &path,
-                                std::map<std::string, std::string> &params, bool saveTransforms,
-                                bool saveClouds)
+                                std::map<std::string, std::string> &params)
         : ITaskNDTAlignment(path, params)
         , m_logger(Common::LoggingService::Instance().getLogger("TaskNDTIncrementalAlignment"))
-        , m_saveTransforms(saveTransforms)
-        , m_saveClouds(saveClouds)
+        , m_saveTransforms(false)
+        , m_saveClouds(false)
         , m_previousCloud()
         , m_previousCloudWorldTransform(Eigen::Matrix4f::Identity())
     {
+      /* Parse save transforms option */
+      std::string saveTransformParam =
+          MapHelpers::Get<std::string, std::string>(params, "transform", "true");
+      StringParsers::CleanString(saveTransformParam);
+      m_saveTransforms = saveTransformParam == "true";
+
+      /* Parse save clouds option */
+      std::string saveCloudParam =
+          MapHelpers::Get<std::string, std::string>(params, "cloud", "false");
+      StringParsers::CleanString(saveCloudParam);
+      m_saveClouds = saveCloudParam == "true";
     }
 
     virtual int process(Task t) override

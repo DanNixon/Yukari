@@ -53,18 +53,7 @@ namespace Processing
       }
       else if (lowerType == "ndtincremental")
       {
-        std::string saveTransformParam =
-            MapHelpers::Get<std::string, std::string>(parameters, "transform", "true");
-        StringParsers::CleanString(saveTransformParam);
-        bool saveTransforms = saveTransformParam == "true";
-
-        std::string saveCloudParam =
-            MapHelpers::Get<std::string, std::string>(parameters, "cloud", "false");
-        StringParsers::CleanString(saveCloudParam);
-        bool saveClouds = saveCloudParam == "true";
-
-        task = std::make_shared<TaskNDTIncrementalAlignment<POINT_TYPE>>(
-            outDir, parameters, saveTransforms, saveClouds);
+        task = std::make_shared<TaskNDTIncrementalAlignment<POINT_TYPE>>(outDir, parameters);
       }
       else if (lowerType == "ndtworld")
       {
