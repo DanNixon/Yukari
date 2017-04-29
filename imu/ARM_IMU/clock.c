@@ -29,7 +29,7 @@ static volatile uint64_t system_micros;
 /* Called when systick fires */
 void sys_tick_handler(void)
 {
-  system_micros++;
+  system_micros += 10;
 }
 
 /* simple sleep for delay milliseconds */
@@ -62,7 +62,7 @@ void clock_setup(void)
 
   /* clock rate / 168000 to get 1mS interrupt rate */
   /* systick_set_reload(168000); */
-  systick_set_reload(168);
+  systick_set_reload(1680);
   systick_set_clocksource(STK_CSR_CLKSOURCE_AHB);
   systick_counter_enable();
 

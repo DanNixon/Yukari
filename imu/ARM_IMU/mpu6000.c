@@ -56,23 +56,18 @@ static void spi_init(void)
   spi_enable(MPU6000_SPI);
 }
 
-static uint16_t spi_read_reg(int reg)
+static uint8_t spi_read_reg(int reg)
 {
-  uint16_t d1, d2;
+  uint8_t val;
 
-  d1 = 0x80 | (reg & 0x3f); /* Read operation */
-  /* Nominallly a register read is a 16 bit operation */
   gpio_clear(SPI1_PORT, MPU6000_CS_PIN);
-  d2 = spi_xfer(MPU6000_SPI, d1);
-  d2 <<= 8;
-  /*
-   * You have to send as many bits as you want to read
-   * so we send another 8 bits to get the rest of the
-   * register.
-   */
-  d2 |= spi_xfer(MPU6000_SPI, 0);
+
+  (void)spi_xfer(MPU6000_SPI, reg | 0x80);
+  val = spi_xfer(MPU6000_SPI, 0);
+
   gpio_set(SPI1_PORT, MPU6000_CS_PIN);
-  return d2;
+
+  return val;
 }
 
 static void spi_write_reg(uint8_t reg, uint8_t value)
@@ -86,7 +81,7 @@ static void spi_write_reg(uint8_t reg, uint8_t value)
 
 void mpu6000_init(void)
 {
-  uint8_t id;
+  uint8_t id, mode;
 
   printf("MPU6000 init\n");
 
@@ -96,24 +91,36 @@ void mpu6000_init(void)
   spi_write_reg(MPUREG_PWR_MGMT_1, BIT_H_RESET);
   msleep(100);
 
+  /* Signal path reset */
+  spi_write_reg(MPUREG_SIGNAL_PATH_RESET, 0x7);
+  msleep(100);
+
   /* Wake up device and select GyroZ clock (better performance) */
   spi_write_reg(MPUREG_PWR_MGMT_1, MPU_CLK_SEL_PLLGYROZ);
 
   /* Disable I2C bus (recommended on datasheet) */
   spi_write_reg(MPUREG_USER_CTRL, BIT_I2C_IF_DIS);
 
-  /* Sample rate = 200Hz, Fsample= 1Khz/(4+1) = 200Hz */
-  spi_write_reg(MPUREG_SMPLRT_DIV, 0x04);
+  spi_write_reg(MPUREG_SMPLRT_DIV, 0);
 
   spi_write_reg(MPUREG_CONFIG, BITS_DLPF_CFG_42HZ);
-  spi_write_reg(MPUREG_GYRO_CONFIG, BITS_FS_500DPS);
+  spi_write_reg(MPUREG_GYRO_CONFIG, BITS_FS_2000DPS);
   spi_write_reg(MPUREG_ACCEL_CONFIG, BITS_FS_4G);
 
+  msleep(1000);
+
   id = spi_read_reg(MPUREG_WHOAMI);
-  printf("MPU device ID: %d\n", id);
+  printf("MPU device ID: %#04x\n", id);
+
+  mode = spi_read_reg(MPUREG_GYRO_CONFIG);
+  printf("Gyro config: %#04x\n", mode);
+
+  mode = spi_read_reg(MPUREG_ACCEL_CONFIG);
+  printf("Accel config: %#04x\n", mode & BITS_FS_MASK);
 }
 
-void mpu6000_get_motion_6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, int16_t *gy, int16_t *gz)
+void mpu6000_get_motion_6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, int16_t *gy,
+                          int16_t *gz)
 {
   uint8_t byte_H;
   uint8_t byte_L;
@@ -142,21 +149,15 @@ void mpu6000_get_motion_6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, in
   byte_L = spi_xfer(MPU6000_SPI, 0);
   *gx = ((int)byte_H << 8) | byte_L;
 
-  printf("%d, %d\n", byte_H, byte_L);
-
   /* Read gyro X */
   byte_H = spi_xfer(MPU6000_SPI, 0);
   byte_L = spi_xfer(MPU6000_SPI, 0);
   *gx = ((int)byte_H << 8) | byte_L;
 
-  printf("%d, %d\n", byte_H, byte_L);
-
   /* Read gyro Y */
   byte_H = spi_xfer(MPU6000_SPI, 0);
   byte_L = spi_xfer(MPU6000_SPI, 0);
   *gy = ((int)byte_H << 8) | byte_L;
-
-  printf("%d, %d\n", byte_H, byte_L);
 
   /* Read gyro Z */
   byte_H = spi_xfer(MPU6000_SPI, 0);

@@ -9,6 +9,7 @@
 #include <libopencm3/stm32/f4/rcc.h>
 #include <libopencm3/stm32/f4/spi.h>
 
+#include "MadgwickAHRS.h"
 #include "clock.h"
 #include "console.h"
 #include "mpu6000.h"
@@ -26,6 +27,7 @@ int main(void)
 {
   int i;
   int16_t ax, ay, az, gx, gy, gz;
+  float ax2, ay2, az2, gx2, gy2, gz2;
 
   clock_setup();
 
@@ -51,13 +53,23 @@ int main(void)
   {
     gpio_toggle(LED0_PORT, LED0_PIN);
     printf("i=%d\n", i++);
-    printf("millis()=%lld\n", millis());
-    printf("micros()=%lld\n", micros());
 
     mpu6000_get_motion_6(&ax, &ay, &az, &gx, &gy, &gz);
     printf("acc(x/y/z): %05d, %05d, %05d\n", ax, ay, az);
     printf("gyr(x/y/z): %05d, %05d, %05d\n", gx, gy, gz);
 
-    msleep(8);
+    gx2 = gx / 131.0f;
+    gy2 = gy / 131.0f;
+    gz2 = gz / 131.0f;
+    ax2 = ax / 2048.0f;
+    ay2 = ay / 2048.0f;
+    az2 = az / 2048.0f;
+    printf("acc(x/y/z): %f, %f, %f\n", ax2, ay2, az2);
+    printf("gyr(x/y/z): %f, %f, %f\n", gx2, gy2, gz2);
+
+    MadgwickAHRSupdateIMU(gx2, gy2, gz2, ax2, ay2, az2);
+    printf("q(w/x/y/z): %f, %f, %f, %f\n", q0, q1, q2, q3);
+
+    msleep(100);
   }
 }

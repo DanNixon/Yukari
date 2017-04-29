@@ -174,7 +174,8 @@ int _read(int fd, char *ptr, int len)
 void console_setup(int baudrate)
 {
   /* Setup GPIO pins for CONSOLE_UART transmit and receive. */
-  gpio_mode_setup(CONSOLE_UART_PORT, GPIO_MODE_AF, GPIO_PUPD_NONE, CONSOLE_UART_RX_PIN | CONSOLE_UART_TX_PIN);
+  gpio_mode_setup(CONSOLE_UART_PORT, GPIO_MODE_AF, GPIO_PUPD_NONE,
+                  CONSOLE_UART_RX_PIN | CONSOLE_UART_TX_PIN);
   gpio_set_af(CONSOLE_UART_PORT, GPIO_AF7, CONSOLE_UART_RX_PIN | CONSOLE_UART_TX_PIN);
 
   /* Setup CONSOLE_UART parameters. */

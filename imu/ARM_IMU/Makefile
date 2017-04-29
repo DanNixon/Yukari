@@ -1,7 +1,7 @@
 V = 1
 
 BINARY = main
-OBJS += $(BINARY).o clock.o console.o mpu6000.o
+OBJS += $(BINARY).o clock.o console.o mpu6000.o MadgwickAHRS.o
 
 LDSCRIPT = stm32f4.ld
 
