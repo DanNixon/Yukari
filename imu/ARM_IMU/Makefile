@@ -1,3 +1,5 @@
+V = 1
+
 BINARY = main
 OBJS += $(BINARY).o clock.o console.o mpu6000.o
 

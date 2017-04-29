@@ -25,6 +25,7 @@ static void setup_leds(void)
 int main(void)
 {
   int i;
+  int16_t ax, ay, az, gx, gy, gz;
 
   clock_setup();
 
@@ -39,12 +40,22 @@ int main(void)
   mpu6000_init();
 
   printf("Hello world.\n");
+  for (i = 0; i < 5; i++)
+  {
+    gpio_toggle(LED0_PORT, LED0_PIN);
+    msleep(5);
+  }
 
   i = 0;
   while (1)
   {
     gpio_toggle(LED0_PORT, LED0_PIN);
     printf("i=%d\n", i++);
-    msleep(500);
+
+    mpu6000_get_motion_6(&ax, &ay, &az, &gx, &gy, &gz);
+    printf("acc(x/y/z): %05d, %05d, %05d\n", ax, ay, az);
+    printf("gyr(x/y/z): %05d, %05d, %05d\n", gx, gy, gz);
+
+    msleep(50);
   }
 }
