@@ -24,26 +24,30 @@
 #include "clock.h"
 
 /* milliseconds since boot */
-static volatile uint32_t system_millis;
+static volatile uint64_t system_micros;
 
 /* Called when systick fires */
 void sys_tick_handler(void)
 {
-  system_millis++;
+  system_micros++;
 }
 
 /* simple sleep for delay milliseconds */
-void msleep(uint32_t delay)
+void msleep(uint64_t delay)
 {
-  uint32_t wake = system_millis + delay;
-  while (wake > system_millis)
+  uint32_t wake = system_micros + (delay * 1000);
+  while (wake > system_micros)
     ;
 }
 
-/* Getter function for the current time */
-uint32_t mtime(void)
+uint64_t millis(void)
 {
-  return system_millis;
+  return system_micros / 1000;
+}
+
+uint64_t micros(void)
+{
+  return system_micros;
 }
 
 /*
@@ -57,7 +61,8 @@ void clock_setup(void)
   rcc_clock_setup_hse_3v3(&rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_168MHZ]);
 
   /* clock rate / 168000 to get 1mS interrupt rate */
-  systick_set_reload(168000);
+  /* systick_set_reload(168000); */
+  systick_set_reload(168);
   systick_set_clocksource(STK_CSR_CLKSOURCE_AHB);
   systick_counter_enable();
 

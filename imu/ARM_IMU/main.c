@@ -51,11 +51,13 @@ int main(void)
   {
     gpio_toggle(LED0_PORT, LED0_PIN);
     printf("i=%d\n", i++);
+    printf("millis()=%lld\n", millis());
+    printf("micros()=%lld\n", micros());
 
     mpu6000_get_motion_6(&ax, &ay, &az, &gx, &gy, &gz);
     printf("acc(x/y/z): %05d, %05d, %05d\n", ax, ay, az);
     printf("gyr(x/y/z): %05d, %05d, %05d\n", gx, gy, gz);
 
-    msleep(50);
+    msleep(8);
   }
 }

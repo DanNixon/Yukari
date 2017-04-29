@@ -3,8 +3,9 @@
 
 #include <stdint.h>
 
-void msleep(uint32_t);
-uint32_t mtime(void);
+void msleep(uint64_t);
+uint64_t millis(void);
+uint64_t micros(void);
 void clock_setup(void);
 
 #endif /* __CLOCK_H */
