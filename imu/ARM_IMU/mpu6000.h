@@ -14,6 +14,7 @@
 
 #define MPU6000_CS_PIN SPI1_NSS_PIN
 
+#define MPU6000_EXTI EXTI4
 #define MPU6000_INT_PORT GPIOC
 #define MPU6000_INT_PIN GPIO4
 
@@ -105,6 +106,8 @@
 #define MPU6000_100HZ (1)
 #define MPU6000_66HZ (2)
 #define MPU6000_50HZ (3)
+
+uint64_t numSam(void);
 
 void mpu6000_init(void);
 void mpu6000_get_motion_6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, int16_t *gy,

@@ -12,11 +12,18 @@
 
 #include "clock.h"
 
-void exti0_isr(void)
-{
-  exti_reset_request(EXTI0);
+volatile uint64_t samples = 0;
 
-  gpio_toggle(GPIOB, GPIO5);
+uint64_t numSam(void)
+{
+  return samples;
+}
+
+void exti4_isr(void)
+{
+  exti_reset_request(MPU6000_EXTI);
+
+  samples++;
 }
 
 static uint32_t spi_read_mode_fault(uint32_t spi)
@@ -98,26 +105,37 @@ void mpu6000_init(void)
 
   /* Chip reset */
   spi_write_reg(MPUREG_PWR_MGMT_1, BIT_H_RESET);
-  msleep(100);
+  msleep(150);
 
   /* Signal path reset */
   spi_write_reg(MPUREG_SIGNAL_PATH_RESET, 0x7);
-  msleep(100);
+  msleep(150);
 
-  /* Wake up device and select GyroZ clock (better performance) */
+  /* Wake up device and select gyro Z clock (better performance) */
   spi_write_reg(MPUREG_PWR_MGMT_1, MPU_CLK_SEL_PLLGYROZ);
+  msleep(10);
 
   /* Disable I2C bus (recommended on datasheet) */
   spi_write_reg(MPUREG_USER_CTRL, BIT_I2C_IF_DIS);
+  msleep(10);
 
   spi_write_reg(MPUREG_SMPLRT_DIV, 0);
+  msleep(10);
 
   spi_write_reg(MPUREG_CONFIG, BITS_DLPF_CFG_42HZ);
+  msleep(10);
+
   spi_write_reg(MPUREG_GYRO_CONFIG, BITS_FS_2000DPS);
+  msleep(10);
+
   spi_write_reg(MPUREG_ACCEL_CONFIG, BITS_FS_4G);
+  msleep(10);
 
   spi_write_reg(MPUREG_INT_ENABLE, BIT_RAW_RDY_EN);
+  msleep(10);
+
   spi_write_reg(MPUREG_INT_PIN_CFG, BIT_INT_ANYRD_2CLEAR);
+  msleep(10);
 
   msleep(1000);
 
@@ -131,11 +149,11 @@ void mpu6000_init(void)
   printf("Accel config: %#04x\n", mode & BITS_FS_MASK);
 
   /* Interrupt */
-  nvic_enable_irq(NVIC_EXTI0_IRQ);
-  gpio_mode_setup(MPU6000_INT_PORT, GPIO_MODE_INPUT, GPIO_PUPD_NONE, MPU6000_INT_PIN);
-  exti_select_source(EXTI0, MPU6000_INT_PORT);
-  exti_set_trigger(EXTI0, EXTI_TRIGGER_RISING);
-  exti_enable_request(EXTI0);
+  nvic_enable_irq(NVIC_EXTI4_IRQ);
+  gpio_mode_setup(MPU6000_INT_PORT, GPIO_MODE_INPUT, GPIO_PUPD_PULLDOWN, MPU6000_INT_PIN);
+  exti_select_source(MPU6000_EXTI, MPU6000_INT_PORT);
+  exti_set_trigger(MPU6000_EXTI, EXTI_TRIGGER_RISING);
+  exti_enable_request(MPU6000_EXTI);
 }
 
 void mpu6000_get_motion_6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, int16_t *gy,

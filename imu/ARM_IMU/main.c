@@ -31,6 +31,7 @@ int main(void)
 
   clock_setup();
 
+  rcc_periph_clock_enable(RCC_SYSCFG);
   rcc_periph_clock_enable(RCC_GPIOA);
   rcc_periph_clock_enable(RCC_GPIOB);
   rcc_periph_clock_enable(RCC_GPIOC);
@@ -53,6 +54,7 @@ int main(void)
   {
     /* gpio_toggle(LED0_PORT, LED0_PIN); */
     printf("i=%d\n", i++);
+    printf("samples=%lld\n", numSam());
 
     /* mpu6000_get_motion_6(&ax, &ay, &az, &gx, &gy, &gz); */
     /* printf("acc(x/y/z): %05d, %05d, %05d\n", ax, ay, az); */
