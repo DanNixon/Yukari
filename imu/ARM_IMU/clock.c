@@ -52,7 +52,7 @@ uint64_t micros(void)
 
 /*
  * This function sets up both the base board clock rate
- * and a 1khz "system tick" count. The SYSTICK counter is
+ * and a 10khz "system tick" count. The SYSTICK counter is
  * a standard feature of the Cortex-M series.
  */
 void clock_setup(void)
@@ -60,8 +60,6 @@ void clock_setup(void)
   /* Base board frequency, set to 168Mhz */
   rcc_clock_setup_hse_3v3(&rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_168MHZ]);
 
-  /* clock rate / 168000 to get 1mS interrupt rate */
-  /* systick_set_reload(168000); */
   systick_set_reload(1680);
   systick_set_clocksource(STK_CSR_CLKSOURCE_AHB);
   systick_counter_enable();
