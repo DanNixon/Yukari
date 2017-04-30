@@ -16,6 +16,8 @@
 #define GYRO_FACTOR 16.4f
 #define ACCEL_FACTOR 8192.0f
 
+#define DEG_TO_RAD 0.017453292519943295f
+
 volatile uint64_t mpu6000_samples = 0;
 volatile float mpu6000_axis[6];
 
@@ -25,9 +27,9 @@ void exti4_isr(void)
 
   static int16_t ax, ay, az, gx, gy, gz;
   mpu6000_get_motion_6(&ax, &ay, &az, &gx, &gy, &gz);
-  mpu6000_axis[0] = gx / GYRO_FACTOR;
-  mpu6000_axis[1] = gy / GYRO_FACTOR;
-  mpu6000_axis[2] = gz / GYRO_FACTOR;
+  mpu6000_axis[0] = (gx / GYRO_FACTOR) * DEG_TO_RAD;
+  mpu6000_axis[1] = (gy / GYRO_FACTOR) * DEG_TO_RAD;
+  mpu6000_axis[2] = (gz / GYRO_FACTOR) * DEG_TO_RAD;
   mpu6000_axis[3] = ax / ACCEL_FACTOR;
   mpu6000_axis[4] = ay / ACCEL_FACTOR;
   mpu6000_axis[5] = az / ACCEL_FACTOR;
@@ -131,7 +133,7 @@ void mpu6000_init(void)
   spi_write_reg(MPUREG_USER_CTRL, BIT_I2C_IF_DIS);
   msleep(10);
 
-  spi_write_reg(MPUREG_SMPLRT_DIV, 0);
+  spi_write_reg(MPUREG_SMPLRT_DIV, 0x04);
   msleep(10);
 
   spi_write_reg(MPUREG_CONFIG, BITS_DLPF_CFG_42HZ);
