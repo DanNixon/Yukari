@@ -10,20 +10,32 @@
 #include <libopencm3/stm32/memorymap.h>
 #include <libopencm3/stm32/spi.h>
 
+#include "MadgwickAHRS.h"
 #include "clock.h"
 
-volatile uint64_t samples = 0;
+#define GYRO_FACTOR 16.4f
+#define ACCEL_FACTOR 8192.0f
 
-uint64_t numSam(void)
-{
-  return samples;
-}
+volatile uint64_t mpu6000_samples = 0;
+volatile float mpu6000_axis[6];
 
 void exti4_isr(void)
 {
   exti_reset_request(MPU6000_EXTI);
 
-  samples++;
+  static int16_t ax, ay, az, gx, gy, gz;
+  mpu6000_get_motion_6(&ax, &ay, &az, &gx, &gy, &gz);
+  mpu6000_axis[0] = gx / GYRO_FACTOR;
+  mpu6000_axis[1] = gy / GYRO_FACTOR;
+  mpu6000_axis[2] = gz / GYRO_FACTOR;
+  mpu6000_axis[3] = ax / ACCEL_FACTOR;
+  mpu6000_axis[4] = ay / ACCEL_FACTOR;
+  mpu6000_axis[5] = az / ACCEL_FACTOR;
+
+  MadgwickAHRSupdateIMU(mpu6000_axis[0], mpu6000_axis[1], mpu6000_axis[2], mpu6000_axis[3],
+                        mpu6000_axis[4], mpu6000_axis[5]);
+
+  mpu6000_samples++;
 }
 
 static uint32_t spi_read_mode_fault(uint32_t spi)

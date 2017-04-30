@@ -25,10 +25,6 @@ static void setup_leds(void)
 
 int main(void)
 {
-  int i;
-  /* int16_t ax, ay, az, gx, gy, gz; */
-  /* float ax2, ay2, az2, gx2, gy2, gz2; */
-
   clock_setup();
 
   rcc_periph_clock_enable(RCC_SYSCFG);
@@ -43,34 +39,18 @@ int main(void)
   mpu6000_init();
 
   printf("Hello world.\n");
-  for (i = 0; i < 5; i++)
-  {
-    gpio_toggle(LED0_PORT, LED0_PIN);
-    msleep(5);
-  }
+  gpio_set(LED0_PORT, LED0_PIN);
+  msleep(100);
+  gpio_clear(LED0_PORT, LED0_PIN);
 
-  i = 0;
   while (1)
   {
-    /* gpio_toggle(LED0_PORT, LED0_PIN); */
-    printf("i=%d\n", i++);
-    printf("samples=%lld\n", numSam());
+    gpio_toggle(LED0_PORT, LED0_PIN);
 
-    /* mpu6000_get_motion_6(&ax, &ay, &az, &gx, &gy, &gz); */
-    /* printf("acc(x/y/z): %05d, %05d, %05d\n", ax, ay, az); */
-    /* printf("gyr(x/y/z): %05d, %05d, %05d\n", gx, gy, gz); */
-
-    /* gx2 = gx / 131.0f; */
-    /* gy2 = gy / 131.0f; */
-    /* gz2 = gz / 131.0f; */
-    /* ax2 = ax / 2048.0f; */
-    /* ay2 = ay / 2048.0f; */
-    /* az2 = az / 2048.0f; */
-    /* printf("acc(x/y/z): %f, %f, %f\n", ax2, ay2, az2); */
-    /* printf("gyr(x/y/z): %f, %f, %f\n", gx2, gy2, gz2); */
-
-    /* MadgwickAHRSupdateIMU(gx2, gy2, gz2, ax2, ay2, az2); */
-    /* printf("q(w/x/y/z): %f, %f, %f, %f\n", q0, q1, q2, q3); */
+    printf("samples=%lld\n", mpu6000_samples);
+    printf("gyr(x/y/z): %f, %f, %f\n", mpu6000_axis[0], mpu6000_axis[1], mpu6000_axis[2]);
+    printf("acc(x/y/z): %f, %f, %f\n", mpu6000_axis[3], mpu6000_axis[4], mpu6000_axis[5]);
+    printf("q(w/x/y/z): %f, %f, %f, %f\n", q0, q1, q2, q3);
 
     msleep(100);
   }

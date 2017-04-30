@@ -107,7 +107,8 @@
 #define MPU6000_66HZ (2)
 #define MPU6000_50HZ (3)
 
-uint64_t numSam(void);
+extern volatile uint64_t mpu6000_samples;
+extern volatile float mpu6000_axis[6];
 
 void mpu6000_init(void);
 void mpu6000_get_motion_6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, int16_t *gy,
