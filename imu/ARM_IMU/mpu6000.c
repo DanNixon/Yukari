@@ -4,11 +4,20 @@
 #include <stdio.h>
 
 #include <libopencm3/cm3/common.h>
-#include <libopencm3/stm32/f4/gpio.h>
-#include <libopencm3/stm32/f4/memorymap.h>
-#include <libopencm3/stm32/f4/spi.h>
+#include <libopencm3/cm3/nvic.h>
+#include <libopencm3/stm32/exti.h>
+#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/memorymap.h>
+#include <libopencm3/stm32/spi.h>
 
 #include "clock.h"
+
+void exti0_isr(void)
+{
+  exti_reset_request(EXTI0);
+
+  gpio_toggle(GPIOB, GPIO5);
+}
 
 static uint32_t spi_read_mode_fault(uint32_t spi)
 {
@@ -107,6 +116,9 @@ void mpu6000_init(void)
   spi_write_reg(MPUREG_GYRO_CONFIG, BITS_FS_2000DPS);
   spi_write_reg(MPUREG_ACCEL_CONFIG, BITS_FS_4G);
 
+  spi_write_reg(MPUREG_INT_ENABLE, BIT_RAW_RDY_EN);
+  spi_write_reg(MPUREG_INT_PIN_CFG, BIT_INT_ANYRD_2CLEAR);
+
   msleep(1000);
 
   id = spi_read_reg(MPUREG_WHOAMI);
@@ -117,6 +129,13 @@ void mpu6000_init(void)
 
   mode = spi_read_reg(MPUREG_ACCEL_CONFIG);
   printf("Accel config: %#04x\n", mode & BITS_FS_MASK);
+
+  /* Interrupt */
+  nvic_enable_irq(NVIC_EXTI0_IRQ);
+  gpio_mode_setup(MPU6000_INT_PORT, GPIO_MODE_INPUT, GPIO_PUPD_NONE, MPU6000_INT_PIN);
+  exti_select_source(EXTI0, MPU6000_INT_PORT);
+  exti_set_trigger(EXTI0, EXTI_TRIGGER_RISING);
+  exti_enable_request(EXTI0);
 }
 
 void mpu6000_get_motion_6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, int16_t *gy,
