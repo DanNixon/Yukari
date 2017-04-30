@@ -98,5 +98,12 @@ namespace MSP
 
     return true;
   }
+
+  bool MSPParsers::ParseVector3(const MSPClient::Payload &payload, Eigen::Vector3f &vec)
+  {
+    // TODO
+    vec = Eigen::Vector3f::Zero();
+    return false;
+  }
 }
 }

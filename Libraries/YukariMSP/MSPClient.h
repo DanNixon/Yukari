@@ -51,7 +51,9 @@ namespace MSP
       Y_RAW_IMU = 150,
       Y_LINEAR_ACC_REAL = 151,
       Y_LINEAR_ACC_WORLD = 152,
-      Y_ORIENTATION = 153
+      Y_ORIENTATION = 153,
+      Y_DISPLACEMENT = 154,
+      Y_RESET_DISPLACEMENT = 155
     };
 
   public:
