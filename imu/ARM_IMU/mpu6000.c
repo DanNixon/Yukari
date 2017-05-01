@@ -20,6 +20,7 @@
 
 volatile uint64_t mpu6000_samples = 0;
 volatile float mpu6000_axis[6];
+volatile float mpu6000_world_accel[3];
 
 void exti4_isr(void)
 {

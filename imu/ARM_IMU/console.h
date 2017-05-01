@@ -20,6 +20,8 @@
 #ifndef __CONSOLE_H
 #define __CONSOLE_H
 
+#include <stdint.h>
+
 /*
  * Some definitions of our console "functions" attached to the
  * USART.
@@ -45,6 +47,7 @@
 int _write(int fd, char *ptr, int len);
 int _read(int fd, char *ptr, int len);
 void get_buffered_line(void);
+void console_write(uint8_t *ptr, int len);
 
 void console_setup(int baudrate);
 

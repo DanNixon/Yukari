@@ -17,6 +17,20 @@
 #define LED0_PORT GPIOB
 #define LED0_PIN GPIO5
 
+typedef struct
+{
+  uint8_t header;
+  uint8_t length;
+  uint16_t q_w;
+  uint16_t q_x;
+  uint16_t q_y;
+  uint16_t q_z;
+  uint16_t d_x;
+  uint16_t d_y;
+  uint16_t d_z;
+  uint8_t checksum;
+} Packet;
+
 static void setup_leds(void)
 {
   gpio_mode_setup(LED0_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, LED0_PIN);
@@ -47,10 +61,29 @@ int main(void)
   {
     gpio_toggle(LED0_PORT, LED0_PIN);
 
-    printf("samples=%lld\n", mpu6000_samples);
-    printf("gyr(x/y/z): %f, %f, %f\n", mpu6000_axis[0], mpu6000_axis[1], mpu6000_axis[2]);
-    printf("acc(x/y/z): %f, %f, %f\n", mpu6000_axis[3], mpu6000_axis[4], mpu6000_axis[5]);
-    printf("q(w/x/y/z): %f, %f, %f, %f\n", q0, q1, q2, q3);
+    /* printf("samples=%lld\n", mpu6000_samples); */
+    /* printf("gyr(x/y/z): %f, %f, %f\n", mpu6000_axis[0], mpu6000_axis[1], mpu6000_axis[2]); */
+    /* printf("acc(x/y/z): %f, %f, %f\n", mpu6000_axis[3], mpu6000_axis[4], mpu6000_axis[5]); */
+    /* printf("q(w/x/y/z): %f, %f, %f, %f\n", q0, q1, q2, q3); */
+
+    union {
+      Packet values;
+      uint8_t data[sizeof(Packet)];
+    } u;
+
+    u.values.header = '#';
+    u.values.length = sizeof(Packet);
+    u.values.q_w = q0 * 1000;
+    u.values.q_x = q1 * 1000;
+    u.values.q_y = q2 * 1000;
+    u.values.q_z = q3 * 1000;
+    u.values.d_x = 0;
+    u.values.d_y = 0;
+    u.values.d_z = 0;
+    u.values.checksum = 'B';
+
+    console_write(u.data, sizeof(Packet));
+    printf("\n");
 
     msleep(100);
   }

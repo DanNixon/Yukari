@@ -171,6 +171,13 @@ int _read(int fd, char *ptr, int len)
   return my_len; /* return the length we got */
 }
 
+void console_write(uint8_t *ptr, int len)
+{
+  int i;
+  for(i = 0; i < len; i++)
+    usart_send_blocking(CONSOLE_UART, ptr[i]);
+}
+
 void console_setup(int baudrate)
 {
   /* Setup GPIO pins for CONSOLE_UART transmit and receive. */

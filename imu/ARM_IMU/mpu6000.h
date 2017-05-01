@@ -109,6 +109,7 @@
 
 extern volatile uint64_t mpu6000_samples;
 extern volatile float mpu6000_axis[6];
+extern volatile float mpu6000_world_accel[3];
 
 void mpu6000_init(void);
 void mpu6000_get_motion_6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, int16_t *gy,
