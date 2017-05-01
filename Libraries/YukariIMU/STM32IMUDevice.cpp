@@ -2,6 +2,9 @@
 
 #include "STM32IMUDevice.h"
 
+/* Included for the std::vector<uint8_t> output function */
+#include <YukariMSP/MSPClient.h>
+
 using namespace Yukari::Common;
 using namespace Yukari::Maths;
 
@@ -56,15 +59,12 @@ namespace IMU
     } u;
     memcpy(u.data, buffer.data(), sizeof(ValuesPacket));
 
-    for (int i = 0; i < sizeof(ValuesPacket); i++)
-      std::cout << (int)u.data[i] << ' ';
-    std::cout << '\n';
-
     /* Checksum */
     uint8_t rxChecksum = 0;
     for (size_t i = 0; i < 15; i++)
       rxChecksum ^= u.data[i];
-    m_logger->trace("RX checksum: {}", rxChecksum);
+
+    m_logger->trace("RX payload: {}, checksum: {}", buffer, rxChecksum);
 
     if (rxChecksum != u.values.checksum)
     {
