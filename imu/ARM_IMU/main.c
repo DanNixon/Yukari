@@ -21,13 +21,13 @@ typedef struct
 {
   uint8_t header;
   uint8_t length;
-  uint16_t q_w;
-  uint16_t q_x;
-  uint16_t q_y;
-  uint16_t q_z;
-  uint16_t d_x;
-  uint16_t d_y;
-  uint16_t d_z;
+  int16_t q_w;
+  int16_t q_x;
+  int16_t q_y;
+  int16_t q_z;
+  int16_t d_x;
+  int16_t d_y;
+  int16_t d_z;
   uint8_t checksum;
   uint8_t padding;
 } Packet;
@@ -43,15 +43,15 @@ static void send_data_packet(void)
 
   u.values.header = '#';
   u.values.length = sizeof(Packet);
-  u.values.q_w = q0 * 1000;
-  u.values.q_x = q1 * 1000;
-  u.values.q_y = q2 * 1000;
-  u.values.q_z = q3 * 1000;
-  u.values.d_x = 0;
-  u.values.d_y = 0;
-  u.values.d_z = 0;
+  u.values.q_w = q0 * 10000.0f;
+  u.values.q_x = q1 * 10000.0f;
+  u.values.q_y = q2 * 10000.0f;
+  u.values.q_z = q3 * 10000.0f;
+  u.values.d_x = 5;
+  u.values.d_y = -15;
+  u.values.d_z = 25;
   u.values.checksum = 0;
-  u.values.padding = 0;
+  u.values.padding = 12;
 
   for (i = 0; i < 15; i++)
     u.values.checksum ^= u.data[i];
@@ -95,7 +95,6 @@ int main(void)
     {
     case 'p':
       send_data_packet();
-      printf("\n");
       console_rx_command = '\0';
       break;
     case 'd':

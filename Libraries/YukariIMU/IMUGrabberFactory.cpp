@@ -78,7 +78,7 @@ namespace IMU
         logger->error("Cannot create Teensey grabber, IO error: {}", e.what());
       }
     }
-    else if (lowerType == "omnibus")
+    else if (lowerType == "stm32")
     {
       std::string port = MapHelpers::Get<std::string, std::string>(parameters, "port");
       int baud = std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "baud", "115200"));
