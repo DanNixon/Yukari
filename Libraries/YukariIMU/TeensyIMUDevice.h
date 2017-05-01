@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "MSPGrabber.h"
+#include "IMSPGrabber.h"
 
 #include <YukariCommon/LoggingService.h>
 
@@ -10,7 +10,7 @@ namespace Yukari
 {
 namespace IMU
 {
-  class TeensyIMUDevice : public MSPGrabber
+  class TeensyIMUDevice : public IMSPGrabber
   {
   public:
     TeensyIMUDevice(const std::string &port, unsigned int baud = 115200);

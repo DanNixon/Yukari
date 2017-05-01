@@ -3,7 +3,7 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 
 #include <YukariCommon/LoggingService.h>
-#include <YukariIMU/MSPGrabber.h>
+#include <YukariIMU/IMSPGrabber.h>
 
 namespace Yukari
 {
@@ -19,11 +19,11 @@ namespace IMUGrabberTest
 
     inline void setGrabber(Yukari::IMU::IIMUGrabber::Ptr grabber)
     {
-      m_grabber = std::dynamic_pointer_cast<Yukari::IMU::MSPGrabber>(grabber);
+      m_grabber = std::dynamic_pointer_cast<Yukari::IMU::IMSPGrabber>(grabber);
     }
 
   private:
-    Yukari::IMU::MSPGrabber::Ptr m_grabber;
+    Yukari::IMU::IMSPGrabber::Ptr m_grabber;
     Yukari::Common::LoggingService::Logger m_logger;
   };
 }

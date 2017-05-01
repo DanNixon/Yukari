@@ -14,7 +14,7 @@ namespace Yukari
 namespace IMU
 {
   MSPGrabberAttitude::MSPGrabberAttitude(const std::string &port, unsigned int baud)
-      : MSPGrabber(port, baud)
+      : IMSPGrabber(port, baud)
       , m_logger(LoggingService::Instance().getLogger("MSPGrabberIMU"))
   {
     m_mspPayload.reserve(6);
