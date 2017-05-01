@@ -47,9 +47,9 @@ static void send_data_packet(void)
   u.values.q_x = q1 * 10000.0f;
   u.values.q_y = q2 * 10000.0f;
   u.values.q_z = q3 * 10000.0f;
-  u.values.d_x = 5;
-  u.values.d_y = -15;
-  u.values.d_z = 25;
+  u.values.d_x = mpu6000_world_displacement[0] * 1000.0f;
+  u.values.d_y = mpu6000_world_displacement[1] * 1000.0f;
+  u.values.d_z = mpu6000_world_displacement[2] * 1000.0f;
   u.values.checksum = 0;
   u.values.padding = 12;
 
@@ -87,6 +87,14 @@ int main(void)
   msleep(500);
   gpio_clear(LED0_PORT, LED0_PIN);
 
+  /* TODO: testing only */
+  mpu6000_world_velocity[0] = 1.05f;
+  mpu6000_world_velocity[1] = 2.21f;
+  mpu6000_world_velocity[2] = -5.67f;
+  mpu6000_world_displacement[0] = 5.0f;
+  mpu6000_world_displacement[1] = 1.7f;
+  mpu6000_world_displacement[2] = -9.0f;
+
   while (1)
   {
     gpio_toggle(LED0_PORT, LED0_PIN);
@@ -97,11 +105,21 @@ int main(void)
       send_data_packet();
       console_rx_command = '\0';
       break;
+    case 'r':
+      mpu6000_reset_integrators();
+      console_rx_command = '\0';
+      break;
     case 'd':
       printf("samples=%lld\n", mpu6000_samples);
       printf("gyr(x/y/z): %f, %f, %f\n", mpu6000_axis[0], mpu6000_axis[1], mpu6000_axis[2]);
       printf("acc(x/y/z): %f, %f, %f\n", mpu6000_axis[3], mpu6000_axis[4], mpu6000_axis[5]);
       printf("q(w/x/y/z): %f, %f, %f, %f\n", q0, q1, q2, q3);
+      printf("wacc(x/y/z): %f, %f, %f\n", mpu6000_world_accel[0], mpu6000_world_accel[1],
+             mpu6000_world_accel[2]);
+      printf("wvel(x/y/z): %f, %f, %f\n", mpu6000_world_velocity[0], mpu6000_world_velocity[1],
+             mpu6000_world_velocity[2]);
+      printf("wdisp(x/y/z): %f, %f, %f\n", mpu6000_world_displacement[0],
+             mpu6000_world_displacement[1], mpu6000_world_displacement[2]);
       console_rx_command = '\0';
       break;
     case 'u':

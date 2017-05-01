@@ -21,6 +21,8 @@
 volatile uint64_t mpu6000_samples = 0;
 volatile float mpu6000_axis[6];
 volatile float mpu6000_world_accel[3];
+volatile float mpu6000_world_velocity[3];
+volatile float mpu6000_world_displacement[3];
 
 void exti4_isr(void)
 {
@@ -169,6 +171,8 @@ void mpu6000_init(void)
   exti_select_source(MPU6000_EXTI, MPU6000_INT_PORT);
   exti_set_trigger(MPU6000_EXTI, EXTI_TRIGGER_RISING);
   exti_enable_request(MPU6000_EXTI);
+
+  mpu6000_reset_integrators();
 }
 
 void mpu6000_get_motion_6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, int16_t *gy,
@@ -217,4 +221,14 @@ void mpu6000_get_motion_6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, in
   *gz = ((int)byte_H << 8) | byte_L;
 
   gpio_set(SPI1_PORT, MPU6000_CS_PIN);
+}
+
+void mpu6000_reset_integrators(void)
+{
+  int i;
+  for (i = 0; i < 3; i++)
+  {
+    mpu6000_world_velocity[i] = 0.0f;
+    mpu6000_world_displacement[i] = 0.0f;
+  }
 }

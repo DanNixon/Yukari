@@ -75,13 +75,15 @@ namespace IMU
     /* Create output frame */
     auto retVal = std::make_shared<IMUFrame>();
 
+    static const float QUAT_DIVISOR = 10000.0f;
     retVal->orientation() =
-        Eigen::Quaternionf((float)u.values.q_w / 10000.0f, -(float)u.values.q_x / 10000.0f,
-                           (float)u.values.q_z / 10000.0f, (float)u.values.q_y / 10000.0f);
+        Eigen::Quaternionf((float)u.values.q_w / QUAT_DIVISOR, -(float)u.values.q_x / QUAT_DIVISOR,
+                           (float)u.values.q_z / QUAT_DIVISOR, (float)u.values.q_y / QUAT_DIVISOR);
 
+    static const float POS_DIVISOR = 1000.0f;
     retVal->position() =
-        Eigen::Vector3f((float)u.values.d_x / 10000.0f, (float)u.values.d_y / 10000.0f,
-                        (float)u.values.d_z / 10000.0f);
+        Eigen::Vector3f((float)u.values.d_x / POS_DIVISOR, (float)u.values.d_y / POS_DIVISOR,
+                        (float)u.values.d_z / POS_DIVISOR);
 
     return retVal;
   }
