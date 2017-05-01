@@ -9,6 +9,7 @@ set(HEADERS
   IMUGrabberFactory.h
   ISerialGrabber.h
   MSPGrabberAttitude.h
+  STM32IMUDevice.h
   TeensyIMUDevice.h)
 
 set(SOURCES
@@ -19,6 +20,7 @@ set(SOURCES
   IMUGrabberFactory.cpp
   ISerialGrabber.cpp
   MSPGrabberAttitude.cpp
+  STM32IMUDevice.cpp
   TeensyIMUDevice.cpp)
 
 set(LIB_DEPS

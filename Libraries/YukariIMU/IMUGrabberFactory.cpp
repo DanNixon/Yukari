@@ -8,6 +8,7 @@
 #include "DummyIMUGrabber.h"
 #include "FileIMUGrabber.h"
 #include "MSPGrabberAttitude.h"
+#include "STM32IMUDevice.h"
 #include "TeensyIMUDevice.h"
 
 using namespace Yukari::Common;
@@ -75,6 +76,21 @@ namespace IMU
       {
         grabber = nullptr;
         logger->error("Cannot create Teensey grabber, IO error: {}", e.what());
+      }
+    }
+    else if (lowerType == "omnibus")
+    {
+      std::string port = MapHelpers::Get<std::string, std::string>(parameters, "port");
+      int baud = std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "baud", "115200"));
+
+      try
+      {
+        grabber = std::make_shared<STM32IMUDevice>(port, baud);
+      }
+      catch (const serial::IOException &e)
+      {
+        grabber = nullptr;
+        logger->error("Cannot create STM32 grabber, IO error: {}", e.what());
       }
     }
 
