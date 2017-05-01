@@ -38,6 +38,7 @@ namespace IMU
 
     virtual IMUFrame::Ptr grabFrame() override;
 
+    void calibrateAccelerometer();
     void resetDisplacement();
 
   private:

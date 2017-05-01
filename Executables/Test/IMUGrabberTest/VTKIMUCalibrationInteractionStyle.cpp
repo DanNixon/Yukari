@@ -36,6 +36,10 @@ namespace IMUGrabberTest
         else
           m_logger->error("Accelerometer calibration failed!");
       }
+      else if (m_stm32Grabber)
+      {
+        m_stm32Grabber->calibrateAccelerometer();
+      }
     }
 
     if (key == "m")

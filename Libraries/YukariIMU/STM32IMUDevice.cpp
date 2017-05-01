@@ -56,8 +56,7 @@ namespace IMU
     }
 
     /* Parse data packet */
-    union
-    {
+    union {
       ValuesPacket values;
       uint8_t data[sizeof(ValuesPacket)];
     } u;
@@ -90,6 +89,17 @@ namespace IMU
                         (float)u.values.d_y / POS_DIVISOR);
 
     return retVal;
+  }
+
+  void STM32IMUDevice::calibrateAccelerometer()
+  {
+    if (!m_port.isOpen())
+    {
+      m_logger->error("Port not open");
+      return;
+    }
+
+    m_port.write(std::vector<uint8_t>{'c'});
   }
 
   void STM32IMUDevice::resetDisplacement()

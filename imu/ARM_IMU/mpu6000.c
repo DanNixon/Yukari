@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <math.h>
 
 #include <libopencm3/cm3/common.h>
 #include <libopencm3/cm3/nvic.h>
@@ -15,6 +16,8 @@
 
 #define GYRO_FACTOR 16.4f
 #define ACCEL_FACTOR 8192.0f
+
+#define ACCEL_THR 0.01f
 
 #define DEG_TO_RAD 0.017453292519943295f
 
@@ -62,10 +65,11 @@ void exti4_isr(void)
   azf = mpu6000_axis[5];
 
   rotate_point_by_quat(q0, q1, q2, q3, &axf, &ayf, &azf);
+  azf -= 1.0f;
 
-  mpu6000_world_accel[0] = axf;
-  mpu6000_world_accel[1] = ayf;
-  mpu6000_world_accel[2] = azf - 1.0f;
+  mpu6000_world_accel[0] = fabsf(axf) > ACCEL_THR ? axf : 0.0f;
+  mpu6000_world_accel[1] = fabsf(ayf) > ACCEL_THR ? ayf : 0.0f;
+  mpu6000_world_accel[2] = fabsf(azf) > ACCEL_THR ? azf : 0.0f;
 
   static int i;
   for (i = 0; i < 3; i++)
