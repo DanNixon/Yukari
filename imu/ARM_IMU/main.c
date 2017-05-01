@@ -4,10 +4,10 @@
 
 #include <libopencm3/cm3/common.h>
 #include <libopencm3/cm3/scb.h>
-#include <libopencm3/stm32/f4/gpio.h>
-#include <libopencm3/stm32/f4/memorymap.h>
-#include <libopencm3/stm32/f4/rcc.h>
-#include <libopencm3/stm32/f4/spi.h>
+#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/memorymap.h>
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/spi.h>
 
 #include "MadgwickAHRS.h"
 #include "clock.h"
@@ -29,7 +29,35 @@ typedef struct
   uint16_t d_y;
   uint16_t d_z;
   uint8_t checksum;
+  uint8_t padding;
 } Packet;
+
+static void send_data_packet(void)
+{
+  int i;
+
+  union {
+    Packet values;
+    uint8_t data[sizeof(Packet)];
+  } u;
+
+  u.values.header = '#';
+  u.values.length = sizeof(Packet);
+  u.values.q_w = q0 * 1000;
+  u.values.q_x = q1 * 1000;
+  u.values.q_y = q2 * 1000;
+  u.values.q_z = q3 * 1000;
+  u.values.d_x = 0;
+  u.values.d_y = 0;
+  u.values.d_z = 0;
+  u.values.checksum = 0;
+  u.values.padding = 0;
+
+  for (i = 0; i < 15; i++)
+    u.values.checksum ^= u.data[i];
+
+  console_write(u.data, sizeof(Packet));
+}
 
 static void setup_leds(void)
 {
@@ -52,39 +80,38 @@ int main(void)
   console_setup(115200);
   mpu6000_init();
 
+  printf("Packet len: %d\n", sizeof(Packet));
+
   printf("Hello world.\n");
   gpio_set(LED0_PORT, LED0_PIN);
-  msleep(100);
+  msleep(500);
   gpio_clear(LED0_PORT, LED0_PIN);
 
   while (1)
   {
     gpio_toggle(LED0_PORT, LED0_PIN);
 
-    /* printf("samples=%lld\n", mpu6000_samples); */
-    /* printf("gyr(x/y/z): %f, %f, %f\n", mpu6000_axis[0], mpu6000_axis[1], mpu6000_axis[2]); */
-    /* printf("acc(x/y/z): %f, %f, %f\n", mpu6000_axis[3], mpu6000_axis[4], mpu6000_axis[5]); */
-    /* printf("q(w/x/y/z): %f, %f, %f, %f\n", q0, q1, q2, q3); */
-
-    union {
-      Packet values;
-      uint8_t data[sizeof(Packet)];
-    } u;
-
-    u.values.header = '#';
-    u.values.length = sizeof(Packet);
-    u.values.q_w = q0 * 1000;
-    u.values.q_x = q1 * 1000;
-    u.values.q_y = q2 * 1000;
-    u.values.q_z = q3 * 1000;
-    u.values.d_x = 0;
-    u.values.d_y = 0;
-    u.values.d_z = 0;
-    u.values.checksum = 'B';
-
-    console_write(u.data, sizeof(Packet));
-    printf("\n");
-
-    msleep(100);
+    switch (console_rx_command)
+    {
+    case 'p':
+      send_data_packet();
+      printf("\n");
+      console_rx_command = '\0';
+      break;
+    case 'd':
+      printf("samples=%lld\n", mpu6000_samples);
+      printf("gyr(x/y/z): %f, %f, %f\n", mpu6000_axis[0], mpu6000_axis[1], mpu6000_axis[2]);
+      printf("acc(x/y/z): %f, %f, %f\n", mpu6000_axis[3], mpu6000_axis[4], mpu6000_axis[5]);
+      printf("q(w/x/y/z): %f, %f, %f, %f\n", q0, q1, q2, q3);
+      console_rx_command = '\0';
+      break;
+    case 'u':
+      printf("millis()=%lld\n", millis());
+      printf("micros()=%lld\n", micros());
+      console_rx_command = '\0';
+      break;
+    default:
+      break;
+    }
   }
 }

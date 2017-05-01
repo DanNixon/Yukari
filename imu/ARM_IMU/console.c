@@ -22,10 +22,13 @@
 #include <ctype.h>
 #include <stdint.h>
 
+#include <libopencm3/cm3/nvic.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/usart.h>
 
 #include "clock.h"
+
+volatile char console_rx_command = '\0';
 
 #define BUFLEN 127
 
@@ -51,6 +54,16 @@ static inline void back_up(void)
   usart_send_blocking(CONSOLE_UART, '\010');
   usart_send_blocking(CONSOLE_UART, ' ');
   usart_send_blocking(CONSOLE_UART, '\010');
+}
+
+void usart3_isr(void)
+{
+  /* Check if we were called because of RXNE. */
+  if (((USART_CR1(CONSOLE_UART) & USART_CR1_RXNEIE) != 0) &&
+      ((USART_SR(CONSOLE_UART) & USART_SR_RXNE) != 0))
+  {
+    console_rx_command = usart_recv(CONSOLE_UART);
+  }
 }
 
 /*
@@ -174,7 +187,7 @@ int _read(int fd, char *ptr, int len)
 void console_write(uint8_t *ptr, int len)
 {
   int i;
-  for(i = 0; i < len; i++)
+  for (i = 0; i < len; i++)
     usart_send_blocking(CONSOLE_UART, ptr[i]);
 }
 
@@ -195,4 +208,8 @@ void console_setup(int baudrate)
 
   /* Finally enable the USART. */
   usart_enable(CONSOLE_UART);
+
+  /* Enable interrupts (for incomming commands) */
+  nvic_enable_irq(NVIC_USART3_IRQ);
+  usart_enable_rx_interrupt(CONSOLE_UART);
 }
