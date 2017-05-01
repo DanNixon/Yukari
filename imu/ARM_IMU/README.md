@@ -18,8 +18,7 @@ openocd -f interface/stlink-v2.cfg -f target/stm32f4x.cfg
 
 ```
 telnet localhost 4444
-reset halt
-flash write_image erase main.hex
+program main.elf verify
 reset
 ```
 
