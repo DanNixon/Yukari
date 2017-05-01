@@ -4,6 +4,8 @@
 
 #include "ISerialGrabber.h"
 
+#include <memory>
+
 #include <YukariCommon/LoggingService.h>
 
 namespace Yukari
@@ -13,6 +15,8 @@ namespace IMU
   class STM32IMUDevice : public ISerialGrabber
   {
   public:
+    typedef std::shared_ptr<STM32IMUDevice> Ptr;
+
     struct ValuesPacket
     {
       uint8_t header;
@@ -33,6 +37,8 @@ namespace IMU
     virtual ~STM32IMUDevice();
 
     virtual IMUFrame::Ptr grabFrame() override;
+
+    void resetDisplacement();
 
   private:
     Common::LoggingService::Logger m_logger;

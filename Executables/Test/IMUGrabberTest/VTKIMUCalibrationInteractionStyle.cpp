@@ -15,6 +15,7 @@ namespace IMUGrabberTest
     o->m_logger = LoggingService::Instance().getLogger("VTKIMUCalibrationInteractionStyle");
     o->m_logger->info("Press A for accelerometer calibration.");
     o->m_logger->info("Press M for magnetometer calibration.");
+    o->m_logger->info("Press O to reset device integrators.");
     return o;
   }
 
@@ -27,9 +28,9 @@ namespace IMUGrabberTest
     {
       m_logger->info("Acelerometer calibration requested.");
 
-      if (m_grabber)
+      if (m_mspGrabber)
       {
-        bool result = m_grabber->calibrateAccelerometer();
+        bool result = m_mspGrabber->calibrateAccelerometer();
         if (result)
           m_logger->info("Accelerometer calibration complete.");
         else
@@ -41,14 +42,22 @@ namespace IMUGrabberTest
     {
       m_logger->info("Magnetometer calibration requested.");
 
-      if (m_grabber)
+      if (m_mspGrabber)
       {
-        bool result = m_grabber->calibrateAccelerometer();
+        bool result = m_mspGrabber->calibrateAccelerometer();
         if (result)
           m_logger->info("Magnetometer calibration complete.");
         else
           m_logger->error("Magnetometer calibration failed!");
       }
+    }
+
+    if (key == "o")
+    {
+      m_logger->info("Device integrator reset requested.");
+
+      if (m_stm32Grabber)
+        m_stm32Grabber->resetDisplacement();
     }
 
     vtkInteractorStyleTrackballCamera::OnKeyPress();

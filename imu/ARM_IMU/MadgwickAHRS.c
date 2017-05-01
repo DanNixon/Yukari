@@ -19,12 +19,6 @@
 #include <math.h>
 
 //---------------------------------------------------------------------------------------------------
-// Definitions
-
-#define sampleFreq	200.0f		// sample frequency in Hz
-#define betaDef		0.1f		// 2 * proportional gain
-
-//---------------------------------------------------------------------------------------------------
 // Variable definitions
 
 volatile float beta = betaDef;								// 2 * proportional gain (Kp)

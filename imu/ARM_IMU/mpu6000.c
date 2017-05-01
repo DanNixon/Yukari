@@ -24,6 +24,21 @@ volatile float mpu6000_world_accel[3];
 volatile float mpu6000_world_velocity[3];
 volatile float mpu6000_world_displacement[3];
 
+static void rotate_point_by_quat(float qw, float qx, float qy, float qz, float *x, float *y,
+                                 float *z)
+{
+  float qpw1, qpx1, qpy1, qpz1;
+
+  qpw1 = qw * 0.0f - qx * *x - qy * *y - qz * *z;
+  qpx1 = qw * *x + qx * 0.0f + qy * *z - qz * *y;
+  qpy1 = qw * *y - qx * *z + qy * 0.0f + qz * *x;
+  qpz1 = qw * *z + qx * *y - qy * *x + qz * 0.0f;
+
+  *x = qpw1 * -qx + qpx1 *qw + qpy1 * -qz - qpz1 * -qy;
+  *y = qpw1 * -qx - qpx1 * -qz + qpy1 *qw + qpz1 * -qx;
+  *z = qpw1 * -qx + qpx1 * -qy - qpy1 * -qx + qpz1 *qw;
+}
+
 void exti4_isr(void)
 {
   exti_reset_request(MPU6000_EXTI);
@@ -39,6 +54,25 @@ void exti4_isr(void)
 
   MadgwickAHRSupdateIMU(mpu6000_axis[0], mpu6000_axis[1], mpu6000_axis[2], mpu6000_axis[3],
                         mpu6000_axis[4], mpu6000_axis[5]);
+
+  static float axf, ayf, azf;
+  axf = mpu6000_axis[3];
+  ayf = mpu6000_axis[4];
+  azf = mpu6000_axis[5];
+
+  rotate_point_by_quat(q0, q1, q2, q3, &axf, &ayf, &azf);
+
+  mpu6000_world_accel[0] = axf;
+  mpu6000_world_accel[1] = ayf;
+  mpu6000_world_accel[2] = azf - 1.0f;
+
+  static int i;
+  for (i = 0; i < 3; i++)
+  {
+    mpu6000_world_accel[i] *= 9.8f;
+    mpu6000_world_velocity[i] += mpu6000_world_accel[i] * (1.0f / sampleFreq );
+    mpu6000_world_displacement[i] += mpu6000_world_velocity[i] * (1.0f / sampleFreq);
+  }
 
   mpu6000_samples++;
 }

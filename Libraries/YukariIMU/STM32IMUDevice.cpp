@@ -25,7 +25,10 @@ namespace IMU
   IMUFrame::Ptr STM32IMUDevice::grabFrame()
   {
     if (!m_port.isOpen())
+    {
+      m_logger->error("Port not open");
       return nullptr;
+    }
 
     size_t bytesTransfered = 0;
     size_t numBytesToRx;
@@ -53,7 +56,8 @@ namespace IMU
     }
 
     /* Parse data packet */
-    union {
+    union
+    {
       ValuesPacket values;
       uint8_t data[sizeof(ValuesPacket)];
     } u;
@@ -86,6 +90,17 @@ namespace IMU
                         (float)u.values.d_z / POS_DIVISOR);
 
     return retVal;
+  }
+
+  void STM32IMUDevice::resetDisplacement()
+  {
+    if (!m_port.isOpen())
+    {
+      m_logger->error("Port not open");
+      return;
+    }
+
+    m_port.write(std::vector<uint8_t>{'r'});
   }
 }
 }
