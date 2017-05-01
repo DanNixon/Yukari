@@ -109,6 +109,15 @@ int main(void)
       mpu6000_reset_integrators();
       console_rx_command = '\0';
       break;
+    case 'c':
+      mpu6000_calibrate_acc();
+      console_rx_command = '\0';
+      break;
+    case 'v':
+      printf("Accel. calib. values: %d, %d, %d\n", mpu6000_acc_calib[0], mpu6000_acc_calib[1],
+             mpu6000_acc_calib[2]);
+      console_rx_command = '\0';
+      break;
     case 'd':
       printf("samples=%lld\n", mpu6000_samples);
       printf("gyr(x/y/z): %f, %f, %f\n", mpu6000_axis[0], mpu6000_axis[1], mpu6000_axis[2]);
