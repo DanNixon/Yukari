@@ -40,8 +40,10 @@ static void rotate_point_by_quat(float qw, float qx, float qy, float qz, float *
   Quat q = {qw, qx, qy, qz};
   Quat p = {0.0f, *x, *y, *z};
 
+  Quat qc = {q.w, -q.x, -q.y, -q.z};
+
   p = quat_mult(q, p);
-  p = quat_mult(p, {q.w, -q.x, -q.y, -q.z});
+  p = quat_mult(p, qc);
 
   *x = p.x;
   *y = p.y;

@@ -29,19 +29,37 @@ volatile uint16_t mpu6000_world_accel_cons_zeros[3];
 volatile float mpu6000_world_velocity[3];
 volatile float mpu6000_world_displacement[3];
 
+typedef struct
+{
+  float w, x, y, z;
+} Quat;
+
+static Quat quat_mult(Quat a, Quat b)
+{
+  Quat o;
+
+  o.w = (a.w * b.w) - (a.x * b.x) - (a.y * b.y) - (a.z * b.z);
+  o.x = (a.w * b.x) + (a.x * b.w) + (a.y * b.z) - (a.z * b.y);
+  o.y = (a.w * b.y) - (a.x * b.z) + (a.y * b.w) + (a.z * b.x);
+  o.z = (a.w * b.z) + (a.x * b.y) - (a.y * b.x) + (a.z * b.w);
+
+  return o;
+}
+
 static void rotate_point_by_quat(float qw, float qx, float qy, float qz, float *x, float *y,
                                  float *z)
 {
-  float qpw1, qpx1, qpy1, qpz1;
+  Quat q = {qw, qx, qy, qz};
+  Quat p = {0.0f, *x, *y, *z};
 
-  qpw1 = qw * 0.0f - qx * *x - qy * *y - qz * *z;
-  qpx1 = qw * *x + qx * 0.0f + qy * *z - qz * *y;
-  qpy1 = qw * *y - qx * *z + qy * 0.0f + qz * *x;
-  qpz1 = qw * *z + qx * *y - qy * *x + qz * 0.0f;
+  Quat qc = {q.w, -q.x, -q.y, -q.z};
 
-  *x = qpw1 * -qx + qpx1 * qw + qpy1 * -qz - qpz1 * -qy;
-  *y = qpw1 * -qx - qpx1 * -qz + qpy1 * qw + qpz1 * -qx;
-  *z = qpw1 * -qx + qpx1 * -qy - qpy1 * -qx + qpz1 * qw;
+  p = quat_mult(q, p);
+  p = quat_mult(p, qc);
+
+  *x = p.x;
+  *y = p.y;
+  *z = p.z;
 }
 
 void exti4_isr(void)
