@@ -16,6 +16,8 @@ namespace IMU
     TeensyIMUDevice(const std::string &port, unsigned int baud = 115200);
     virtual ~TeensyIMUDevice();
 
+    void setDispacement(const Eigen::Vector3f &displacement);
+
     virtual IMUFrame::Ptr grabFrame() override;
 
   protected:

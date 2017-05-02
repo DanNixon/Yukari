@@ -1,3 +1,5 @@
+#include "imu_device.h"
+
 #include <I2Cdev.h>
 
 #include <BMP085.h>
@@ -8,49 +10,46 @@
 #include <MSP.h>
 #include <Scheduler.h>
 
-#define LED_PIN 13
-#define MPU_INTERRUPT_PIN 20
-
 Scheduler g_scheduler;
 
 MSP g_msp(MSP_SERIAL);
 
-#ifndef DISABLE_GPS
 TinyGPSPlus g_gps;
-#endif /* DISABLE_GPS */
 
-#ifndef DISABLE_BARO
 BMP085 g_barometer;
 float g_temperature;
 float g_pressure;
 float g_altitude;
 int32_t g_baroLastMicros = 0;
-#endif /* DISABLE_BARO */
 
-#ifndef DISABLE_IMU
 MPU9150 g_imu;
 uint16_t g_dmpFIFOPacketSize;
 uint16_t g_dmpFIFOBufferSize;
 uint8_t g_dmpFIFOBuffer[64];
 volatile bool g_mpuInterrupt = false;
 
+// DMP packets use 1g = 4096 (AFS_SEL=2)
+const float ACCEL_COEFF = 9.81f / 4096.0f;
+
 Quaternion g_quat;
-VectorFloat m_gravity;
-VectorInt16 m_accel;
-VectorInt16 m_realAccel;
-VectorInt16 m_worldAccel;
-#endif /* DISABLE_IMU */
+VectorFloat g_gravity;
+VectorInt16 g_accel;
+VectorInt16 g_realAccel;
+VectorInt16 g_worldAccel;
+VectorFloat g_worldAccelMS2;
 
-#ifdef TEAPOT
-uint8_t g_teapotPacket[14] = {'$', 0x02, 0, 0, 0, 0, 0, 0, 0, 0, 0x00, 0x00, '\r', '\n'};
-#endif /* TEAPOT */
+uint8_t g_accelSamples = 0;
+VectorFloat g_worldAccelMS2LPFAccum;
+VectorFloat g_worldAccelMS2LPF;
 
-#ifndef DISABLE_IMU
+uint32_t g_lastIntegrationTimestep = 0;
+VectorFloat g_velocity;
+VectorFloat g_displacement;
+
 void dmpDataReady()
 {
   g_mpuInterrupt = true;
 }
-#endif /* DISABLE_IMU */
 
 void taskBlink()
 {
@@ -59,7 +58,6 @@ void taskBlink()
   digitalWrite(LED_PIN, blinkState);
 }
 
-#ifndef DISABLE_IMU
 void taskDMP()
 {
   if (!g_mpuInterrupt && g_dmpFIFOBufferSize < g_dmpFIFOPacketSize)
@@ -96,15 +94,45 @@ void taskDMP()
     g_dmpFIFOBufferSize -= g_dmpFIFOPacketSize;
 
     g_imu.dmpGetQuaternion(&g_quat, g_dmpFIFOBuffer);
-    g_imu.dmpGetAccel(&m_accel, g_dmpFIFOBuffer);
-    g_imu.dmpGetGravity(&m_gravity, &g_quat);
-    g_imu.dmpGetLinearAccel(&m_realAccel, &m_accel, &m_gravity);
-    g_imu.dmpGetLinearAccelInWorld(&m_worldAccel, &m_realAccel, &g_quat);
+    g_imu.dmpGetAccel(&g_accel, g_dmpFIFOBuffer);
+    g_imu.dmpGetGravity(&g_gravity, &g_quat);
+    g_imu.dmpGetLinearAccel(&g_realAccel, &g_accel, &g_gravity);
+    g_imu.dmpGetLinearAccelInWorld(&g_worldAccel, &g_realAccel, &g_quat);
+
+    g_worldAccelMS2 = VectorFloat(g_worldAccel.x, g_worldAccel.y, g_worldAccel.z - 5150) * ACCEL_COEFF;
+    g_worldAccelMS2LPFAccum += g_worldAccelMS2 / 8.0f;
+    g_accelSamples++;
+
+    // Calculate velocity and displacement
+    uint32_t now = micros();
+    if (g_lastIntegrationTimestep != 0 && g_accelSamples == 8)
+    {
+      g_worldAccelMS2LPF = g_worldAccelMS2LPFAccum;
+      g_worldAccelMS2LPFAccum.toZero();
+      g_accelSamples = 0;
+
+      float deltaTime = (float)(now - g_lastIntegrationTimestep) * 1e-6;
+      g_velocity += g_worldAccelMS2LPF * deltaTime;
+      g_displacement += g_velocity * deltaTime;
+    }
+
+    g_lastIntegrationTimestep = now;
   }
 }
-#endif /* DISABLE_IMU */
 
-#ifndef DISABLE_BARO
+void taskResetIMUIntegration()
+{
+  if (digitalRead(10) == LOW)
+  {
+    g_velocity.toZero();
+    g_displacement.toZero();
+
+#ifdef DEBUG
+    DEBUG_SERIAL.printf("IMU integration reset\n");
+#endif
+  }
+}
+
 void taskBarometer()
 {
   g_baroLastMicros = micros();
@@ -122,62 +150,82 @@ void taskBarometer()
   g_pressure = g_barometer.getPressure();
   g_altitude = g_barometer.getAltitude(g_pressure);
 }
-#endif /* DISABLE_BARO */
 
 #ifdef DEBUG
 void taskPrintData()
 {
-#ifndef DISABLE_IMU
   // Device orientation as quaternion
-  DEBUG_SERIAL.printf("quat\t%d\t%d\t%d\t%d\n", g_quat.w, g_quat.x, g_quat.z, g_quat.w);
+  /*
+  DEBUG_SERIAL.printf("quat\t");
+  DEBUG_SERIAL.print(g_quat.w);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.print(g_quat.x);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.print(g_quat.y);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.println(g_quat.z);
+  */
 
   // Linear acceleration
-  DEBUG_SERIAL.printf("a\t%d\t%d\t%d\n", m_accel.x, m_accel.y, m_accel.z);
+  //DEBUG_SERIAL.printf("a\t%d\t%d\t%d\n", g_accel.x, g_accel.y, g_accel.z);
 
   // Linear acceleration without gravity
-  DEBUG_SERIAL.printf("aReal\t%d\t%d\t%d\n", m_realAccel.x, m_realAccel.y, m_realAccel.z);
+  //DEBUG_SERIAL.printf("aReal\t%d\t%d\t%d\n", g_realAccel.x, g_realAccel.y, g_realAccel.z);
 
   // Linear acceleration without gravity and corrected for orientation
-  DEBUG_SERIAL.printf("aWorld\t%d\t%d\t%d\n", m_worldAccel.x, m_worldAccel.y, m_worldAccel.z);
-#endif /* DISABLE_IMU */
+  //DEBUG_SERIAL.printf("aWorld\t%d\t%d\t%d\n", g_worldAccel.x, g_worldAccel.y, g_worldAccel.z);
 
-#ifndef DISABLE_BARO
+  // Linear acceleration without gravity and corrected for orientation in ms-2
+  DEBUG_SERIAL.print("aWorld (ms-2)\t");
+  DEBUG_SERIAL.print(g_worldAccelMS2.x);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.print(g_worldAccelMS2.y);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.println(g_worldAccelMS2.z);
+
+  // Linear acceleration without gravity and corrected for orientation in ms-2 with low pass filter
+  DEBUG_SERIAL.print("aWorld LPF (ms-2)\t");
+  DEBUG_SERIAL.print(g_worldAccelMS2LPF.x);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.print(g_worldAccelMS2LPF.y);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.println(g_worldAccelMS2LPF.z);
+
+  // Velocity
+  DEBUG_SERIAL.printf("velocity (ms-1)\t");
+  DEBUG_SERIAL.print(g_velocity.x);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.print(g_velocity.y);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.println(g_velocity.z);
+
+  // Displacement
+  DEBUG_SERIAL.printf("displacement (m)\t");
+  DEBUG_SERIAL.print(g_displacement.x);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.print(g_displacement.y);
+  DEBUG_SERIAL.print("\t");
+  DEBUG_SERIAL.println(g_displacement.z);
+
   // BMP180 data
+  /*
   DEBUG_SERIAL.printf("T/P/Alt\t");
   DEBUG_SERIAL.print(g_temperature);
   DEBUG_SERIAL.print("\t");
   DEBUG_SERIAL.print(g_pressure);
   DEBUG_SERIAL.print("\t");
   DEBUG_SERIAL.println(g_altitude);
-#endif /* DISABLE_BARO */
+  */
 }
 #endif /* DEBUG */
 
-#ifdef TEAPOT
-void taskTeapot()
-{
-  g_teapotPacket[2] = g_dmpFIFOBuffer[0];
-  g_teapotPacket[3] = g_dmpFIFOBuffer[1];
-  g_teapotPacket[4] = g_dmpFIFOBuffer[4];
-  g_teapotPacket[5] = g_dmpFIFOBuffer[5];
-  g_teapotPacket[6] = g_dmpFIFOBuffer[8];
-  g_teapotPacket[7] = g_dmpFIFOBuffer[9];
-  g_teapotPacket[8] = g_dmpFIFOBuffer[12];
-  g_teapotPacket[9] = g_dmpFIFOBuffer[13];
-
-  DEBUG_SERIAL.write(g_teapotPacket, 14);
-}
-#endif /* TEAPOT */
-
-#ifndef DISABLE_GPS
 void taskFeedGPS()
 {
   if (GPS_SERIAL.available())
     g_gps.encode(GPS_SERIAL.read());
 }
-#endif /* DISABLE_GPS */
 
-#ifdef DEBUG
+#if defined(DEBUG)
 void taskDebugPrintGPS()
 {
   DEBUG_SERIAL.printf("GPS stats\n");
@@ -210,18 +258,18 @@ void taskMSP()
   g_msp.loop();
 }
 
-void setup()
+void imu_device_init()
 {
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH);
 
-#if defined(DEBUG) || defined(TEAPOT)
+#if defined(DEBUG)
   /* Init debug serial */
   DEBUG_SERIAL.begin(DEBUG_BAUD);
   while (!DEBUG_SERIAL)
     delay(5);
   DEBUG_SERIAL.printf("Serial up\n");
-#endif /* DEBUG || TEAPOT */
+#endif /* DEBUG */
 
   /* Init MSP */
   MSP_SERIAL.begin(MSP_BAUD);
@@ -242,25 +290,9 @@ void setup()
 
     switch (cmd)
     {
-    case MSP::Command::Y_RAW_IMU:
-    {
-      /* TODO */
-      break;
-    }
-    case MSP::Command::Y_LINEAR_ACC_REAL:
-    {
-      /* TODO */
-      break;
-    }
-    case MSP::Command::Y_LINEAR_ACC_WORLD:
-    {
-      /* TODO */
-      break;
-    }
     case MSP::Command::Y_ORIENTATION:
     {
       uint8_t pkt[8];
-#ifndef DISABLE_IMU
       pkt[0] = g_dmpFIFOBuffer[0];
       pkt[1] = g_dmpFIFOBuffer[1];
       pkt[2] = g_dmpFIFOBuffer[4];
@@ -269,8 +301,17 @@ void setup()
       pkt[5] = g_dmpFIFOBuffer[9];
       pkt[6] = g_dmpFIFOBuffer[12];
       pkt[7] = g_dmpFIFOBuffer[13];
-#endif /* DISABLE_IMU */
       g_msp.sendPacket(MSP::Command::Y_RAW_IMU, pkt, 8);
+      break;
+    }
+    case MSP::Command::Y_DISPLACEMENT:
+    {
+      /* TODO */
+      break;
+    }
+    case MSP::Command::Y_RESET_DISPLACEMENT:
+    {
+      /* TODO */
       break;
     }
     default:
@@ -284,7 +325,7 @@ void setup()
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   /* Init i2c bus (Arduino) */
   Wire.begin();
-  Wire.setClock(400000); // 400kHz I2C clock. Comment this line if having compilation difficulties
+  Wire.setClock(400000); // 400kHz I2C clock
 #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
   /* Init i2c bus (Fast Wire) */
   Fastwire::setup(400, true);
@@ -293,7 +334,7 @@ void setup()
   DEBUG_SERIAL.printf("Wire init\n");
 #endif /* DEBUG */
 
-#ifdef GPS_SERIAL
+#ifndef DISABLE_GPS
   GPS_SERIAL.begin(GPS_BAUD);
 #endif /* GPS_SERIAL */
 #ifdef DEBUG
@@ -307,9 +348,6 @@ void setup()
 #ifdef DEBUG
   DEBUG_SERIAL.printf("IMU init: %d\n", g_imu.testConnection());
 #endif /* DEBUG */
-
-  g_imu.setFullScaleAccelRange(MPU9150_ACCEL_FS_16);
-  g_imu.setFullScaleGyroRange(MPU9150_GYRO_FS_2000);
 
   pinMode(MPU_INTERRUPT_PIN, INPUT);
 
@@ -335,10 +373,8 @@ void setup()
 
   /* Init scheduler */
   g_scheduler.addTask(&taskBlink, Scheduler::HzToUsInterval(5.0f));
-#ifdef TEAPOT
-  g_scheduler.addTask(&taskTeapot, Scheduler::HzToUsInterval(50.0f));
-#endif
   g_scheduler.addTask(&taskMSP, 0);
+  g_scheduler.addTask(&taskResetIMUIntegration, Scheduler::HzToUsInterval(10.0f));
 #ifndef DISABLE_GPS
   g_scheduler.addTask(&taskFeedGPS, 0);
 #endif /* DISABLE_GPS */
@@ -351,7 +387,9 @@ void setup()
 #endif /* DISABLE_BARO */
 #ifdef DEBUG
   g_scheduler.addTask(&taskPrintData, Scheduler::HzToUsInterval(10.0f));
+#ifndef DISABLE_GPS
   g_scheduler.addTask(&taskDebugPrintGPS, Scheduler::HzToUsInterval(1.0f));
+#endif /* DISABLE_GPS */
   g_scheduler.print(DEBUG_SERIAL);
 #endif /* DEBUG */
 
@@ -361,7 +399,7 @@ void setup()
 #endif /* DEBUG */
 }
 
-void loop()
+void imu_device_loop()
 {
   g_scheduler.loop();
 }
