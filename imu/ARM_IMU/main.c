@@ -78,14 +78,6 @@ int main(void)
   msleep(500);
   gpio_clear(LED0_PORT, LED0_PIN);
 
-  /* TODO: testing only */
-  mpu6000_world_velocity[0] = 1.05f;
-  mpu6000_world_velocity[1] = 2.21f;
-  mpu6000_world_velocity[2] = -5.67f;
-  mpu6000_world_displacement[0] = 5.0f;
-  mpu6000_world_displacement[1] = 1.7f;
-  mpu6000_world_displacement[2] = -9.0f;
-
   while (1)
   {
     gpio_toggle(LED0_PORT, LED0_PIN);
