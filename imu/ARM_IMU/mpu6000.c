@@ -18,7 +18,8 @@
 #define GYRO_FACTOR 16.4f
 #define ACCEL_FACTOR 8192.0f
 
-#define ACCEL_THR 0.01f
+/* Threshold acceleration (in g) to be considered as motion */
+#define ACCEL_THR 0.02f
 
 #define DEG_TO_RAD 0.017453292519943295f
 
@@ -234,7 +235,7 @@ void mpu6000_init(void)
   /* F(sample) = F(gyro) / (1 + MPUREG_SMPLRT_DIV) */
   /* F(gyro) = 8kHz (when DLPF is disabled (DLPF_CFG = 0 or 7)) */
   /* F(gyro) = 1kHz (when DLPF is enabled) */
-  spi_write_reg(MPUREG_SMPLRT_DIV, 4);
+  spi_write_reg(MPUREG_SMPLRT_DIV, 1);
   msleep(10);
 
   spi_write_reg(MPUREG_CONFIG, BITS_DLPF_CFG_2100HZ_NOLPF);
