@@ -111,6 +111,7 @@ extern volatile uint64_t mpu6000_samples;
 extern volatile int16_t mpu6000_acc_calib[3];
 extern volatile float mpu6000_axis[6];
 extern volatile float mpu6000_world_accel[3];
+extern volatile uint16_t mpu6000_world_accel_cons_zeros[3];
 extern volatile float mpu6000_world_velocity[3];
 extern volatile float mpu6000_world_displacement[3];
 

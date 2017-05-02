@@ -1,8 +1,8 @@
 #include "mpu6000.h"
 
+#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <math.h>
 
 #include <libopencm3/cm3/common.h>
 #include <libopencm3/cm3/nvic.h>
@@ -25,6 +25,7 @@ volatile uint64_t mpu6000_samples = 0;
 volatile int16_t mpu6000_acc_calib[3];
 volatile float mpu6000_axis[6];
 volatile float mpu6000_world_accel[3];
+volatile uint16_t mpu6000_world_accel_cons_zeros[3];
 volatile float mpu6000_world_velocity[3];
 volatile float mpu6000_world_displacement[3];
 
@@ -74,9 +75,26 @@ void exti4_isr(void)
   static int i;
   for (i = 0; i < 3; i++)
   {
-    mpu6000_world_accel[i] *= 9.8f;
-    mpu6000_world_velocity[i] += mpu6000_world_accel[i] * (1.0f / sampleFreq);
-    mpu6000_world_displacement[i] += mpu6000_world_velocity[i] * (1.0f / sampleFreq);
+    if (fabs(mpu6000_world_accel[i]) < ACCEL_THR)
+    {
+      mpu6000_world_accel[i] = 0.0f;
+      mpu6000_world_accel_cons_zeros[i]++;
+    }
+    else
+    {
+      mpu6000_world_accel_cons_zeros[i] = 0;
+    }
+
+    if (mpu6000_world_accel_cons_zeros[i] < 20)
+    {
+      mpu6000_world_accel[i] *= 9.8f;
+      mpu6000_world_velocity[i] += mpu6000_world_accel[i] * (1.0f / sampleFreq);
+      mpu6000_world_displacement[i] += mpu6000_world_velocity[i] * (1.0f / sampleFreq);
+    }
+    else
+    {
+      mpu6000_world_velocity[i] = 0.0f;
+    }
   }
 
   mpu6000_samples++;
@@ -154,6 +172,7 @@ static void spi_write_reg(uint8_t reg, uint8_t value)
 void mpu6000_init(void)
 {
   uint8_t id, mode;
+  int i;
 
   printf("MPU6000 init\n");
 
@@ -210,6 +229,9 @@ void mpu6000_init(void)
   exti_select_source(MPU6000_EXTI, MPU6000_INT_PORT);
   exti_set_trigger(MPU6000_EXTI, EXTI_TRIGGER_RISING);
   exti_enable_request(MPU6000_EXTI);
+
+  for (i = 0; i < 3; i++)
+    mpu6000_world_accel_cons_zeros[i] = 0;
 
   mpu6000_reset_integrators();
 }
