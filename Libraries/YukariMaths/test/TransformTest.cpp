@@ -15,16 +15,16 @@ namespace Maths
 {
   namespace Test
   {
-    BOOST_AUTO_TEST_SUITE(IMUFrameTest)
+    BOOST_AUTO_TEST_SUITE(TransformTest)
 
     BOOST_AUTO_TEST_CASE(Transform_FromMatrix)
     {
       Eigen::Matrix4f mat;
       // clang-format off
       mat << 0.75f       , -0.216506362f, 0.62499994f  , 5.5f,
-		     0.433012664f, 0.875f       , -0.216506317f, 7.8f,
+             0.433012664f, 0.875f       , -0.216506317f, 7.8f,
              -0.5f       , 0.433012664f , 0.75f        , 2.1f,
-		     0.0f        , 0.0f         , 0.0f         , 1.0f;
+             0.0f        , 0.0f         , 0.0f         , 1.0f;
       // clang-format on
 
       Transform t(mat);

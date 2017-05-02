@@ -11,6 +11,7 @@ set(LIB_DEPS
   YukariCommon)
 
 set(TESTS
+  test/QuaternionTest.cpp
   test/TransformTest.cpp)
 
 set(TEST_DEPS
