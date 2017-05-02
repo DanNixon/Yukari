@@ -266,7 +266,7 @@ void mpu6000_calibrate_acc(void)
 
   mpu6000_acc_calib[0] = x_samples;
   mpu6000_acc_calib[1] = y_samples;
-  mpu6000_acc_calib[2] = ACCEL_FACTOR - z_samples;
+  mpu6000_acc_calib[2] = z_samples - ACCEL_FACTOR;
 
   exti_enable_request(MPU6000_EXTI);
 }
