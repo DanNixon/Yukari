@@ -123,6 +123,10 @@ int main(void)
       printf("gyr(x/y/z): %f, %f, %f\n", mpu6000_axis[0], mpu6000_axis[1], mpu6000_axis[2]);
       printf("acc(x/y/z): %f, %f, %f\n", mpu6000_axis[3], mpu6000_axis[4], mpu6000_axis[5]);
       printf("q(w/x/y/z): %f, %f, %f, %f\n", q0, q1, q2, q3);
+      printf("grav(x/y/z): %f, %f, %f\n", mpu6000_gravity[0], mpu6000_gravity[1],
+             mpu6000_gravity[2]);
+      printf("lacc(x/y/z): %f, %f, %f\n", mpu6000_linear_accel[0], mpu6000_linear_accel[1],
+             mpu6000_linear_accel[2]);
       printf("wacc(x/y/z): %f, %f, %f\n", mpu6000_world_accel[0], mpu6000_world_accel[1],
              mpu6000_world_accel[2]);
       printf("wvel(x/y/z): %f, %f, %f\n", mpu6000_world_velocity[0], mpu6000_world_velocity[1],

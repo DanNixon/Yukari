@@ -24,6 +24,8 @@
 volatile uint64_t mpu6000_samples = 0;
 volatile int16_t mpu6000_acc_calib[3];
 volatile float mpu6000_axis[6];
+volatile float mpu6000_gravity[3];
+volatile float mpu6000_linear_accel[3];
 volatile float mpu6000_world_accel[3];
 volatile uint16_t mpu6000_world_accel_cons_zeros[3];
 volatile float mpu6000_world_velocity[3];
@@ -66,6 +68,7 @@ void exti4_isr(void)
 {
   exti_reset_request(MPU6000_EXTI);
 
+  /* Sample */
   static int16_t ax, ay, az, gx, gy, gz;
   mpu6000_get_motion_6(&ax, &ay, &az, &gx, &gy, &gz);
   mpu6000_axis[0] = (gx / GYRO_FACTOR) * DEG_TO_RAD;
@@ -75,24 +78,35 @@ void exti4_isr(void)
   mpu6000_axis[4] = (ay - mpu6000_acc_calib[1]) / ACCEL_FACTOR;
   mpu6000_axis[5] = (az - mpu6000_acc_calib[2]) / ACCEL_FACTOR;
 
+  /* Update Madgwick filter for orientation quaternion */
   MadgwickAHRSupdateIMU(mpu6000_axis[0], mpu6000_axis[1], mpu6000_axis[2], mpu6000_axis[3],
                         mpu6000_axis[4], mpu6000_axis[5]);
 
+  /* Obtain gravity vector */
+  mpu6000_gravity[0] = 2 * (q1 * q3 - q0 * q2);
+  mpu6000_gravity[1] = 2 * (q0 * q1 + q2 * q3);
+  mpu6000_gravity[2] = q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3;
+
+  /* Take a copy of acceleromter data with gravity removed */
   static float axf, ayf, azf;
-  axf = mpu6000_axis[3];
-  ayf = mpu6000_axis[4];
-  azf = mpu6000_axis[5];
+  axf = mpu6000_axis[3] - mpu6000_gravity[0];
+  ayf = mpu6000_axis[4] - mpu6000_gravity[1];
+  azf = mpu6000_axis[5] - mpu6000_gravity[2];
 
+  mpu6000_linear_accel[0] = axf;
+  mpu6000_linear_accel[1] = ayf;
+  mpu6000_linear_accel[2] = azf;
+
+  /* Obtain world acceleration */
   rotate_point_by_quat(q0, q1, q2, q3, &axf, &ayf, &azf);
-  azf -= 1.0f;
-
-  mpu6000_world_accel[0] = fabsf(axf) > ACCEL_THR ? axf : 0.0f;
-  mpu6000_world_accel[1] = fabsf(ayf) > ACCEL_THR ? ayf : 0.0f;
-  mpu6000_world_accel[2] = fabsf(azf) > ACCEL_THR ? azf : 0.0f;
+  mpu6000_world_accel[0] = axf;
+  mpu6000_world_accel[1] = ayf;
+  mpu6000_world_accel[2] = azf;
 
   static int i;
   for (i = 0; i < 3; i++)
   {
+    /* Apply deadband/discrimination check (filters mechanical noise) */
     if (fabs(mpu6000_world_accel[i]) < ACCEL_THR)
     {
       mpu6000_world_accel[i] = 0.0f;
@@ -103,14 +117,17 @@ void exti4_isr(void)
       mpu6000_world_accel_cons_zeros[i] = 0;
     }
 
+    /* Perform "no motion" check */
     if (mpu6000_world_accel_cons_zeros[i] < 20)
     {
+      /* Update integration */
       mpu6000_world_accel[i] *= 9.8f;
       mpu6000_world_velocity[i] += mpu6000_world_accel[i] * (1.0f / sampleFreq);
       mpu6000_world_displacement[i] += mpu6000_world_velocity[i] * (1.0f / sampleFreq);
     }
     else
     {
+      /* Reset velocity if sensor has not changed acceleration in a number of samples */
       mpu6000_world_velocity[i] = 0.0f;
     }
   }
