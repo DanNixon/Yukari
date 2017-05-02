@@ -107,6 +107,8 @@
 #define MPU6000_66HZ (2)
 #define MPU6000_50HZ (3)
 
+#define MPU6000_ACC_SAMPLES 100
+
 extern volatile uint64_t mpu6000_samples;
 extern volatile uint64_t mpu6000_samples_acc;
 extern volatile int16_t mpu6000_acc_calib[3];

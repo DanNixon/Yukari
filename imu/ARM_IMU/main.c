@@ -44,9 +44,15 @@ static void send_data_packet(void)
   u.values.q_x = q1 * 10000.0f;
   u.values.q_y = q2 * 10000.0f;
   u.values.q_z = q3 * 10000.0f;
-  u.values.d_x = mpu6000_world_displacement[0] * 1000.0f;
-  u.values.d_y = mpu6000_world_displacement[1] * 1000.0f;
-  u.values.d_z = mpu6000_world_displacement[2] * 1000.0f;
+  /* u.values.d_x = mpu6000_world_displacement[0] * 1000.0f; */
+  /* u.values.d_y = mpu6000_world_displacement[1] * 1000.0f; */
+  /* u.values.d_z = mpu6000_world_displacement[2] * 1000.0f; */
+  /* u.values.d_x = mpu6000_world_accel[0] * 1000.0f; */
+  /* u.values.d_y = mpu6000_world_accel[1] * 1000.0f; */
+  /* u.values.d_z = mpu6000_world_accel[2] * 1000.0f; */
+  u.values.d_x = mpu6000_world_velocity[0] * 1000.0f;
+  u.values.d_y = mpu6000_world_velocity[1] * 1000.0f;
+  u.values.d_z = mpu6000_world_velocity[2] * 1000.0f;
   u.values.checksum = 0;
   u.values.padding = 12;
 
@@ -82,7 +88,7 @@ int main(void)
   {
     gpio_toggle(LED0_PORT, LED0_PIN);
 
-    if (mpu6000_samples_acc >= 20)
+    if (mpu6000_samples_acc >= MPU6000_ACC_SAMPLES)
       mpu6000_position_update();
 
     switch (console_rx_command)

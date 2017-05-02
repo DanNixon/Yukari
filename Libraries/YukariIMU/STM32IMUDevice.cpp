@@ -85,7 +85,7 @@ namespace IMU
 
     static const float POS_DIVISOR = 1000.0f;
     retVal->position() =
-        Eigen::Vector3f((float)u.values.d_x / POS_DIVISOR, (float)u.values.d_z / POS_DIVISOR,
+        Eigen::Vector3f(-(float)u.values.d_x / POS_DIVISOR, (float)u.values.d_z / POS_DIVISOR,
                         (float)u.values.d_y / POS_DIVISOR);
 
     return retVal;
