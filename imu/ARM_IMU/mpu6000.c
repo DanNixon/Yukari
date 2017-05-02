@@ -13,6 +13,7 @@
 
 #include "MadgwickAHRS.h"
 #include "clock.h"
+#include "leds.h"
 
 #define GYRO_FACTOR 16.4f
 #define ACCEL_FACTOR 8192.0f
@@ -284,6 +285,10 @@ void mpu6000_calibrate_acc(void)
 
   exti_disable_request(MPU6000_EXTI);
 
+  gpio_clear(LED0_PORT, LED0_PIN);
+  msleep(50);
+  gpio_set(LED0_PORT, LED0_PIN);
+
   x_samples = 0;
   y_samples = 0;
   z_samples = 0;
@@ -305,6 +310,10 @@ void mpu6000_calibrate_acc(void)
   mpu6000_acc_calib[0] = x_samples;
   mpu6000_acc_calib[1] = y_samples;
   mpu6000_acc_calib[2] = z_samples - ACCEL_FACTOR;
+
+  gpio_clear(LED0_PORT, LED0_PIN);
+  msleep(50);
+  gpio_set(LED0_PORT, LED0_PIN);
 
   exti_enable_request(MPU6000_EXTI);
 }

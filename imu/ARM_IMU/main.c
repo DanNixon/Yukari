@@ -4,7 +4,6 @@
 
 #include <libopencm3/cm3/common.h>
 #include <libopencm3/cm3/scb.h>
-#include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/memorymap.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/spi.h>
@@ -12,10 +11,8 @@
 #include "MadgwickAHRS.h"
 #include "clock.h"
 #include "console.h"
+#include "leds.h"
 #include "mpu6000.h"
-
-#define LED0_PORT GPIOB
-#define LED0_PIN GPIO5
 
 typedef struct
 {
@@ -59,12 +56,6 @@ static void send_data_packet(void)
   console_write(u.data, sizeof(Packet));
 }
 
-static void setup_leds(void)
-{
-  gpio_mode_setup(LED0_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, LED0_PIN);
-  gpio_set(LED0_PORT, LED0_PIN);
-}
-
 int main(void)
 {
   clock_setup();
@@ -76,7 +67,7 @@ int main(void)
   rcc_periph_clock_enable(RCC_SPI1);
   rcc_periph_clock_enable(RCC_USART3);
 
-  setup_leds();
+  leds_init();
   console_setup(115200);
   mpu6000_init();
 
