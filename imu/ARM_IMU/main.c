@@ -101,12 +101,14 @@ int main(void)
       console_rx_command = '\0';
       break;
     case 'c':
-      mpu6000_calibrate_acc();
+      mpu6000_calibrate();
       console_rx_command = '\0';
       break;
     case 'v':
       printf("Accel. calib. values: %d, %d, %d\n", mpu6000_acc_calib[0], mpu6000_acc_calib[1],
              mpu6000_acc_calib[2]);
+      printf("Gyro. calib. values: %d, %d, %d\n", mpu6000_gyr_calib[0], mpu6000_gyr_calib[1],
+             mpu6000_gyr_calib[2]);
       console_rx_command = '\0';
       break;
     case 'd':

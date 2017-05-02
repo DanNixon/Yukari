@@ -24,6 +24,7 @@
 
 volatile uint64_t mpu6000_samples = 0;
 volatile int16_t mpu6000_acc_calib[3];
+volatile int16_t mpu6000_gyr_calib[3];
 volatile float mpu6000_axis[6];
 volatile float mpu6000_gravity[3];
 volatile float mpu6000_linear_accel[3];
@@ -72,9 +73,9 @@ void exti4_isr(void)
   /* Sample */
   static int16_t ax, ay, az, gx, gy, gz;
   mpu6000_get_motion_6(&ax, &ay, &az, &gx, &gy, &gz);
-  mpu6000_axis[0] = (gx / GYRO_FACTOR) * DEG_TO_RAD;
-  mpu6000_axis[1] = (gy / GYRO_FACTOR) * DEG_TO_RAD;
-  mpu6000_axis[2] = (gz / GYRO_FACTOR) * DEG_TO_RAD;
+  mpu6000_axis[0] = ((gx - mpu6000_gyr_calib[0]) / GYRO_FACTOR) * DEG_TO_RAD;
+  mpu6000_axis[1] = ((gy - mpu6000_gyr_calib[1]) / GYRO_FACTOR) * DEG_TO_RAD;
+  mpu6000_axis[2] = ((gz - mpu6000_gyr_calib[2]) / GYRO_FACTOR) * DEG_TO_RAD;
   mpu6000_axis[3] = (ax - mpu6000_acc_calib[0]) / ACCEL_FACTOR;
   mpu6000_axis[4] = (ay - mpu6000_acc_calib[1]) / ACCEL_FACTOR;
   mpu6000_axis[5] = (az - mpu6000_acc_calib[2]) / ACCEL_FACTOR;
@@ -119,7 +120,7 @@ void exti4_isr(void)
     }
 
     /* Perform "no motion" check */
-    if (mpu6000_world_accel_cons_zeros[i] < 20)
+    if (mpu6000_world_accel_cons_zeros[i] < 50)
     {
       /* Update integration */
       mpu6000_world_accel[i] *= 9.8f;
@@ -275,13 +276,13 @@ void mpu6000_init(void)
   mpu6000_reset_integrators();
 }
 
-void mpu6000_calibrate_acc(void)
+void mpu6000_calibrate(void)
 {
   static const int NUM_SAMPLES = 10000;
 
   int i;
-  int64_t x_samples, y_samples, z_samples;
-  int16_t dummy, x, y, z;
+  int64_t ax_samples, ay_samples, az_samples, gx_samples, gy_samples, gz_samples;
+  int16_t ax, ay, az, gx, gy, gz;
 
   exti_disable_request(MPU6000_EXTI);
 
@@ -289,27 +290,44 @@ void mpu6000_calibrate_acc(void)
   msleep(50);
   gpio_set(LED0_PORT, LED0_PIN);
 
-  x_samples = 0;
-  y_samples = 0;
-  z_samples = 0;
+  ax_samples = 0;
+  ay_samples = 0;
+  az_samples = 0;
+
+  gx_samples = 0;
+  gy_samples = 0;
+  gz_samples = 0;
 
   for (i = 0; i < NUM_SAMPLES; i++)
   {
-    mpu6000_get_motion_6(&x, &y, &z, &dummy, &dummy, &dummy);
-    x_samples += x;
-    y_samples += y;
-    z_samples += z;
+    mpu6000_get_motion_6(&ax, &ay, &az, &gx, &gy, &gz);
+
+    ax_samples += ax;
+    ay_samples += ay;
+    az_samples += az;
+
+    gx_samples += gx;
+    gy_samples += gy;
+    gz_samples += gz;
 
     msleep(1);
   }
 
-  x_samples /= NUM_SAMPLES;
-  y_samples /= NUM_SAMPLES;
-  z_samples /= NUM_SAMPLES;
+  ax_samples /= NUM_SAMPLES;
+  ay_samples /= NUM_SAMPLES;
+  az_samples /= NUM_SAMPLES;
 
-  mpu6000_acc_calib[0] = x_samples;
-  mpu6000_acc_calib[1] = y_samples;
-  mpu6000_acc_calib[2] = z_samples - ACCEL_FACTOR;
+  gx_samples /= NUM_SAMPLES;
+  gy_samples /= NUM_SAMPLES;
+  gz_samples /= NUM_SAMPLES;
+
+  mpu6000_acc_calib[0] = ax_samples;
+  mpu6000_acc_calib[1] = ay_samples;
+  mpu6000_acc_calib[2] = az_samples - ACCEL_FACTOR;
+
+  mpu6000_gyr_calib[0] = gx_samples;
+  mpu6000_gyr_calib[1] = gy_samples;
+  mpu6000_gyr_calib[2] = gz_samples;
 
   gpio_clear(LED0_PORT, LED0_PIN);
   msleep(50);
