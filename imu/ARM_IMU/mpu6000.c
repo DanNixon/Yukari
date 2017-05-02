@@ -24,9 +24,11 @@
 #define DEG_TO_RAD 0.017453292519943295f
 
 volatile uint64_t mpu6000_samples = 0;
+volatile uint64_t mpu6000_samples_acc = 0;
 volatile int16_t mpu6000_acc_calib[3];
 volatile int16_t mpu6000_gyr_calib[3];
 volatile float mpu6000_axis[6];
+volatile float mpu6000_acc_accum[3];
 volatile float mpu6000_gravity[3];
 volatile float mpu6000_linear_accel[3];
 volatile float mpu6000_world_accel[3];
@@ -69,10 +71,11 @@ static void rotate_point_by_quat(float qw, float qx, float qy, float qz, float *
 
 void exti4_isr(void)
 {
+  static int16_t ax, ay, az, gx, gy, gz;
+
   exti_reset_request(MPU6000_EXTI);
 
   /* Sample */
-  static int16_t ax, ay, az, gx, gy, gz;
   mpu6000_get_motion_6(&ax, &ay, &az, &gx, &gy, &gz);
   mpu6000_axis[0] = ((gx - mpu6000_gyr_calib[0]) / GYRO_FACTOR) * DEG_TO_RAD;
   mpu6000_axis[1] = ((gy - mpu6000_gyr_calib[1]) / GYRO_FACTOR) * DEG_TO_RAD;
@@ -90,52 +93,13 @@ void exti4_isr(void)
   mpu6000_gravity[1] = 2 * (q0 * q1 + q2 * q3);
   mpu6000_gravity[2] = q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3;
 
-  /* Take a copy of acceleromter data with gravity removed */
-  static float axf, ayf, azf;
-  axf = mpu6000_axis[3] - mpu6000_gravity[0];
-  ayf = mpu6000_axis[4] - mpu6000_gravity[1];
-  azf = mpu6000_axis[5] - mpu6000_gravity[2];
-
-  mpu6000_linear_accel[0] = axf;
-  mpu6000_linear_accel[1] = ayf;
-  mpu6000_linear_accel[2] = azf;
-
-  /* Obtain world acceleration */
-  rotate_point_by_quat(q0, q1, q2, q3, &axf, &ayf, &azf);
-  mpu6000_world_accel[0] = axf;
-  mpu6000_world_accel[1] = ayf;
-  mpu6000_world_accel[2] = azf;
-
-  static int i;
-  for (i = 0; i < 3; i++)
-  {
-    /* Apply deadband/discrimination check (filters mechanical noise) */
-    if (fabs(mpu6000_world_accel[i]) < ACCEL_THR)
-    {
-      mpu6000_world_accel[i] = 0.0f;
-      mpu6000_world_accel_cons_zeros[i]++;
-    }
-    else
-    {
-      mpu6000_world_accel_cons_zeros[i] = 0;
-    }
-
-    /* Perform "no motion" check */
-    if (mpu6000_world_accel_cons_zeros[i] < 50)
-    {
-      /* Update integration */
-      mpu6000_world_accel[i] *= 9.8f;
-      mpu6000_world_velocity[i] += mpu6000_world_accel[i] * (1.0f / sampleFreq);
-      mpu6000_world_displacement[i] += mpu6000_world_velocity[i] * (1.0f / sampleFreq);
-    }
-    else
-    {
-      /* Reset velocity if sensor has not changed acceleration in a number of samples */
-      mpu6000_world_velocity[i] = 0.0f;
-    }
-  }
+  /* Take a sample of accelerometer data with gravity removed */
+  mpu6000_acc_accum[0] += mpu6000_axis[3] - mpu6000_gravity[0];
+  mpu6000_acc_accum[1] += mpu6000_axis[4] - mpu6000_gravity[1];
+  mpu6000_acc_accum[2] += mpu6000_axis[5] - mpu6000_gravity[2];
 
   mpu6000_samples++;
+  mpu6000_samples_acc++;
 }
 
 static uint32_t spi_read_mode_fault(uint32_t spi)
@@ -235,7 +199,7 @@ void mpu6000_init(void)
   /* F(sample) = F(gyro) / (1 + MPUREG_SMPLRT_DIV) */
   /* F(gyro) = 8kHz (when DLPF is disabled (DLPF_CFG = 0 or 7)) */
   /* F(gyro) = 1kHz (when DLPF is enabled) */
-  spi_write_reg(MPUREG_SMPLRT_DIV, 1);
+  spi_write_reg(MPUREG_SMPLRT_DIV, 0);
   msleep(10);
 
   spi_write_reg(MPUREG_CONFIG, BITS_DLPF_CFG_2100HZ_NOLPF);
@@ -383,6 +347,61 @@ void mpu6000_get_motion_6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, in
   *gz = ((int)byte_H << 8) | byte_L;
 
   gpio_set(SPI1_PORT, MPU6000_CS_PIN);
+}
+
+void mpu6000_position_update(void)
+{
+  static float axf, ayf, azf;
+  static int i;
+
+  /* Average last sample window */
+  axf = mpu6000_acc_accum[0] / mpu6000_samples_acc;
+  ayf = mpu6000_acc_accum[1] / mpu6000_samples_acc;
+  azf = mpu6000_acc_accum[2] / mpu6000_samples_acc;
+
+  /* Reset samples and counter */
+  mpu6000_acc_accum[0] = 0.0f;
+  mpu6000_acc_accum[1] = 0.0f;
+  mpu6000_acc_accum[2] = 0.0f;
+  mpu6000_samples_acc = 0;
+
+  mpu6000_linear_accel[0] = axf;
+  mpu6000_linear_accel[1] = ayf;
+  mpu6000_linear_accel[2] = azf;
+
+  /* Obtain world acceleration */
+  rotate_point_by_quat(q0, q1, q2, q3, &axf, &ayf, &azf);
+  mpu6000_world_accel[0] = axf;
+  mpu6000_world_accel[1] = ayf;
+  mpu6000_world_accel[2] = azf;
+
+  for (i = 0; i < 3; i++)
+  {
+    /* Apply deadband/discrimination check (filters mechanical noise) */
+    if (fabs(mpu6000_world_accel[i]) < ACCEL_THR)
+    {
+      mpu6000_world_accel[i] = 0.0f;
+      mpu6000_world_accel_cons_zeros[i]++;
+    }
+    else
+    {
+      mpu6000_world_accel_cons_zeros[i] = 0;
+    }
+
+    /* Perform "no motion" check */
+    if (mpu6000_world_accel_cons_zeros[i] < 20)
+    {
+      /* Update integration */
+      mpu6000_world_accel[i] *= 9.8f;
+      mpu6000_world_velocity[i] += mpu6000_world_accel[i] * (50.0f / sampleFreq);
+      mpu6000_world_displacement[i] += mpu6000_world_velocity[i] * (50.0f / sampleFreq);
+    }
+    else
+    {
+      /* Reset velocity if sensor has not changed acceleration in a number of samples */
+      mpu6000_world_velocity[i] = 0.0f;
+    }
+  }
 }
 
 void mpu6000_reset_integrators(void)

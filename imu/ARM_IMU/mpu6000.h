@@ -108,6 +108,7 @@
 #define MPU6000_50HZ (3)
 
 extern volatile uint64_t mpu6000_samples;
+extern volatile uint64_t mpu6000_samples_acc;
 extern volatile int16_t mpu6000_acc_calib[3];
 extern volatile int16_t mpu6000_gyr_calib[3];
 extern volatile float mpu6000_axis[6];
@@ -124,6 +125,8 @@ void mpu6000_calibrate(void);
 
 void mpu6000_get_motion_6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, int16_t *gy,
                           int16_t *gz);
+
+void mpu6000_position_update(void);
 
 void mpu6000_reset_integrators(void);
 

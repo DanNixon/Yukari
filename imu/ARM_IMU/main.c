@@ -82,6 +82,9 @@ int main(void)
   {
     gpio_toggle(LED0_PORT, LED0_PIN);
 
+    if (mpu6000_samples_acc >= 20)
+      mpu6000_position_update();
+
     switch (console_rx_command)
     {
     case 'p':
