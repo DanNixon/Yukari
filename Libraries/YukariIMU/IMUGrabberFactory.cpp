@@ -83,9 +83,14 @@ namespace IMU
       std::string port = MapHelpers::Get<std::string, std::string>(parameters, "port");
       int baud = std::stoi(MapHelpers::Get<std::string, std::string>(parameters, "baud", "115200"));
 
+      std::string positionParam =
+          MapHelpers::Get<std::string, std::string>(parameters, "position", "true");
+      StringParsers::CleanString(positionParam);
+      bool position = positionParam == "true";
+
       try
       {
-        grabber = std::make_shared<STM32IMUDevice>(port, baud);
+        grabber = std::make_shared<STM32IMUDevice>(port, baud, position);
       }
       catch (const serial::IOException &e)
       {

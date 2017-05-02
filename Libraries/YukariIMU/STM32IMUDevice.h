@@ -33,7 +33,7 @@ namespace IMU
     };
 
   public:
-    STM32IMUDevice(const std::string &port, unsigned int baud = 115200);
+    STM32IMUDevice(const std::string &port, unsigned int baud = 115200, bool position = true);
     virtual ~STM32IMUDevice();
 
     virtual IMUFrame::Ptr grabFrame() override;
@@ -43,6 +43,8 @@ namespace IMU
 
   private:
     Common::LoggingService::Logger m_logger;
+
+    bool m_reportPosition;
   };
 }
 }

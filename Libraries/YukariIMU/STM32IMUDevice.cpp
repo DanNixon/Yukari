@@ -12,9 +12,10 @@ namespace Yukari
 {
 namespace IMU
 {
-  STM32IMUDevice::STM32IMUDevice(const std::string &port, unsigned int baud)
+  STM32IMUDevice::STM32IMUDevice(const std::string &port, unsigned int baud, bool position)
       : ISerialGrabber(port, baud)
       , m_logger(LoggingService::Instance().getLogger("STM32IMUDevice"))
+      , m_reportPosition(position)
   {
   }
 
@@ -84,9 +85,12 @@ namespace IMU
                            (float)u.values.q_z / QUAT_DIVISOR, (float)u.values.q_y / QUAT_DIVISOR);
 
     static const float POS_DIVISOR = 1000.0f;
-    retVal->position() =
-        Eigen::Vector3f(-(float)u.values.d_x / POS_DIVISOR, (float)u.values.d_z / POS_DIVISOR,
-                        (float)u.values.d_y / POS_DIVISOR);
+    if (m_reportPosition)
+    {
+      retVal->position() =
+          Eigen::Vector3f(-(float)u.values.d_x / POS_DIVISOR, (float)u.values.d_z / POS_DIVISOR,
+                          (float)u.values.d_y / POS_DIVISOR);
+    }
 
     return retVal;
   }
