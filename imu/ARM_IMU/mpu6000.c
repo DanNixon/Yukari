@@ -17,8 +17,8 @@
 #define ACCEL_FACTOR 8192.0f
 
 /* Threshold acceleration (in g) to be considered as motion */
-#define ACCEL_THR_XY 0.01f
-#define ACCEL_THR_Z 0.03f
+#define ACCEL_THR_XY 0.02f
+#define ACCEL_THR_Z 0.05f
 
 #define DEG_TO_RAD 0.017453292519943295f
 
@@ -34,6 +34,7 @@ volatile float mpu6000_world_accel[3];
 volatile uint16_t mpu6000_world_accel_cons_zeros[3];
 volatile float mpu6000_world_velocity[3];
 volatile float mpu6000_world_displacement[3];
+uint64_t mpu6000_last_integration_time = 0;
 
 typedef struct
 {
@@ -343,7 +344,12 @@ void mpu6000_sample(void)
 
 void mpu6000_position_update(void)
 {
-  static int i;
+  int i;
+  uint64_t delta_time, now;
+
+  now = micros();
+  delta_time = now - mpu6000_last_integration_time;
+  mpu6000_last_integration_time = now;
 
   /* Average last sample window */
   mpu6000_world_accel[0] = mpu6000_acc_accum[0] / mpu6000_samples_acc;
@@ -370,12 +376,14 @@ void mpu6000_position_update(void)
     }
 
     /* Perform "no motion" check */
-    if (mpu6000_world_accel_cons_zeros[i] < 10)
+    if (mpu6000_world_accel_cons_zeros[i] < 2)
     {
       /* Update integration */
       mpu6000_world_accel[i] *= 9.8f;
-      mpu6000_world_velocity[i] += mpu6000_world_accel[i] * (MPU6000_ACC_SAMPLES / sampleFreq);
-      mpu6000_world_displacement[i] += mpu6000_world_velocity[i] * (MPU6000_ACC_SAMPLES / sampleFreq);
+      mpu6000_world_velocity[i] += mpu6000_world_accel[i] * delta_time * 1e-6f;
+      mpu6000_world_displacement[i] += mpu6000_world_velocity[i] * delta_time * 1e-6f;
+
+      mpu6000_world_velocity[i] *= 0.99f;
     }
     else
     {

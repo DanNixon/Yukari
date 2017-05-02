@@ -122,6 +122,7 @@ extern volatile float mpu6000_world_accel[3];
 extern volatile uint16_t mpu6000_world_accel_cons_zeros[3];
 extern volatile float mpu6000_world_velocity[3];
 extern volatile float mpu6000_world_displacement[3];
+extern uint64_t mpu6000_last_integration_time;
 
 void mpu6000_init(void);
 

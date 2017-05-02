@@ -26,7 +26,7 @@ namespace IMUGrabberTest
 
     if (key == "a")
     {
-      m_logger->info("Acelerometer calibration requested.");
+      m_logger->info("Accelerometer calibration requested.");
 
       if (m_mspGrabber)
       {
