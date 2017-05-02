@@ -229,10 +229,13 @@ void mpu6000_init(void)
   spi_write_reg(MPUREG_USER_CTRL, BIT_I2C_IF_DIS);
   msleep(10);
 
-  spi_write_reg(MPUREG_SMPLRT_DIV, 0x04);
+  /* F(sample) = F(gyro) / (1 + MPUREG_SMPLRT_DIV) */
+  /* F(gyro) = 8kHz (when DLPF is disabled (DLPF_CFG = 0 or 7)) */
+  /* F(gyro) = 1kHz (when DLPF is enabled) */
+  spi_write_reg(MPUREG_SMPLRT_DIV, 4);
   msleep(10);
 
-  spi_write_reg(MPUREG_CONFIG, BITS_DLPF_CFG_42HZ);
+  spi_write_reg(MPUREG_CONFIG, BITS_DLPF_CFG_2100HZ_NOLPF);
   msleep(10);
 
   spi_write_reg(MPUREG_GYRO_CONFIG, BITS_FS_2000DPS);
