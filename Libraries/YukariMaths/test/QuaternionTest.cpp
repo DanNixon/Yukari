@@ -3,6 +3,8 @@
 #include <Eigen/Geometry>
 #include <boost/test/unit_test.hpp>
 
+#include <YukariCommon/LoggingService.h>
+
 static void rotate_point_by_quat_eigen(float qw, float qx, float qy, float qz, float *x, float *y,
                                        float *z)
 {
@@ -98,6 +100,8 @@ namespace Maths
 
     BOOST_AUTO_TEST_CASE(rotate_point_by_quat_Test)
     {
+      auto logger = Common::LoggingService::Instance().getLogger("rotate_point_by_quat_Test");
+
       struct TestValues
       {
         float qw;
@@ -116,6 +120,10 @@ namespace Maths
           {0.9238794681051637f, 0.0f, 0.0f, 0.38268358785518847f, 1.0f, 2.0f, 3.0f});
       testCases.push_back(
           {0.991836f, 0.042895f, -0.014131f, -0.104159f, 0.017578f, 0.080933f, 0.910278f});
+      testCases.push_back(
+          {0.123067f, 0.064698f, 0.219047f, 0.964010f, 0.068237f, 0.423096f, 0.865601f});
+      testCases.push_back(
+          {0.929398f, -0.044475f, -0.051814f, -0.358029f, -0.010607f, 0.003888f, -0.077471f});
 
       for (auto it = testCases.begin(); it != testCases.end(); ++it)
       {
@@ -134,6 +142,9 @@ namespace Maths
         BOOST_CHECK_CLOSE(x1, x2, 0.1f);
         BOOST_CHECK_CLOSE(y1, y2, 0.1f);
         BOOST_CHECK_CLOSE(z1, z2, 0.1f);
+
+        logger->info("[{}, {}, {}, {}] . [{}, {}, {}] = [{}, {}, {}]", it->qw, it->qx, it->qy,
+                     it->qz, it->x, it->y, it->z, x1, y1, z1);
       }
     }
 
