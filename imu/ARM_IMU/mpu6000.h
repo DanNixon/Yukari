@@ -14,7 +14,6 @@
 
 #define MPU6000_CS_PIN SPI1_NSS_PIN
 
-#define MPU6000_EXTI EXTI4
 #define MPU6000_INT_PORT GPIOC
 #define MPU6000_INT_PIN GPIO4
 
@@ -44,6 +43,7 @@
 #define MPUREG_ACCEL_CONFIG (0x1C)
 #define MPUREG_INT_PIN_CFG (0x37)
 #define MPUREG_INT_ENABLE (0x38)
+#define MPUREG_INT_STATUS (0x3A)
 #define MPUREG_ACCEL_XOUT_H (0x3B)
 #define MPUREG_ACCEL_XOUT_L (0x3C)
 #define MPUREG_ACCEL_YOUT_H (0x3D)
@@ -98,6 +98,8 @@
 #define BITS_DLPF_CFG_2100HZ_NOLPF (0x07)
 #define BITS_DLPF_CFG_MASK (0x07)
 #define BIT_INT_ANYRD_2CLEAR (0x10)
+#define BIT_INT_LATCH_EN (0x20)
+#define BIT_INT_TRIG_DATA_RDY (0x01)
 #define BIT_RAW_RDY_EN (0x01)
 #define BIT_I2C_IF_DIS (0x10)
 
@@ -107,7 +109,7 @@
 #define MPU6000_66HZ (2)
 #define MPU6000_50HZ (3)
 
-#define MPU6000_ACC_SAMPLES 100
+#define MPU6000_ACC_SAMPLES 20
 
 extern volatile uint64_t mpu6000_samples;
 extern volatile uint64_t mpu6000_samples_acc;
@@ -127,6 +129,8 @@ void mpu6000_calibrate(void);
 
 void mpu6000_get_motion_6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, int16_t *gy,
                           int16_t *gz);
+
+void mpu6000_sample(void);
 
 void mpu6000_position_update(void);
 

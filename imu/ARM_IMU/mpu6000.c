@@ -5,8 +5,6 @@
 #include <stdio.h>
 
 #include <libopencm3/cm3/common.h>
-#include <libopencm3/cm3/nvic.h>
-#include <libopencm3/stm32/exti.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/memorymap.h>
 #include <libopencm3/stm32/spi.h>
@@ -19,7 +17,8 @@
 #define ACCEL_FACTOR 8192.0f
 
 /* Threshold acceleration (in g) to be considered as motion */
-#define ACCEL_THR 0.08f
+#define ACCEL_THR_XY 0.01f
+#define ACCEL_THR_Z 0.03f
 
 #define DEG_TO_RAD 0.017453292519943295f
 
@@ -67,50 +66,6 @@ static void rotate_point_by_quat(float qw, float qx, float qy, float qz, float *
   *x = p.x;
   *y = p.y;
   *z = p.z;
-}
-
-void exti4_isr(void)
-{
-  static int16_t ax, ay, az, gx, gy, gz;
-  static float axf, ayf, azf;
-
-  exti_reset_request(MPU6000_EXTI);
-
-  /* Sample */
-  mpu6000_get_motion_6(&ax, &ay, &az, &gx, &gy, &gz);
-  mpu6000_axis[0] = ((gx - mpu6000_gyr_calib[0]) / GYRO_FACTOR) * DEG_TO_RAD;
-  mpu6000_axis[1] = ((gy - mpu6000_gyr_calib[1]) / GYRO_FACTOR) * DEG_TO_RAD;
-  mpu6000_axis[2] = ((gz - mpu6000_gyr_calib[2]) / GYRO_FACTOR) * DEG_TO_RAD;
-  mpu6000_axis[3] = (ax - mpu6000_acc_calib[0]) / ACCEL_FACTOR;
-  mpu6000_axis[4] = (ay - mpu6000_acc_calib[1]) / ACCEL_FACTOR;
-  mpu6000_axis[5] = (az - mpu6000_acc_calib[2]) / ACCEL_FACTOR;
-
-  /* Update Madgwick filter for orientation quaternion */
-  MadgwickAHRSupdateIMU(mpu6000_axis[0], mpu6000_axis[1], mpu6000_axis[2], mpu6000_axis[3],
-                        mpu6000_axis[4], mpu6000_axis[5]);
-
-  /* Obtain gravity vector */
-  mpu6000_gravity[0] = 2 * (q1 * q3 - q0 * q2);
-  mpu6000_gravity[1] = 2 * (q0 * q1 + q2 * q3);
-  mpu6000_gravity[2] = q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3;
-
-  /* Remove gravity */
-  axf = mpu6000_axis[3] - mpu6000_gravity[0];
-  ayf = mpu6000_axis[4] - mpu6000_gravity[1];
-  azf = mpu6000_axis[5] - mpu6000_gravity[2];
-
-  mpu6000_linear_accel[0] = axf;
-  mpu6000_linear_accel[1] = ayf;
-  mpu6000_linear_accel[2] = azf;
-
-  /* Obtain world acceleration */
-  rotate_point_by_quat(q0, q1, q2, q3, &axf, &ayf, &azf);
-  mpu6000_acc_accum[0] += axf;
-  mpu6000_acc_accum[1] += ayf;
-  mpu6000_acc_accum[2] += azf;
-
-  mpu6000_samples++;
-  mpu6000_samples_acc++;
 }
 
 static uint32_t spi_read_mode_fault(uint32_t spi)
@@ -213,19 +168,13 @@ void mpu6000_init(void)
   spi_write_reg(MPUREG_SMPLRT_DIV, 0);
   msleep(10);
 
-  spi_write_reg(MPUREG_CONFIG, BITS_DLPF_CFG_2100HZ_NOLPF);
+  spi_write_reg(MPUREG_CONFIG, BITS_DLPF_CFG_256HZ_NOLPF2);
   msleep(10);
 
   spi_write_reg(MPUREG_GYRO_CONFIG, BITS_FS_2000DPS);
   msleep(10);
 
   spi_write_reg(MPUREG_ACCEL_CONFIG, BITS_FS_4G);
-  msleep(10);
-
-  spi_write_reg(MPUREG_INT_ENABLE, BIT_RAW_RDY_EN);
-  msleep(10);
-
-  spi_write_reg(MPUREG_INT_PIN_CFG, BIT_INT_ANYRD_2CLEAR);
   msleep(10);
 
   msleep(1000);
@@ -238,13 +187,6 @@ void mpu6000_init(void)
 
   mode = spi_read_reg(MPUREG_ACCEL_CONFIG);
   printf("Accel config: %#04x\n", mode & BITS_FS_MASK);
-
-  /* Interrupt */
-  nvic_enable_irq(NVIC_EXTI4_IRQ);
-  gpio_mode_setup(MPU6000_INT_PORT, GPIO_MODE_INPUT, GPIO_PUPD_PULLDOWN, MPU6000_INT_PIN);
-  exti_select_source(MPU6000_EXTI, MPU6000_INT_PORT);
-  exti_set_trigger(MPU6000_EXTI, EXTI_TRIGGER_RISING);
-  exti_enable_request(MPU6000_EXTI);
 
   for (i = 0; i < 3; i++)
     mpu6000_world_accel_cons_zeros[i] = 0;
@@ -259,8 +201,6 @@ void mpu6000_calibrate(void)
   int i;
   int64_t ax_samples, ay_samples, az_samples, gx_samples, gy_samples, gz_samples;
   int16_t ax, ay, az, gx, gy, gz;
-
-  exti_disable_request(MPU6000_EXTI);
 
   gpio_clear(LED0_PORT, LED0_PIN);
   msleep(50);
@@ -308,8 +248,6 @@ void mpu6000_calibrate(void)
   gpio_clear(LED0_PORT, LED0_PIN);
   msleep(50);
   gpio_set(LED0_PORT, LED0_PIN);
-
-  exti_enable_request(MPU6000_EXTI);
 }
 
 void mpu6000_get_motion_6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, int16_t *gy,
@@ -360,6 +298,49 @@ void mpu6000_get_motion_6(int16_t *ax, int16_t *ay, int16_t *az, int16_t *gx, in
   gpio_set(SPI1_PORT, MPU6000_CS_PIN);
 }
 
+void mpu6000_sample(void)
+{
+  static int16_t ax, ay, az, gx, gy, gz;
+  static float axf, ayf, azf;
+
+
+  /* Sample */
+  mpu6000_get_motion_6(&ax, &ay, &az, &gx, &gy, &gz);
+  mpu6000_axis[0] = ((gx - mpu6000_gyr_calib[0]) / GYRO_FACTOR) * DEG_TO_RAD;
+  mpu6000_axis[1] = ((gy - mpu6000_gyr_calib[1]) / GYRO_FACTOR) * DEG_TO_RAD;
+  mpu6000_axis[2] = ((gz - mpu6000_gyr_calib[2]) / GYRO_FACTOR) * DEG_TO_RAD;
+  mpu6000_axis[3] = (ax - mpu6000_acc_calib[0]) / ACCEL_FACTOR;
+  mpu6000_axis[4] = (ay - mpu6000_acc_calib[1]) / ACCEL_FACTOR;
+  mpu6000_axis[5] = (az - mpu6000_acc_calib[2]) / ACCEL_FACTOR;
+
+  /* Update Madgwick filter for orientation quaternion */
+  MadgwickAHRSupdateIMU(mpu6000_axis[0], mpu6000_axis[1], mpu6000_axis[2], mpu6000_axis[3],
+                        mpu6000_axis[4], mpu6000_axis[5]);
+
+  /* Obtain gravity vector */
+  mpu6000_gravity[0] = 2 * (q1 * q3 - q0 * q2);
+  mpu6000_gravity[1] = 2 * (q0 * q1 + q2 * q3);
+  mpu6000_gravity[2] = q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3;
+
+  /* Remove gravity */
+  axf = mpu6000_axis[3] - mpu6000_gravity[0];
+  ayf = mpu6000_axis[4] - mpu6000_gravity[1];
+  azf = mpu6000_axis[5] - mpu6000_gravity[2];
+
+  mpu6000_linear_accel[0] = axf;
+  mpu6000_linear_accel[1] = ayf;
+  mpu6000_linear_accel[2] = azf;
+
+  /* Obtain world acceleration */
+  rotate_point_by_quat(q0, q1, q2, q3, &axf, &ayf, &azf);
+  mpu6000_acc_accum[0] += axf;
+  mpu6000_acc_accum[1] += ayf;
+  mpu6000_acc_accum[2] += azf;
+
+  mpu6000_samples++;
+  mpu6000_samples_acc++;
+}
+
 void mpu6000_position_update(void)
 {
   static int i;
@@ -378,7 +359,7 @@ void mpu6000_position_update(void)
   for (i = 0; i < 3; i++)
   {
     /* Apply deadband/discrimination check (filters mechanical noise) */
-    if (fabs(mpu6000_world_accel[i]) < ACCEL_THR)
+    if (fabs(mpu6000_world_accel[i]) < ((i == 2) ? ACCEL_THR_Z : ACCEL_THR_XY))
     {
       mpu6000_world_accel[i] = 0.0f;
       mpu6000_world_accel_cons_zeros[i]++;
@@ -389,7 +370,7 @@ void mpu6000_position_update(void)
     }
 
     /* Perform "no motion" check */
-    if (mpu6000_world_accel_cons_zeros[i] < 20)
+    if (mpu6000_world_accel_cons_zeros[i] < 10)
     {
       /* Update integration */
       mpu6000_world_accel[i] *= 9.8f;

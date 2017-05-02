@@ -44,15 +44,15 @@ static void send_data_packet(void)
   u.values.q_x = q1 * 10000.0f;
   u.values.q_y = q2 * 10000.0f;
   u.values.q_z = q3 * 10000.0f;
-  /* u.values.d_x = mpu6000_world_displacement[0] * 1000.0f; */
-  /* u.values.d_y = mpu6000_world_displacement[1] * 1000.0f; */
-  /* u.values.d_z = mpu6000_world_displacement[2] * 1000.0f; */
+  u.values.d_x = mpu6000_world_displacement[0] * 1000.0f;
+  u.values.d_y = mpu6000_world_displacement[1] * 1000.0f;
+  u.values.d_z = mpu6000_world_displacement[2] * 1000.0f;
   /* u.values.d_x = mpu6000_world_accel[0] * 1000.0f; */
   /* u.values.d_y = mpu6000_world_accel[1] * 1000.0f; */
   /* u.values.d_z = mpu6000_world_accel[2] * 1000.0f; */
-  u.values.d_x = mpu6000_world_velocity[0] * 1000.0f;
-  u.values.d_y = mpu6000_world_velocity[1] * 1000.0f;
-  u.values.d_z = mpu6000_world_velocity[2] * 1000.0f;
+  /* u.values.d_x = mpu6000_world_velocity[0] * 1000.0f; */
+  /* u.values.d_y = mpu6000_world_velocity[1] * 1000.0f; */
+  /* u.values.d_z = mpu6000_world_velocity[2] * 1000.0f; */
   u.values.checksum = 0;
   u.values.padding = 12;
 
@@ -64,6 +64,8 @@ static void send_data_packet(void)
 
 int main(void)
 {
+  uint64_t last_sample_time, now;
+
   clock_setup();
 
   rcc_periph_clock_enable(RCC_SYSCFG);
@@ -84,12 +86,22 @@ int main(void)
   msleep(500);
   gpio_clear(LED0_PORT, LED0_PIN);
 
+  last_sample_time = micros();
   while (1)
   {
-    gpio_toggle(LED0_PORT, LED0_PIN);
+    now = micros();
+
+    if (now - last_sample_time >= 125)
+    {
+      gpio_toggle(LED0_PORT, LED0_PIN);
+      mpu6000_sample();
+      last_sample_time = now;
+    }
 
     if (mpu6000_samples_acc >= MPU6000_ACC_SAMPLES)
+    {
       mpu6000_position_update();
+    }
 
     switch (console_rx_command)
     {
