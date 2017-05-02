@@ -40,14 +40,12 @@ static void rotate_point_by_quat(float qw, float qx, float qy, float qz, float *
   Quat q = {qw, qx, qy, qz};
   Quat p = {0.0f, *x, *y, *z};
 
-  Quat qp = quat_mult(q, p);
+  p = quat_mult(q, p);
+  p = quat_mult(p, {q.w, -q.x, -q.y, -q.z});
 
-  Quat qc = {q.w, -q.x, -q.y, -q.z};
-  Quat qpqc = quat_mult(qp, qc);
-
-  *x = qpqc.x;
-  *y = qpqc.y;
-  *z = qpqc.z;
+  *x = p.x;
+  *y = p.y;
+  *z = p.z;
 }
 
 namespace Yukari
@@ -89,7 +87,7 @@ namespace Maths
         z = 0.0f;
         rotate_point_by_quat_eigen(0.9238794681051637f, 0.0f, 0.0f, 0.38268358785518847f, &x, &y,
                                    &z);
-        const float h = std::sqrt(2.0) / 2;
+        const float h = std::sqrt(2.0f) / 2.0f;
         BOOST_CHECK_CLOSE(x, h, 0.1f);
         BOOST_CHECK_CLOSE(y, h, 0.1f);
         BOOST_CHECK(std::abs(z) < 1e-6f);
