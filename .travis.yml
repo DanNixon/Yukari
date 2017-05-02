@@ -17,8 +17,7 @@ script:
   - make -j4
   - make doc
   - ctest -VV
-  - cd ..
-  - cd TeensyIMUDevice
+  - cd ../imu/Teensy
   - pio run
 
 notifications:
