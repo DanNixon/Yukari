@@ -760,31 +760,34 @@ uint8_t MPU9150::dmpGetMag(int16_t *data, const uint8_t* packet) {
 }
 // uint8_t MPU9150::dmpSetLinearAccelFilterCoefficient(float coef);
 // uint8_t MPU9150::dmpGetLinearAccel(long *data, const uint8_t* packet);
-uint8_t MPU9150::dmpGetLinearAccel(VectorInt16 *v, VectorInt16 *vRaw, VectorFloat *gravity) {
-    // get rid of the gravity component (+1g = +4096 in standard DMP FIFO packet)
-    v -> x = vRaw -> x - gravity -> x*4096;
-    v -> y = vRaw -> y - gravity -> y*4096;
-    v -> z = vRaw -> z - gravity -> z*4096;
-    return 0;
+uint8_t MPU9150::dmpGetLinearAccel(VectorInt16 *v, VectorInt16 *vRaw, VectorFloat *gravity)
+{
+  // get rid of the gravity component (+1g = +4096 in standard DMP FIFO packet)
+  v->x = vRaw->x - gravity->x * 4096;
+  v->y = vRaw->y - gravity->y * 4096;
+  v->z = vRaw->z - gravity->z * 4096;
+  return 0;
 }
 // uint8_t MPU9150::dmpGetLinearAccelInWorld(long *data, const uint8_t* packet);
-uint8_t MPU9150::dmpGetLinearAccelInWorld(VectorInt16 *v, VectorInt16 *vReal, Quaternion *q) {
-    // rotate measured 3D acceleration vector into original state
-    // frame of reference based on orientation quaternion
-    memcpy(v, vReal, sizeof(VectorInt16));
-    v -> rotate(q);
-    return 0;
+uint8_t MPU9150::dmpGetLinearAccelInWorld(VectorInt16 *v, VectorInt16 *vReal, Quaternion *q)
+{
+  // rotate measured 3D acceleration vector into original state
+  // frame of reference based on orientation quaternion
+  memcpy(v, vReal, sizeof(VectorInt16));
+  v->rotate(q);
+  return 0;
 }
 // uint8_t MPU9150::dmpGetGyroAndAccelSensor(long *data, const uint8_t* packet);
 // uint8_t MPU9150::dmpGetGyroSensor(long *data, const uint8_t* packet);
 // uint8_t MPU9150::dmpGetControlData(long *data, const uint8_t* packet);
 // uint8_t MPU9150::dmpGetTemperature(long *data, const uint8_t* packet);
 // uint8_t MPU9150::dmpGetGravity(long *data, const uint8_t* packet);
-uint8_t MPU9150::dmpGetGravity(VectorFloat *v, Quaternion *q) {
-    v -> x = 2 * (q -> x*q -> z - q -> w*q -> y);
-    v -> y = 2 * (q -> w*q -> x + q -> y*q -> z);
-    v -> z = q -> w*q -> w - q -> x*q -> x - q -> y*q -> y + q -> z*q -> z;
-    return 0;
+uint8_t MPU9150::dmpGetGravity(VectorFloat *v, Quaternion *q)
+{
+  v->x = 2 * (q->x * q->z - q->w * q->y);
+  v->y = 2 * (q->w * q->x + q->y * q->z);
+  v->z = q->w * q->w - q->x * q->x - q->y * q->y + q->z * q->z;
+  return 0;
 }
 // uint8_t MPU9150::dmpGetUnquantizedAccel(long *data, const uint8_t* packet);
 // uint8_t MPU9150::dmpGetQuantizedAccel(long *data, const uint8_t* packet);
