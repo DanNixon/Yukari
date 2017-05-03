@@ -3,6 +3,9 @@
 Capture point clouds from a Kinect and Teensy IMU every 5 seconds and save IMU frames, raw cloud and transformed clouds:
 `Capture.exe --cloudgrabber openni2 --imugrabber teensy(port=COM5) --capturetrigger periodic(delay=5000) --process saveimu(out=raw_imu) --process savecloud(out=raw_clouds,transform=false) --process savecloud(out=transformed_clouds,transform=true)`
 
+A similar thing with the ARM IMU:
+`--cloudgrabber openni2 --imugrabber stm32(port=COM5,position=false) --process ndtworld(out=world_aligned) --process savecloud(out=transformed_clouds,transform=true) --capturetrigger periodic(delay=5000)`
+
 Incremental alignment:
 `Capture.exe --cloudgrabber openni2 --imugrabber teensy(port=COM4) --process ndtworld(out=world_aligned) --capturetrigger periodic(delay=10000)`
 
