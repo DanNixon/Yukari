@@ -17,8 +17,8 @@
 #define ACCEL_FACTOR 8192.0f
 
 /* Threshold acceleration (in g) to be considered as motion */
-#define ACCEL_THR_XY 0.02f
-#define ACCEL_THR_Z 0.05f
+#define ACCEL_THR_XY 0.0008f
+#define ACCEL_THR_Z 0.001f
 
 #define DEG_TO_RAD 0.017453292519943295f
 
@@ -303,7 +303,6 @@ void mpu6000_sample(void)
 {
   static int16_t ax, ay, az, gx, gy, gz;
   static float axf, ayf, azf;
-
 
   /* Sample */
   mpu6000_get_motion_6(&ax, &ay, &az, &gx, &gy, &gz);

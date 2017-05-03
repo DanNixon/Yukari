@@ -47,9 +47,6 @@ static void send_data_packet(void)
   u.values.d_x = mpu6000_world_displacement[0] * 1000.0f;
   u.values.d_y = mpu6000_world_displacement[1] * 1000.0f;
   u.values.d_z = mpu6000_world_displacement[2] * 1000.0f;
-  /* u.values.d_x = mpu6000_world_velocity[0] * 1000.0f; */
-  /* u.values.d_y = mpu6000_world_velocity[1] * 1000.0f; */
-  /* u.values.d_z = mpu6000_world_velocity[2] * 1000.0f; */
   u.values.checksum = 0;
   u.values.padding = 12;
 
@@ -64,40 +61,33 @@ static void send_data_packet(void)
  * Good for plotting with the likes of serialplot.
  * https://bitbucket.org/hyOzd/serialplot
  *
- *  1) time - us
- *  2) orientation quaternion - w
- *  3) orientation quaternion - x
- *  4) orientation quaternion - y
- *  5) orientation quaternion - z
- *  6) gyro sample - x
- *  7) gyro sample - y
- *  8) gyro sample - z
- *  9) accelerometer sample - x
- * 10) accelerometer sample - y
- * 11) accelerometer sample - z
- * 12) linear acceleration - x
- * 13) linear acceleration - y
- * 14) linear acceleration - z
- * 15) world acceleration - x
- * 16) world acceleration - y
- * 17) world acceleration - z
- * 18) world velocity - x
- * 19) world velocity - y
- * 20) world velocity - z
- * 21) world displacement - x
- * 22) world displacement - y
- * 23) world displacement - z
+ *  1) linear acceleration - x
+ *  2) linear acceleration - y
+ *  3) linear acceleration - z
+ *  4) gravity vector - x
+ *  5) gravity vector - y
+ *  6) gravity vector - z
+ *  7) world acceleration - x
+ *  8) world acceleration - y
+ *  9) world acceleration - z
+ * 10) world velocity - x
+ * 11) world velocity - y
+ * 12) world velocity - z
+ * 13) world displacement - x
+ * 14) world displacement - y
+ * 15) world displacement - z
  */
 static void send_logging_packet(void)
 {
   /* Forgive me for this shitty printf */
-  printf("%lld,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", micros(), q0,
-         q1, q2, q3, mpu6000_axis[0], mpu6000_axis[1], mpu6000_axis[2], mpu6000_axis[3],
-         mpu6000_axis[4], mpu6000_axis[5], mpu6000_linear_accel[0], mpu6000_linear_accel[1],
-         mpu6000_linear_accel[2], mpu6000_world_accel[0], mpu6000_world_accel[1],
-         mpu6000_world_accel[2], mpu6000_world_velocity[0], mpu6000_world_velocity[1],
-         mpu6000_world_velocity[2], mpu6000_world_displacement[0], mpu6000_world_displacement[1],
+  printf("%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", mpu6000_linear_accel[0], mpu6000_linear_accel[1],
+         mpu6000_linear_accel[2], mpu6000_gravity[0], mpu6000_gravity[1], mpu6000_gravity[2],
+         mpu6000_world_accel[0], mpu6000_world_accel[1], mpu6000_world_accel[2],
+         mpu6000_world_velocity[0], mpu6000_world_velocity[1], mpu6000_world_velocity[2],
+         mpu6000_world_displacement[0], mpu6000_world_displacement[1],
          mpu6000_world_displacement[2]);
+         /* mpu6000_axis[3], mpu6000_axis[4], */
+         /* mpu6000_axis[5]); */
 }
 
 int main(void)
