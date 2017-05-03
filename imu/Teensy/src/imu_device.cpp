@@ -99,7 +99,8 @@ void taskDMP()
     g_imu.dmpGetLinearAccel(&g_realAccel, &g_accel, &g_gravity);
     g_imu.dmpGetLinearAccelInWorld(&g_worldAccel, &g_realAccel, &g_quat);
 
-    g_worldAccelMS2 = VectorFloat(g_worldAccel.x, g_worldAccel.y, g_worldAccel.z - 5150) * ACCEL_COEFF;
+    g_worldAccelMS2 =
+        VectorFloat(g_worldAccel.x, g_worldAccel.y, g_worldAccel.z - 5150) * ACCEL_COEFF;
     g_worldAccelMS2LPFAccum += g_worldAccelMS2 / 8.0f;
     g_accelSamples++;
 
@@ -167,13 +168,13 @@ void taskPrintData()
   */
 
   // Linear acceleration
-  //DEBUG_SERIAL.printf("a\t%d\t%d\t%d\n", g_accel.x, g_accel.y, g_accel.z);
+  // DEBUG_SERIAL.printf("a\t%d\t%d\t%d\n", g_accel.x, g_accel.y, g_accel.z);
 
   // Linear acceleration without gravity
-  //DEBUG_SERIAL.printf("aReal\t%d\t%d\t%d\n", g_realAccel.x, g_realAccel.y, g_realAccel.z);
+  // DEBUG_SERIAL.printf("aReal\t%d\t%d\t%d\n", g_realAccel.x, g_realAccel.y, g_realAccel.z);
 
   // Linear acceleration without gravity and corrected for orientation
-  //DEBUG_SERIAL.printf("aWorld\t%d\t%d\t%d\n", g_worldAccel.x, g_worldAccel.y, g_worldAccel.z);
+  // DEBUG_SERIAL.printf("aWorld\t%d\t%d\t%d\n", g_worldAccel.x, g_worldAccel.y, g_worldAccel.z);
 
   // Linear acceleration without gravity and corrected for orientation in ms-2
   DEBUG_SERIAL.print("aWorld (ms-2)\t");

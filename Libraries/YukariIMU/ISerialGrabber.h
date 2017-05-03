@@ -8,7 +8,7 @@ namespace Yukari
 {
 namespace IMU
 {
-  class ISerialGrabber: public IIMUGrabber
+  class ISerialGrabber : public IIMUGrabber
   {
   public:
     ISerialGrabber(const std::string &port, unsigned int baud = 115200);

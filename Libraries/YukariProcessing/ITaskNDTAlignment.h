@@ -5,9 +5,12 @@
 #include "IFrameProcessingTask.h"
 
 #include <map>
+#include <ostream>
 #include <string>
 
 #include <pcl/registration/ndt.h>
+
+#include <YukariCommon/LoggingService.h>
 
 namespace Yukari
 {
@@ -25,10 +28,23 @@ namespace Processing
         , m_resolution(
               std::stof(MapHelpers::Get<std::string, std::string>(params, "resolution", "0.01")))
         , m_maxIterations(
-              std::stoi(MapHelpers::Get<std::string, std::string>(params, "maxiter", "35")))
+              std::stoi(MapHelpers::Get<std::string, std::string>(params, "maxiter", "50")))
         , m_voxelDownsamplePercentage(
               std::stod(MapHelpers::Get<std::string, std::string>(params, "downsample", "0.01")))
     {
+      Common::LoggingService::Instance().getLogger("ITaskNDTAlignment")->info("Created: {}", *this);
+    }
+
+    friend std::ostream &operator<<(std::ostream &s, const ITaskNDTAlignment<POINT_TYPE> &t)
+    {
+      s << "ITaskNDTAlignment("
+        << "epsilon=" << t.m_transformationEpsilon << ","
+        << "step=" << t.m_stepSize << ","
+        << "resolution=" << t.m_resolution << ","
+        << "maxiter=" << t.m_maxIterations << ","
+        << "downsample=" << t.m_voxelDownsamplePercentage << ")";
+
+      return s;
     }
 
   protected:

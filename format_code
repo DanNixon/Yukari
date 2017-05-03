@@ -4,9 +4,9 @@ CLANG_FORMAT=clang-format
 
 declare -a dirs=("Executables"
                  "Libraries"
-                 "TeensyIMUDevice/src"
-                 "TeensyIMUDevice/lib/MSP"
-                 "TeensyIMUDevice/lib/Scheduler")
+                 "imu/Teensy/src"
+                 "imu/Teensy/lib/MSP"
+                 "imu/Teensy/lib/Scheduler")
 
 for d in "${dirs[@]}"
 do

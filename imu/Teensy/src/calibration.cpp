@@ -2,7 +2,8 @@
 
 #include "calibration.h"
 
-// Taken from: https://github.com/jrowberg/i2cdevlib/blob/a06bf1b014798a34c5fe5b017d16c265dc7faf38/Arduino/MPU6050/examples/IMU_Zero/IMU_Zero.ino
+// Taken from:
+// https://github.com/jrowberg/i2cdevlib/blob/a06bf1b014798a34c5fe5b017d16c265dc7faf38/Arduino/MPU6050/examples/IMU_Zero/IMU_Zero.ino
 
 // MPU6050 offset-finder, based on Jeff Rowberg's MPU6050_RAW
 // 2016-10-19 by Robert R. Fenichel (bob@fenichel.net)
