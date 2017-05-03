@@ -39,7 +39,7 @@ using namespace Yukari::MSP;
 using namespace Yukari::IMUGrabberTest;
 namespace po = boost::program_options;
 
-int runGrabberVIsualisation(IIMUGrabber::Ptr grabber);
+int runGrabberVisualisation(IIMUGrabber::Ptr grabber, float cubeSize);
 
 int main(int argc, char **argv)
 {
@@ -55,7 +55,8 @@ int main(int argc, char **argv)
     ("loglevel", po::value<std::string>()->default_value("info"), "Global log level")
     ("grabber", po::value<std::string>()->default_value("dummy"), "IMU grabber type")
     ("orientation", po::value<std::string>()->default_value("[0, 1, 0] -90"), "Relative IMU orientation as \"[axis] angle\"")
-    ("position", po::value<std::string>()->default_value("[0, 0, 0]"), "Relative IMU position as \"[position]\"");
+    ("position", po::value<std::string>()->default_value("[0, 0, 0]"), "Relative IMU position as \"[position]\"")
+    ("cubesize" ,po::value<float>()->default_value(1.0f), "Width and depth of visualisation cube");
   // clang-format on
 
   /* Parse command line args */
@@ -96,7 +97,7 @@ int main(int argc, char **argv)
   grabber->setTransform(Transform(args));
 
   /* Run visualisation */
-  runGrabberVIsualisation(grabber);
+  runGrabberVisualisation(grabber, args["cubesize"].as<float>());
 
   logger->info("Exiting.");
   return 0;
@@ -136,7 +137,7 @@ vtkPolyData *generateCube(Eigen::Vector3f d)
   return cube;
 }
 
-int runGrabberVIsualisation(IIMUGrabber::Ptr grabber)
+int runGrabberVisualisation(IIMUGrabber::Ptr grabber, float cubeSize)
 {
   auto logger = LoggingService::Instance().getLogger("runGrabber");
 
@@ -151,7 +152,7 @@ int runGrabberVIsualisation(IIMUGrabber::Ptr grabber)
     return 2;
   }
 
-  vtkPolyData *cube = generateCube(Eigen::Vector3f(1.0f, 0.1f, 1.0f));
+  vtkPolyData *cube = generateCube(Eigen::Vector3f(cubeSize, cubeSize * 0.1f, cubeSize));
 
   vtkPolyDataMapper *cubeMapper = vtkPolyDataMapper::New();
   cubeMapper->SetScalarRange(0, 1);
