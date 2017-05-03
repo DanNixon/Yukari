@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     ("loglevel", po::value<std::string>()->default_value("debug"), "Global log level")
     ("grabber", po::value<std::string>()->default_value("dummy"), "Cloud grabber type")
     ("imugrabber", po::value<std::string>(), "IMU grabber to use")
-    ("orientation", po::value<std::string>()->default_value("[0, 1, 0] -90"), "Relative IMU orientation as \"[axis] angle\"")
+    ("orientation", po::value<std::string>()->default_value("[0, 0, 0] 0"), "Relative IMU orientation as \"[axis] angle\"")
     ("position", po::value<std::string>()->default_value("[0, 0, 0]"), "Relative IMU position as \"[position]\"");
   // clang-format on
 
