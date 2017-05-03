@@ -23,12 +23,12 @@ namespace Processing
                       std::map<std::string, std::string> &params)
         : IFrameProcessingTask(path)
         , m_transformationEpsilon(
-              std::stof(MapHelpers::Get<std::string, std::string>(params, "epsilon", "0.01")))
-        , m_stepSize(std::stof(MapHelpers::Get<std::string, std::string>(params, "step", "0.1")))
+              std::stof(MapHelpers::Get<std::string, std::string>(params, "epsilon", "0.005")))
+        , m_stepSize(std::stof(MapHelpers::Get<std::string, std::string>(params, "step", "0.01")))
         , m_resolution(
-              std::stof(MapHelpers::Get<std::string, std::string>(params, "resolution", "0.01")))
+              std::stof(MapHelpers::Get<std::string, std::string>(params, "resolution", "0.1")))
         , m_maxIterations(
-              std::stoi(MapHelpers::Get<std::string, std::string>(params, "maxiter", "50")))
+              std::stoi(MapHelpers::Get<std::string, std::string>(params, "maxiter", "35")))
         , m_voxelDownsamplePercentage(
               std::stod(MapHelpers::Get<std::string, std::string>(params, "downsample", "0.01")))
     {

@@ -74,6 +74,7 @@ namespace Processing
           m_logger->debug("Convergence reached");
         else
           m_logger->warn("Convergence not reached");
+        m_logger->debug("After {} iterations", ndt.getFinalNumIteration());
         m_logger->debug("Normal Distributions Transform score: {}", ndt.getFitnessScore());
 
         /* Translate full input cloud */
