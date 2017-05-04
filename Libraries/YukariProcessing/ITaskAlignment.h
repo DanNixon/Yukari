@@ -11,9 +11,6 @@
 #include <pcl/registration/icp.h>
 #include <pcl/registration/ndt.h>
 
-#include <YukariCommon/LoggingService.h>
-#include <YukariCommon/MapHelpers.h>
-
 namespace Yukari
 {
 namespace Processing
@@ -21,20 +18,7 @@ namespace Processing
   class ITaskAlignment : public IFrameProcessingTask
   {
   public:
-    ITaskAlignment(const boost::filesystem::path &path, std::map<std::string, std::string> &params)
-        : IFrameProcessingTask(path)
-        , m_transformationEpsilon(
-              std::stof(Common::MapHelpers::Get<std::string, std::string>(params, "epsilon", "0.005")))
-        , m_stepSize(std::stof(Common::MapHelpers::Get<std::string, std::string>(params, "step", "0.01")))
-        , m_resolution(
-              std::stof(Common::MapHelpers::Get<std::string, std::string>(params, "resolution", "0.1")))
-        , m_maxIterations(
-              std::stoi(Common::MapHelpers::Get<std::string, std::string>(params, "maxiter", "35")))
-        , m_voxelDownsamplePercentage(
-              std::stod(Common::MapHelpers::Get<std::string, std::string>(params, "downsample", "0.1")))
-    {
-      Common::LoggingService::Instance().getLogger("ITaskAlignment")->info("Created: {}", *this);
-    }
+    ITaskAlignment(const boost::filesystem::path &path, std::map<std::string, std::string> &params);
 
     friend std::ostream &operator<<(std::ostream &s, const ITaskAlignment &t)
     {
@@ -49,18 +33,8 @@ namespace Processing
     }
 
   protected:
-    void setNDTParameters(pcl::NormalDistributionsTransform<PointT, PointT> &ndt)
-    {
-      ndt.setTransformationEpsilon(m_transformationEpsilon);
-      ndt.setStepSize(m_stepSize);
-      ndt.setResolution(m_resolution);
-      ndt.setMaximumIterations(m_maxIterations);
-    }
-
-    void setICPParameters(pcl::IterativeClosestPoint<PointT, PointT> &icp)
-    {
-      /* TODO */
-    }
+    void setNDTParameters(pcl::NormalDistributionsTransform<PointT, PointT> &ndt);
+    void setICPParameters(pcl::IterativeClosestPoint<PointT, PointT> &icp);
 
   protected:
     /* NDT parameters */

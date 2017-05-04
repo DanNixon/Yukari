@@ -4,9 +4,6 @@
 
 #include "IFrameProcessingTask.h"
 
-#include <pcl/common/transforms.h>
-#include <pcl/io/pcd_io.h>
-
 #include <YukariCommon/LoggingService.h>
 
 namespace Yukari
@@ -16,63 +13,15 @@ namespace Processing
   class TaskAppendTransformedClouds : public IFrameProcessingTask
   {
   public:
-    TaskAppendTransformedClouds(const boost::filesystem::path &path)
-        : IFrameProcessingTask(path)
-        , m_logger(Common::LoggingService::Instance().getLogger("TaskAppendTransformedClouds"))
-        , m_worldCloud()
-    {
-    }
+    TaskAppendTransformedClouds(const boost::filesystem::path &path);
 
     inline CloudPtr worldCloud()
     {
       return m_worldCloud;
     }
 
-    virtual int process(Task t) override
-    {
-      if (!(t.cloud && t.imuFrame))
-      {
-        m_logger->error("Do not have both cloud and IMU frame");
-        return 1;
-      }
-
-      CloudPtr inputCloud(new Cloud());
-
-      /* Transform cloud */
-      m_logger->trace("Transforming cloud by IMU");
-      pcl::transformPointCloud(*t.cloud, *inputCloud, t.imuFrame->toCloudTransform());
-
-      if (!m_worldCloud)
-      {
-        /* If this is the first recored cloud simply set it as the "world" cloud */
-        m_worldCloud = CloudPtr(new Cloud(*inputCloud));
-      }
-      else
-      {
-        /* Add translated cloud to world cloud */
-        *m_worldCloud += *inputCloud;
-      }
-
-      return 0;
-    }
-
-    virtual int onStop() override
-    {
-      if (!m_worldCloud)
-      {
-        m_logger->warn("No world cloud, nothing saved");
-        return 1;
-      }
-
-      /* Generate filename */
-      boost::filesystem::path cloudFilename = m_outputDirectory / "world_cloud.pcd";
-
-      /* Save world cloud */
-      m_logger->trace("Saving world point cloud: {}", cloudFilename);
-      pcl::io::savePCDFileBinaryCompressed(cloudFilename.string(), *m_worldCloud);
-
-      return 0;
-    }
+    virtual int process(Task t) override;
+    virtual int onStop() override;
 
   private:
     Common::LoggingService::Logger m_logger;
