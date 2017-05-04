@@ -15,6 +15,10 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # No min/max macros from MSVC
 add_definitions(-DNOMINMAX)
 
+if(MSVC)
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /bigobj")
+endif()
+
 # All warnings
 include(EnableExtraCompilerWarnings)
 globally_enable_extra_compiler_warnings()
