@@ -15,6 +15,11 @@
 
 #include "CloudOperations.h"
 
+/* A bit of a hacky way to get the correct OMP instantiation without recompiling PCL */
+#include <pcl/features/impl/normal_3d_omp.hpp>
+#include <pcl/impl/instantiate.hpp>
+PCL_INSTANTIATE_PRODUCT(NormalEstimationOMP, ((pcl::PointXYZRGBA))((pcl::PointNormal)))
+
 namespace Yukari
 {
 namespace Processing
@@ -89,10 +94,10 @@ namespace Processing
         pcl::PointCloud<pcl::PointNormal>::Ptr targetNormals(
             new pcl::PointCloud<pcl::PointNormal>());
 
-        pcl::NormalEstimation<POINT_TYPE, pcl::PointNormal> normalEst;
+        pcl::NormalEstimationOMP<POINT_TYPE, pcl::PointNormal> normalEst;
         pcl::search::KdTree<POINT_TYPE>::Ptr tree(new pcl::search::KdTree<POINT_TYPE>());
         normalEst.setSearchMethod(tree);
-        normalEst.setKSearch(30);
+        normalEst.setRadiusSearch(0.1);
 
         normalEst.setInputCloud(filteredInputCloud);
         normalEst.compute(*sourceNormals);
