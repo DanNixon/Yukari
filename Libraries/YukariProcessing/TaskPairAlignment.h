@@ -19,12 +19,12 @@ namespace Yukari
 {
 namespace Processing
 {
-  class MyPointRepresentation : public pcl::PointRepresentation<pcl::PointNormal>
+  class RegistrationPointRepresentation : public pcl::PointRepresentation<pcl::PointNormal>
   {
     using pcl::PointRepresentation<pcl::PointNormal>::nr_dimensions_;
 
   public:
-    MyPointRepresentation()
+    RegistrationPointRepresentation()
     {
       nr_dimensions_ = 4;
     }
@@ -101,7 +101,7 @@ namespace Processing
         normalEst.compute(*targetNormals);
 
         /* Init registration */
-        MyPointRepresentation pr;
+        RegistrationPointRepresentation pr;
         float alpha[4] = {1.0, 1.0, 1.0, 1.0};
         pr.setRescaleValues(alpha);
 
@@ -110,7 +110,7 @@ namespace Processing
         reg.setTransformationEpsilon(1e-6);
         reg.setMaxCorrespondenceDistance(0.001);
 
-        reg.setPointRepresentation(boost::make_shared<const MyPointRepresentation>(pr));
+        reg.setPointRepresentation(boost::make_shared<const RegistrationPointRepresentation>(pr));
 
         reg.setInputSource(sourceNormals);
         reg.setInputTarget(targetNormals);
@@ -127,7 +127,7 @@ namespace Processing
 
         Eigen::Matrix4f transformNormal = reg.getFinalTransformation();
         Eigen::Matrix4f transform = transformNormal.inverse();
-		m_logger->debug("Final transform: {}", transform);
+        m_logger->debug("Final transform: {}", transform);
 
         /* Translate full input cloud */
         pcl::transformPointCloud(*inputCloud, *inputCloud, transform);
