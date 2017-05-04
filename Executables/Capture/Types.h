@@ -20,6 +20,6 @@ namespace Capture
   typedef typename Cloud::Ptr CloudPtr;
   typedef typename Cloud::ConstPtr CloudConstPtr;
 
-  typedef Processing::IFrameProcessingTask<PointType>::Ptr ProcessingTaskPtr;
+  typedef Processing::IFrameProcessingTask::Ptr ProcessingTaskPtr;
 }
 }

@@ -21,75 +21,72 @@ namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE> class FrameProcessingTaskFactory
+  class FrameProcessingTaskFactory
   {
   public:
-    typedef typename IFrameProcessingTask<POINT_TYPE>::Ptr TaskPtr;
-
-  public:
-    static TaskPtr Create(const std::string &fullCommand,
+    static IFrameProcessingTask::Ptr Create(const std::string &fullCommand,
                           const boost::filesystem::path &rootOutputDirectory)
     {
       std::string type;
       std::map<std::string, std::string> params;
-      if (!StringParsers::ParseCommand(fullCommand, type, params))
+      if (!Common::StringParsers::ParseCommand(fullCommand, type, params))
         return nullptr;
 
       return Create(type, params, rootOutputDirectory);
     }
 
-    static TaskPtr Create(const std::string &type, std::map<std::string, std::string> &parameters,
+    static IFrameProcessingTask::Ptr Create(const std::string &type, std::map<std::string, std::string> &parameters,
                           const boost::filesystem::path &rootOutputDirectory)
     {
       std::string lowerType = type;
-      StringParsers::CleanString(lowerType);
+      Common::StringParsers::CleanString(lowerType);
 
       /* Get output directory */
       boost::filesystem::path outDir =
-          rootOutputDirectory / MapHelpers::Get<std::string, std::string>(parameters, "out", ".");
+          rootOutputDirectory / Common::MapHelpers::Get<std::string, std::string>(parameters, "out", ".");
 
       /* Create task */
-      TaskPtr task;
+      IFrameProcessingTask::Ptr task;
       if (lowerType == "appendtransformed")
       {
-        task = std::make_shared<TaskAppendTransformedClouds<POINT_TYPE>>(outDir);
+        task = std::make_shared<TaskAppendTransformedClouds>(outDir);
       }
       else if (lowerType == "downsample")
       {
-        task = std::make_shared<TaskDownsampleCloud<POINT_TYPE>>(outDir, parameters);
+        task = std::make_shared<TaskDownsampleCloud>(outDir, parameters);
       }
       else if (lowerType == "icpworld")
       {
-        task = std::make_shared<TaskICPWorldAlignment<POINT_TYPE>>(outDir, parameters);
+        task = std::make_shared<TaskICPWorldAlignment>(outDir, parameters);
       }
       else if (lowerType == "ndtincremental")
       {
-        task = std::make_shared<TaskNDTIncrementalAlignment<POINT_TYPE>>(outDir, parameters);
+        task = std::make_shared<TaskNDTIncrementalAlignment>(outDir, parameters);
       }
       else if (lowerType == "ndtworld")
       {
-        task = std::make_shared<TaskNDTWorldAlignment<POINT_TYPE>>(outDir, parameters);
+        task = std::make_shared<TaskNDTWorldAlignment>(outDir, parameters);
       }
       else if (lowerType == "ndtworldsegment")
       {
-        task = std::make_shared<TaskNDTWorldSegmentAlignment<POINT_TYPE>>(outDir, parameters);
+        task = std::make_shared<TaskNDTWorldSegmentAlignment>(outDir, parameters);
       }
       else if (lowerType == "pairalign")
       {
-        task = std::make_shared<TaskPairAlignment<POINT_TYPE>>(outDir, parameters);
+        task = std::make_shared<TaskPairAlignment>(outDir, parameters);
       }
       else if (lowerType == "savecloud")
       {
         std::string transformParam =
-            MapHelpers::Get<std::string, std::string>(parameters, "transform", "false");
-        StringParsers::CleanString(transformParam);
+          Common::MapHelpers::Get<std::string, std::string>(parameters, "transform", "false");
+        Common::StringParsers::CleanString(transformParam);
         bool transform = transformParam == "true";
 
-        task = std::make_shared<TaskSaveRawCloud<POINT_TYPE>>(outDir, transform);
+        task = std::make_shared<TaskSaveRawCloud>(outDir, transform);
       }
       else if (lowerType == "saveimu")
       {
-        task = std::make_shared<TaskSaveRawIMUFrame<POINT_TYPE>>(outDir);
+        task = std::make_shared<TaskSaveRawIMUFrame>(outDir);
       }
 
       return task;

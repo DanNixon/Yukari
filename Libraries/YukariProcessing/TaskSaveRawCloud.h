@@ -17,7 +17,7 @@ namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE> class TaskSaveRawCloud : public IFrameProcessingTask<POINT_TYPE>
+  class TaskSaveRawCloud : public IFrameProcessingTask
   {
   public:
     TaskSaveRawCloud(const boost::filesystem::path &path, bool transform = false)

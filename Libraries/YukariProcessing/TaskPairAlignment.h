@@ -43,7 +43,7 @@ namespace Processing
     }
   };
 
-  template <typename POINT_TYPE> class TaskPairAlignment : public ITaskAlignment<POINT_TYPE>
+  class TaskPairAlignment : public ITaskAlignment
   {
   public:
     TaskPairAlignment(const boost::filesystem::path &path,
@@ -83,9 +83,9 @@ namespace Processing
         /* Otherwise alignment is required */
 
         /* Downsample the input and world cloud for alignment */
-        auto filteredInputCloud = Processing::CloudOperations<POINT_TYPE>::DownsampleVoxelFilter(
+        auto filteredInputCloud = Processing::CloudOperations<PointT>::DownsampleVoxelFilter(
             inputCloud, m_voxelDownsamplePercentage);
-        auto filteredWorldCloud = Processing::CloudOperations<POINT_TYPE>::DownsampleVoxelFilter(
+        auto filteredWorldCloud = Processing::CloudOperations<PointT>::DownsampleVoxelFilter(
             m_worldCloud, m_voxelDownsamplePercentage);
 
         /* Compute normals and curvature */
@@ -94,8 +94,8 @@ namespace Processing
         pcl::PointCloud<pcl::PointNormal>::Ptr targetNormals(
             new pcl::PointCloud<pcl::PointNormal>());
 
-        pcl::NormalEstimationOMP<POINT_TYPE, pcl::PointNormal> normalEst;
-        pcl::search::KdTree<POINT_TYPE>::Ptr tree(new pcl::search::KdTree<POINT_TYPE>());
+        pcl::NormalEstimationOMP<PointT, pcl::PointNormal> normalEst;
+        pcl::search::KdTree<PointT>::Ptr tree(new pcl::search::KdTree<PointT>());
         normalEst.setSearchMethod(tree);
         normalEst.setRadiusSearch(0.1);
 

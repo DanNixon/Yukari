@@ -112,7 +112,7 @@ namespace Capture
 
       for (auto it = processingStages.begin(); it != processingStages.end(); ++it)
       {
-        auto task = FrameProcessingTaskFactory<PointType>::Create(*it, dir);
+        auto task = FrameProcessingTaskFactory::Create(*it, dir);
 
         if (task)
           retVal->addPostCaptureTask(task);

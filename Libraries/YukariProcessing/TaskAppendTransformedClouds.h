@@ -13,8 +13,7 @@ namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE>
-  class TaskAppendTransformedClouds : public IFrameProcessingTask<POINT_TYPE>
+  class TaskAppendTransformedClouds : public IFrameProcessingTask
   {
   public:
     TaskAppendTransformedClouds(const boost::filesystem::path &path)

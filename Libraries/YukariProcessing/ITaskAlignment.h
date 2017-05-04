@@ -12,30 +12,31 @@
 #include <pcl/registration/ndt.h>
 
 #include <YukariCommon/LoggingService.h>
+#include <YukariCommon/MapHelpers.h>
 
 namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE> class ITaskAlignment : public IFrameProcessingTask<POINT_TYPE>
+  class ITaskAlignment : public IFrameProcessingTask
   {
   public:
     ITaskAlignment(const boost::filesystem::path &path, std::map<std::string, std::string> &params)
         : IFrameProcessingTask(path)
         , m_transformationEpsilon(
-              std::stof(MapHelpers::Get<std::string, std::string>(params, "epsilon", "0.005")))
-        , m_stepSize(std::stof(MapHelpers::Get<std::string, std::string>(params, "step", "0.01")))
+              std::stof(Common::MapHelpers::Get<std::string, std::string>(params, "epsilon", "0.005")))
+        , m_stepSize(std::stof(Common::MapHelpers::Get<std::string, std::string>(params, "step", "0.01")))
         , m_resolution(
-              std::stof(MapHelpers::Get<std::string, std::string>(params, "resolution", "0.1")))
+              std::stof(Common::MapHelpers::Get<std::string, std::string>(params, "resolution", "0.1")))
         , m_maxIterations(
-              std::stoi(MapHelpers::Get<std::string, std::string>(params, "maxiter", "35")))
+              std::stoi(Common::MapHelpers::Get<std::string, std::string>(params, "maxiter", "35")))
         , m_voxelDownsamplePercentage(
-              std::stod(MapHelpers::Get<std::string, std::string>(params, "downsample", "0.1")))
+              std::stod(Common::MapHelpers::Get<std::string, std::string>(params, "downsample", "0.1")))
     {
       Common::LoggingService::Instance().getLogger("ITaskAlignment")->info("Created: {}", *this);
     }
 
-    friend std::ostream &operator<<(std::ostream &s, const ITaskAlignment<POINT_TYPE> &t)
+    friend std::ostream &operator<<(std::ostream &s, const ITaskAlignment &t)
     {
       s << "ITaskAlignment("
         << "epsilon=" << t.m_transformationEpsilon << ","
@@ -48,7 +49,7 @@ namespace Processing
     }
 
   protected:
-    void setNDTParameters(pcl::NormalDistributionsTransform<POINT_TYPE, POINT_TYPE> &ndt)
+    void setNDTParameters(pcl::NormalDistributionsTransform<PointT, PointT> &ndt)
     {
       ndt.setTransformationEpsilon(m_transformationEpsilon);
       ndt.setStepSize(m_stepSize);
@@ -56,7 +57,7 @@ namespace Processing
       ndt.setMaximumIterations(m_maxIterations);
     }
 
-    void setICPParameters(pcl::IterativeClosestPoint<POINT_TYPE, POINT_TYPE> &icp)
+    void setICPParameters(pcl::IterativeClosestPoint<PointT, PointT> &icp)
     {
       /* TODO */
     }

@@ -11,6 +11,7 @@
 
 #include <boost/filesystem.hpp>
 #include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
 
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/IMUFrame.h>
@@ -19,14 +20,15 @@ namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE> class IFrameProcessingTask
+  class IFrameProcessingTask
   {
   public:
-    typedef pcl::PointCloud<POINT_TYPE> Cloud;
+    typedef pcl::PointXYZRGBA PointT;
+    typedef pcl::PointCloud<PointT> Cloud;
     typedef typename Cloud::Ptr CloudPtr;
     typedef typename Cloud::ConstPtr CloudConstPtr;
 
-    typedef std::shared_ptr<IFrameProcessingTask<POINT_TYPE>> Ptr;
+    typedef std::shared_ptr<IFrameProcessingTask> Ptr;
 
   public:
     struct Task
@@ -119,7 +121,7 @@ namespace Processing
       return m_run.load();
     }
 
-    inline size_t queueLength() const
+    inline size_t queueLength()
     {
       std::lock_guard<std::mutex> lock(m_taskQueueMutex);
       return m_taskQueue.size();

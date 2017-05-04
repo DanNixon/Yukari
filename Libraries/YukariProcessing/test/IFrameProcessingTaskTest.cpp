@@ -12,7 +12,7 @@ namespace Yukari
 {
 namespace Processing
 {
-  class MockTask : public IFrameProcessingTask<pcl::PointXYZ>
+  class MockTask : public IFrameProcessingTask
   {
   public:
     MockTask()

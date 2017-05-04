@@ -16,8 +16,7 @@ namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE>
-  class TaskNDTIncrementalAlignment : public ITaskAlignment<POINT_TYPE>
+  class TaskNDTIncrementalAlignment : public ITaskAlignment
   {
   public:
     TaskNDTIncrementalAlignment(const boost::filesystem::path &path,
@@ -31,14 +30,14 @@ namespace Processing
     {
       /* Parse save transforms option */
       std::string saveTransformParam =
-          MapHelpers::Get<std::string, std::string>(params, "transform", "true");
-      StringParsers::CleanString(saveTransformParam);
+        Common::MapHelpers::Get<std::string, std::string>(params, "transform", "true");
+      Common::StringParsers::CleanString(saveTransformParam);
       m_saveTransforms = saveTransformParam == "true";
 
       /* Parse save clouds option */
       std::string saveCloudParam =
-          MapHelpers::Get<std::string, std::string>(params, "cloud", "false");
-      StringParsers::CleanString(saveCloudParam);
+          Common::MapHelpers::Get<std::string, std::string>(params, "cloud", "false");
+      Common::StringParsers::CleanString(saveCloudParam);
       m_saveClouds = saveCloudParam == "true";
     }
 
@@ -63,11 +62,11 @@ namespace Processing
       else
       {
         /* Downsample the input cloud for alignment */
-        auto filteredInputCloud = Processing::CloudOperations<POINT_TYPE>::DownsampleVoxelFilter(
+        auto filteredInputCloud = Processing::CloudOperations<PointT>::DownsampleVoxelFilter(
             t.cloud, m_voxelDownsamplePercentage);
 
         /* Perform alignment */
-        pcl::NormalDistributionsTransform<POINT_TYPE, POINT_TYPE> ndt;
+        pcl::NormalDistributionsTransform<PointT, PointT> ndt;
         setNDTParameters(ndt);
 
         ndt.setInputSource(filteredInputCloud);
@@ -92,7 +91,7 @@ namespace Processing
       m_previousCloud = CloudPtr(new Cloud(*t.cloud));
 
       /* Transform the previous/target cloud by it's world position (for next frame) */
-      pcl::transformPointCloud<POINT_TYPE>(*m_previousCloud, *m_previousCloud,
+      pcl::transformPointCloud<PointT>(*m_previousCloud, *m_previousCloud,
                                            m_previousCloudWorldTransform);
 
       /* Save transformed cloud */
@@ -107,7 +106,7 @@ namespace Processing
       /* Save transformation */
       if (m_saveClouds)
       {
-        IMUFrame transformFrame(m_previousCloudWorldTransform);
+        IMU::IMUFrame transformFrame(m_previousCloudWorldTransform);
         boost::filesystem::path imuFilename = m_outputDirectory / (frameNoStr + "_transform.txt");
         transformFrame.save(imuFilename);
       }

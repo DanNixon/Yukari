@@ -16,8 +16,7 @@ namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE>
-  class TaskNDTWorldSegmentAlignment : public ITaskAlignment<POINT_TYPE>
+  class TaskNDTWorldSegmentAlignment : public ITaskAlignment
   {
   public:
     TaskNDTWorldSegmentAlignment(const boost::filesystem::path &path,

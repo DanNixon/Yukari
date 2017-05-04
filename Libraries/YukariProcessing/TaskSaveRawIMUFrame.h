@@ -16,7 +16,7 @@ namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE> class TaskSaveRawIMUFrame : public IFrameProcessingTask<POINT_TYPE>
+  class TaskSaveRawIMUFrame : public IFrameProcessingTask
   {
   public:
     TaskSaveRawIMUFrame(const boost::filesystem::path &path)

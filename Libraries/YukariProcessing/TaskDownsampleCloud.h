@@ -14,7 +14,7 @@ namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE> class TaskDownsampleCloud : public ITaskAlignment<POINT_TYPE>
+  class TaskDownsampleCloud : public ITaskAlignment
   {
   public:
     TaskDownsampleCloud(const boost::filesystem::path &path,
@@ -38,7 +38,7 @@ namespace Processing
       std::string frameNoStr = ss.str();
 
       /* Downsample the input cloud for alignment */
-      auto filteredInputCloud = Processing::CloudOperations<POINT_TYPE>::DownsampleVoxelFilter(
+      auto filteredInputCloud = Processing::CloudOperations<PointT>::DownsampleVoxelFilter(
           t.cloud, m_voxelDownsamplePercentage);
 
       /* Save transformed cloud */

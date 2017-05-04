@@ -16,7 +16,7 @@ namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE> class TaskICPWorldAlignment : public ITaskAlignment<POINT_TYPE>
+  class TaskICPWorldAlignment : public ITaskAlignment
   {
   public:
     TaskICPWorldAlignment(const boost::filesystem::path &path,
@@ -56,11 +56,11 @@ namespace Processing
         /* Otherwise alignment is required */
 
         /* Downsample the input cloud for alignment */
-        auto filteredInputCloud = Processing::CloudOperations<POINT_TYPE>::DownsampleVoxelFilter(
+        auto filteredInputCloud = Processing::CloudOperations<PointT>::DownsampleVoxelFilter(
             inputCloud, m_voxelDownsamplePercentage);
 
         /* Perform alignment */
-        pcl::IterativeClosestPoint<POINT_TYPE, POINT_TYPE> icp;
+        pcl::IterativeClosestPoint<PointT, PointT> icp;
         setICPParameters(icp);
 
         icp.setInputSource(filteredInputCloud);
