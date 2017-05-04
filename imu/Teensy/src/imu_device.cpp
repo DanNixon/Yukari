@@ -38,6 +38,7 @@ VectorInt16 g_accel;
 VectorInt16 g_realAccel;
 VectorInt16 g_worldAccel;
 VectorFloat g_worldAccelMS2;
+uint8_t g_worldAccelMS2Zero[3];
 
 uint8_t g_accelSamples = 0;
 VectorFloat g_worldAccelMS2LPFAccum;
@@ -105,6 +106,22 @@ void taskDMP()
 
     g_worldAccelMS2 =
         VectorFloat(g_worldAccel.x, g_worldAccel.y, g_worldAccel.z - 5150) * ACCEL_COEFF;
+
+    for (uint8_t i = 0; i < 3; i++)
+    {
+      if (g_worldAccelMS2[i] < 0.5f)
+      {
+        g_worldAccelMS2Zero[i]++;
+      }
+      else
+      {
+        g_worldAccelMS2Zero[i] = 0;
+      }
+
+      if (g_worldAccelMS2Zero[i] >= 10)
+        g_worldAccelMS2[i] = 0.0f;
+    }
+
     g_worldAccelMS2LPFAccum += g_worldAccelMS2 / 8.0f;
     g_accelSamples++;
 
@@ -255,8 +272,15 @@ void taskDebugPrintCSV()
   DEBUG_SERIAL.print(g_quat.z);
   DEBUG_SERIAL.print(",");
 
-  DEBUG_SERIAL.printf("%d,%d,%d,%d,%d,%d,%d,%d,%d,", g_accel.x, g_accel.y, g_accel.z, g_realAccel.x,
-                      g_realAccel.y, g_realAccel.z, g_worldAccel.x, g_worldAccel.y, g_worldAccel.z);
+  DEBUG_SERIAL.printf("%d,%d,%d,%d,%d,%d,", g_accel.x, g_accel.y, g_accel.z, g_realAccel.x,
+                      g_realAccel.y, g_realAccel.z);
+
+  DEBUG_SERIAL.print(g_worldAccelMS2.x);
+  DEBUG_SERIAL.print(",");
+  DEBUG_SERIAL.print(g_worldAccelMS2.y);
+  DEBUG_SERIAL.print(",");
+  DEBUG_SERIAL.print(g_worldAccelMS2.z);
+  DEBUG_SERIAL.print(",");
 
   DEBUG_SERIAL.print(g_velocity.x);
   DEBUG_SERIAL.print(",");
@@ -404,6 +428,9 @@ void imu_device_init()
 #ifdef DEBU2
   DEBUG_SERIuAL.printf("IMU init: %d\n", g_imu.testConnection());
 #endif /* DEBUG */
+
+  for (uint8_t i = 0; i < 3; i++)
+    g_worldAccelMS2Zero[i] = 0;
 
   /* Calibration sample */
   int64_t axa = 0;

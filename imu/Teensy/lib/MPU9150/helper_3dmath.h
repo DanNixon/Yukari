@@ -117,6 +117,19 @@ public:
     z = nz;
   }
 
+  int16_t &operator[](int i)
+  {
+    switch (i)
+    {
+    case 0:
+      return x;
+    case 1:
+      return y;
+    case 2:
+      return z;
+    }
+  }
+
   float getMagnitude()
   {
     return sqrt(x * x + y * y + z * z);
@@ -191,6 +204,19 @@ public:
     x = nx;
     y = ny;
     z = nz;
+  }
+
+  float &operator[](int i)
+  {
+    switch (i)
+    {
+    case 0:
+      return x;
+    case 1:
+      return y;
+    case 2:
+      return z;
+    }
   }
 
   void toZero()
