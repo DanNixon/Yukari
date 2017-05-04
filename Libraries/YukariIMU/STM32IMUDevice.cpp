@@ -44,6 +44,14 @@ namespace IMU
     {
       m_logger->error("Incorrect number of bytes received: {} (expected {})", bytesTransfered,
                       numBytesToRx);
+	  m_port.flush();
+      return nullptr;
+    }
+
+    if (buffer.front() != '#')
+    {
+      m_logger->error("Incorrect frame header for data packet.");
+	  m_port.flush();
       return nullptr;
     }
 
@@ -53,6 +61,7 @@ namespace IMU
     {
       m_logger->error("Incorrect number of bytes received: {} (expected {})", bytesTransfered,
                       numBytesToRx);
+	  m_port.flush();
       return nullptr;
     }
 
@@ -92,6 +101,8 @@ namespace IMU
                           (float)u.values.d_y / POS_DIVISOR);
     }
 
+	m_port.flush();
+
     return retVal;
   }
 
@@ -104,6 +115,7 @@ namespace IMU
     }
 
     m_port.write(std::vector<uint8_t>{'c'});
+	m_port.flush();
   }
 
   void STM32IMUDevice::resetDisplacement()
@@ -115,6 +127,7 @@ namespace IMU
     }
 
     m_port.write(std::vector<uint8_t>{'r'});
+	m_port.flush();
   }
 }
 }

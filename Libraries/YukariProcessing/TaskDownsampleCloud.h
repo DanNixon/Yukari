@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "ITaskNDTAlignment.h"
+#include "ITaskAlignment.h"
 
 #include <pcl/io/pcd_io.h>
 
@@ -14,12 +14,12 @@ namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE> class TaskDownsampleCloud : public ITaskNDTAlignment<POINT_TYPE>
+  template <typename POINT_TYPE> class TaskDownsampleCloud : public ITaskAlignment<POINT_TYPE>
   {
   public:
     TaskDownsampleCloud(const boost::filesystem::path &path,
                         std::map<std::string, std::string> &params)
-        : ITaskNDTAlignment(path, params)
+        : ITaskAlignment(path, params)
         , m_logger(Common::LoggingService::Instance().getLogger("TaskDownsampleCloud"))
     {
     }

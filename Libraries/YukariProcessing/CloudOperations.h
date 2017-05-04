@@ -32,24 +32,9 @@ namespace Processing
           Common::LoggingService::Instance().getLogger("CloudOperations_DownsampleVoxelFilter");
       logger->debug("Input cloud size: {} points", cloud->size());
 
-      POINT_TYPE min, max;
-      pcl::getMinMax3D<POINT_TYPE>(*cloud, min, max);
-
-      float maxAxis = std::numeric_limits<float>::min();
-      float axis;
-      for (size_t i = 0; i < 3; i++)
-      {
-        axis = max.data[i] - min.data[i];
-        if (axis > maxAxis)
-          maxAxis = axis;
-      }
-
-      double leafSize = maxAxis * downsamplePercentage;
-      logger->debug("Leaf size: {} (longest axis length: {})", leafSize, maxAxis);
-
       CloudPtr filteredInputCloud(new Cloud());
       pcl::ApproximateVoxelGrid<POINT_TYPE> voxelFilter;
-      voxelFilter.setLeafSize(leafSize, leafSize, leafSize);
+      voxelFilter.setLeafSize(downsamplePercentage, downsamplePercentage, downsamplePercentage);
       voxelFilter.setInputCloud(cloud);
       voxelFilter.filter(*filteredInputCloud);
 

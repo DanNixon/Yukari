@@ -4,6 +4,8 @@
 
 #include <memory>
 
+#include <spdlog/sinks/file_sinks.h>
+
 #include <YukariCloudCapture/CloudGrabberFactory.h>
 #include <YukariCommon/LoggingService.h>
 #include <YukariIMU/IMUGrabberFactory.h>
@@ -34,6 +36,12 @@ namespace Capture
     auto dir =
         boost::filesystem::absolute(boost::filesystem::path(config["dir"].as<std::string>()));
     logger->info("Absolute output directory: {}", dir);
+
+    /* Output a log file in the output directory */
+    boost::filesystem::path logFilename = dir / "log.txt";
+    auto fileSink = std::make_shared<spdlog::sinks::simple_file_sink_mt>(logFilename.string());
+    LoggingService::Instance().getSink()->addSink("file", fileSink);
+    logger->debug("Added file sink");
 
     /* Get termination wait flag */
     bool forceExit = config.count("forceexit") > 0;

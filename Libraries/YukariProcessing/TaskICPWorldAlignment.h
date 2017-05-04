@@ -74,7 +74,6 @@ namespace Processing
           m_logger->debug("Convergence reached");
         else
           m_logger->warn("Convergence not reached");
-        m_logger->debug("After {} iterations", icp.getFinalNumIteration());
         m_logger->debug("Fitness score: {}", icp.getFitnessScore());
 
         /* Translate full input cloud */

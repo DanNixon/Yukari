@@ -11,6 +11,7 @@ set(HEADERS
   TaskNDTIncrementalAlignment.h
   TaskNDTWorldAlignment.h
   TaskNDTWorldSegmentAlignment.h
+  TaskPairAlignment.h
   TaskSaveRawCloud.h
   TaskSaveRawIMUFrame.h)
 
@@ -23,7 +24,7 @@ set(LIB_DEPS
 
 set(TESTS
   test/IFrameProcessingTaskTest.cpp
-  test/ITaskNDTAlignmentTest.cpp)
+  test/ITaskAlignmentTest.cpp)
 
 add_library(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} ${LIB_DEPS})

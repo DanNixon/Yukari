@@ -192,7 +192,7 @@ namespace Capture
       return;
     }
 
-    m_logger->info("Frame capture triggered");
+    m_logger->info("Frame capture triggered for frame {}", m_currentFrameCount);
     LoggingService::Instance().flush();
 
     static const size_t NUM_ATTEMPTS = 5;

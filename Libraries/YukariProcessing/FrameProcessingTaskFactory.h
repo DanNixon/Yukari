@@ -9,9 +9,11 @@
 #include <YukariCommon/StringParsers.h>
 #include <YukariProcessing/TaskAppendTransformedClouds.h>
 #include <YukariProcessing/TaskDownsampleCloud.h>
+#include <YukariProcessing/TaskICPWorldAlignment.h>
 #include <YukariProcessing/TaskNDTIncrementalAlignment.h>
 #include <YukariProcessing/TaskNDTWorldAlignment.h>
 #include <YukariProcessing/TaskNDTWorldSegmentAlignment.h>
+#include <YukariProcessing/TaskPairAlignment.h>
 #include <YukariProcessing/TaskSaveRawCloud.h>
 #include <YukariProcessing/TaskSaveRawIMUFrame.h>
 
@@ -56,6 +58,10 @@ namespace Processing
       {
         task = std::make_shared<TaskDownsampleCloud<POINT_TYPE>>(outDir, parameters);
       }
+      else if (lowerType == "icpworld")
+      {
+        task = std::make_shared<TaskICPWorldAlignment<POINT_TYPE>>(outDir, parameters);
+      }
       else if (lowerType == "ndtincremental")
       {
         task = std::make_shared<TaskNDTIncrementalAlignment<POINT_TYPE>>(outDir, parameters);
@@ -67,6 +73,10 @@ namespace Processing
       else if (lowerType == "ndtworldsegment")
       {
         task = std::make_shared<TaskNDTWorldSegmentAlignment<POINT_TYPE>>(outDir, parameters);
+      }
+      else if (lowerType == "pairalign")
+      {
+        task = std::make_shared<TaskPairAlignment<POINT_TYPE>>(outDir, parameters);
       }
       else if (lowerType == "savecloud")
       {

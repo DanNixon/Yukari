@@ -17,7 +17,10 @@ namespace IMU
   void ISerialGrabber::open()
   {
     if (!m_port.isOpen())
+    {
       m_port.open();
+      m_port.flush();
+    }
   }
 
   void ISerialGrabber::close()
