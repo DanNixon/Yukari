@@ -6,7 +6,7 @@
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
-#include <pcl/registration/ndt.h>
+#include <pcl/registration/icp.h>
 
 #include <YukariCommon/LoggingService.h>
 
@@ -16,13 +16,13 @@ namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE> class TaskNDTWorldAlignment : public ITaskAlignment<POINT_TYPE>
+  template <typename POINT_TYPE> class TaskICPWorldAlignment : public ITaskAlignment<POINT_TYPE>
   {
   public:
-    TaskNDTWorldAlignment(const boost::filesystem::path &path,
+    TaskICPWorldAlignment(const boost::filesystem::path &path,
                           std::map<std::string, std::string> &params)
         : ITaskAlignment(path, params)
-        , m_logger(Common::LoggingService::Instance().getLogger("TaskNDTWorldAlignment"))
+        , m_logger(Common::LoggingService::Instance().getLogger("TaskICPWorldAlignment"))
         , m_worldCloud()
     {
     }
@@ -60,25 +60,25 @@ namespace Processing
             inputCloud, m_voxelDownsamplePercentage);
 
         /* Perform alignment */
-        pcl::NormalDistributionsTransform<POINT_TYPE, POINT_TYPE> ndt;
-        setNDTParameters(ndt);
+        pcl::IterativeClosestPoint<POINT_TYPE, POINT_TYPE> icp;
+        setICPParameters(icp);
 
-        ndt.setInputSource(filteredInputCloud);
-        ndt.setInputTarget(m_worldCloud);
+        icp.setInputSource(filteredInputCloud);
+        icp.setInputTarget(m_worldCloud);
 
         /* Run alignment (operating on transformed point cloud so no/identity initial guess) */
         CloudPtr transformedInputCloud(new Cloud());
-        ndt.align(*transformedInputCloud, Eigen::Matrix4f::Identity());
+        icp.align(*transformedInputCloud, Eigen::Matrix4f::Identity());
 
-        if (ndt.hasConverged())
+        if (icp.hasConverged())
           m_logger->debug("Convergence reached");
         else
           m_logger->warn("Convergence not reached");
-        m_logger->debug("After {} iterations", ndt.getFinalNumIteration());
-        m_logger->debug("Normal Distributions Transform score: {}", ndt.getFitnessScore());
+        m_logger->debug("After {} iterations", icp.getFinalNumIteration());
+        m_logger->debug("Fitness score: {}", icp.getFitnessScore());
 
         /* Translate full input cloud */
-        pcl::transformPointCloud(*inputCloud, *transformedInputCloud, ndt.getFinalTransformation());
+        pcl::transformPointCloud(*inputCloud, *transformedInputCloud, icp.getFinalTransformation());
 
         /* Add translated cloud to world cloud */
         *m_worldCloud += *transformedInputCloud;

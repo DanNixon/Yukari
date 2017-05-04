@@ -8,6 +8,7 @@
 #include <ostream>
 #include <string>
 
+#include <pcl/registration/icp.h>
 #include <pcl/registration/ndt.h>
 
 #include <YukariCommon/LoggingService.h>
@@ -16,11 +17,10 @@ namespace Yukari
 {
 namespace Processing
 {
-  template <typename POINT_TYPE> class ITaskNDTAlignment : public IFrameProcessingTask<POINT_TYPE>
+  template <typename POINT_TYPE> class ITaskAlignment : public IFrameProcessingTask<POINT_TYPE>
   {
   public:
-    ITaskNDTAlignment(const boost::filesystem::path &path,
-                      std::map<std::string, std::string> &params)
+    ITaskAlignment(const boost::filesystem::path &path, std::map<std::string, std::string> &params)
         : IFrameProcessingTask(path)
         , m_transformationEpsilon(
               std::stof(MapHelpers::Get<std::string, std::string>(params, "epsilon", "0.005")))
@@ -32,12 +32,12 @@ namespace Processing
         , m_voxelDownsamplePercentage(
               std::stod(MapHelpers::Get<std::string, std::string>(params, "downsample", "0.01")))
     {
-      Common::LoggingService::Instance().getLogger("ITaskNDTAlignment")->info("Created: {}", *this);
+      Common::LoggingService::Instance().getLogger("ITaskAlignment")->info("Created: {}", *this);
     }
 
-    friend std::ostream &operator<<(std::ostream &s, const ITaskNDTAlignment<POINT_TYPE> &t)
+    friend std::ostream &operator<<(std::ostream &s, const ITaskAlignment<POINT_TYPE> &t)
     {
-      s << "ITaskNDTAlignment("
+      s << "ITaskAlignment("
         << "epsilon=" << t.m_transformationEpsilon << ","
         << "step=" << t.m_stepSize << ","
         << "resolution=" << t.m_resolution << ","
@@ -56,12 +56,22 @@ namespace Processing
       ndt.setMaximumIterations(m_maxIterations);
     }
 
+    void setICPParameters(pcl::IterativeClosestPoint<POINT_TYPE, POINT_TYPE> &icp)
+    {
+      /* TODO */
+    }
+
   protected:
+    /* NDT parameters */
     double m_transformationEpsilon;
     double m_stepSize;
     double m_resolution;
     int m_maxIterations;
 
+    /* ICP parameters */
+    /* TODO */
+
+    /* Voxel filter parameters */
     double m_voxelDownsamplePercentage;
   };
 }

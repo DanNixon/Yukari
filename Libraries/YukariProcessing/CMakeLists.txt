@@ -4,9 +4,10 @@ set(HEADERS
   CloudOperations.h
   FrameProcessingTaskFactory.h
   IFrameProcessingTask.h
-  ITaskNDTAlignment.h
+  ITaskAlignment.h
   TaskAppendTransformedClouds.h
   TaskDownsampleCloud.h
+  TaskICPWorldAlignment.h
   TaskNDTIncrementalAlignment.h
   TaskNDTWorldAlignment.h
   TaskNDTWorldSegmentAlignment.h
