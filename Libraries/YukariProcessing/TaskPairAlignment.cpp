@@ -8,6 +8,7 @@
 #include <pcl/registration/icp_nl.h>
 
 #include "CloudOperations.h"
+#include "PairRegistrationPointRepresentation.h"
 
 using namespace Yukari::Common;
 
@@ -68,7 +69,7 @@ namespace Processing
       normalEst.compute(*targetNormals);
 
       /* Init registration */
-      RegistrationPointRepresentation pr;
+      PairRegistrationPointRepresentation pr;
       float alpha[4] = {1.0, 1.0, 1.0, 1.0};
       pr.setRescaleValues(alpha);
 
@@ -77,7 +78,7 @@ namespace Processing
       reg.setTransformationEpsilon(1e-6);
       reg.setMaxCorrespondenceDistance(0.001);
 
-      reg.setPointRepresentation(boost::make_shared<const RegistrationPointRepresentation>(pr));
+      reg.setPointRepresentation(boost::make_shared<const PairRegistrationPointRepresentation>(pr));
 
       reg.setInputSource(sourceNormals);
       reg.setInputTarget(targetNormals);
@@ -92,8 +93,7 @@ namespace Processing
         m_logger->warn("Convergence not reached");
       m_logger->debug("Fitness score: {}", reg.getFitnessScore());
 
-      Eigen::Matrix4f transformNormal = reg.getFinalTransformation();
-      Eigen::Matrix4f transform = transformNormal.inverse();
+      Eigen::Matrix4f transform = reg.getFinalTransformation();
       m_logger->debug("Final transform: {}", transform);
 
       /* Translate full input cloud */

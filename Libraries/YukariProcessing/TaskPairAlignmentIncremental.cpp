@@ -1,15 +1,17 @@
 /** @file */
 
-#include "TaskNDTIncrementalAlignment.h"
+#include "TaskPairAlignmentIncremental.h"
 
 #include <pcl/common/transforms.h>
+#include <pcl/features/normal_3d.h>
 #include <pcl/io/pcd_io.h>
-#include <pcl/registration/ndt.h>
+#include <pcl/registration/icp_nl.h>
 
 #include <YukariCommon/MapHelpers.h>
 #include <YukariCommon/StringParsers.h>
 
 #include "CloudOperations.h"
+#include "PairRegistrationPointRepresentation.h"
 
 using namespace Yukari::Common;
 
@@ -17,10 +19,10 @@ namespace Yukari
 {
 namespace Processing
 {
-  TaskNDTIncrementalAlignment::TaskNDTIncrementalAlignment(
+  TaskPairAlignmentIncremental::TaskPairAlignmentIncremental(
       const boost::filesystem::path &path, std::map<std::string, std::string> &params)
       : ITaskAlignment(path, params)
-      , m_logger(LoggingService::Instance().getLogger("TaskNDTIncrementalAlignment"))
+      , m_logger(LoggingService::Instance().getLogger("TaskPairAlignmentIncremental"))
       , m_saveTransforms(false)
       , m_saveClouds(false)
       , m_previousCloud()
@@ -39,14 +41,13 @@ namespace Processing
     m_saveClouds = saveCloudParam == "true";
   }
 
-  int TaskNDTIncrementalAlignment::process(Task t)
+  int TaskPairAlignmentIncremental::process(Task t)
   {
     if (!(t.cloud && t.imuFrame))
     {
       m_logger->error("Do not have both cloud and IMU frame");
       return 1;
     }
-
     /* Format frame number */
     std::stringstream ss;
     ss << std::setw(5) << std::setfill('0') << t.frameNumber;
@@ -59,30 +60,56 @@ namespace Processing
     }
     else
     {
-      /* Downsample the input cloud for alignment */
+      /* Downsample the input and world cloud for alignment */
       auto filteredInputCloud = Processing::CloudOperations<PointT>::DownsampleVoxelFilter(
           t.cloud, m_voxelDownsamplePercentage);
+      auto filteredWorldCloud = Processing::CloudOperations<PointT>::DownsampleVoxelFilter(
+          m_previousCloud, m_voxelDownsamplePercentage);
 
-      /* Perform alignment */
-      pcl::NormalDistributionsTransform<PointT, PointT> ndt;
-      setNDTParameters(ndt);
+      /* Compute normals and curvature */
+      pcl::PointCloud<pcl::PointNormal>::Ptr sourceNormals(new pcl::PointCloud<pcl::PointNormal>());
+      pcl::PointCloud<pcl::PointNormal>::Ptr targetNormals(new pcl::PointCloud<pcl::PointNormal>());
 
-      ndt.setInputSource(filteredInputCloud);
-      ndt.setInputTarget(m_previousCloud);
+      pcl::NormalEstimation<PointT, pcl::PointNormal> normalEst;
+      pcl::search::KdTree<PointT>::Ptr tree(new pcl::search::KdTree<PointT>());
+      normalEst.setSearchMethod(tree);
+      // normalEst.setRadiusSearch(0.1);
+      normalEst.setKSearch(30);
 
-      /* Run alignment */
-      CloudPtr transformedInputCloud(new Cloud());
+      normalEst.setInputCloud(filteredInputCloud);
+      normalEst.compute(*sourceNormals);
+
+      normalEst.setInputCloud(filteredWorldCloud);
+      normalEst.compute(*targetNormals);
+
+      /* Init registration */
+      PairRegistrationPointRepresentation pr;
+      float alpha[4] = {1.0, 1.0, 1.0, 1.0};
+      pr.setRescaleValues(alpha);
+
+      pcl::IterativeClosestPointNonLinear<pcl::PointNormal, pcl::PointNormal> reg;
+      reg.setMaximumIterations(50);
+      reg.setTransformationEpsilon(1e-9);
+      reg.setMaxCorrespondenceDistance(0.0005);
+
+      reg.setPointRepresentation(boost::make_shared<const PairRegistrationPointRepresentation>(pr));
+
+      reg.setInputSource(sourceNormals);
+      reg.setInputTarget(targetNormals);
+
+      /* Align */
+      pcl::PointCloud<pcl::PointNormal>::Ptr regResult(new pcl::PointCloud<pcl::PointNormal>());
       Eigen::Matrix4f initialGuess = t.imuFrame->toCloudTransform();
-      ndt.align(*transformedInputCloud, initialGuess);
+      reg.align(*regResult, initialGuess);
 
-      if (ndt.hasConverged())
+      if (reg.hasConverged())
         m_logger->debug("Convergence reached");
       else
         m_logger->warn("Convergence not reached");
-      m_logger->debug("Normal Distributions Transform score: {}", ndt.getFitnessScore());
+      m_logger->debug("Fitness score: {}", reg.getFitnessScore());
 
-      /* Get transform from world origin to inoput cloud position */
-      m_previousCloudWorldTransform = ndt.getFinalTransformation();
+      m_previousCloudWorldTransform = reg.getFinalTransformation();
+      m_logger->debug("Final transform: {}", m_previousCloudWorldTransform);
     }
 
     /* Set previous cloud */

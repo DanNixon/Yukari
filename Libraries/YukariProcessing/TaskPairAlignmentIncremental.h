@@ -10,17 +10,22 @@ namespace Yukari
 {
 namespace Processing
 {
-  class TaskNDTWorldSegmentAlignment : public ITaskAlignment
+  class TaskPairAlignmentIncremental : public ITaskAlignment
   {
   public:
-    TaskNDTWorldSegmentAlignment(const boost::filesystem::path &path,
+    TaskPairAlignmentIncremental(const boost::filesystem::path &path,
                                  std::map<std::string, std::string> &params);
 
     virtual int process(Task t) override;
-    virtual int onStop() override;
 
   private:
     Common::LoggingService::Logger m_logger;
+
+    bool m_saveTransforms;
+    bool m_saveClouds;
+
+    CloudPtr m_previousCloud;
+    Eigen::Matrix4f m_previousCloudWorldTransform;
   };
 }
 }

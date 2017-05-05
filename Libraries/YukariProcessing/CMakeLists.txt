@@ -5,13 +5,14 @@ set(HEADERS
   FrameProcessingTaskFactory.h
   IFrameProcessingTask.h
   ITaskAlignment.h
+  PairRegistrationPointRepresentation.h
   TaskAppendTransformedClouds.h
   TaskDownsampleCloud.h
   TaskICPWorldAlignment.h
   TaskNDTIncrementalAlignment.h
   TaskNDTWorldAlignment.h
-  TaskNDTWorldSegmentAlignment.h
   TaskPairAlignment.h
+  TaskPairAlignmentIncremental.h
   TaskSaveRawCloud.h
   TaskSaveRawIMUFrame.h)
 
@@ -24,7 +25,7 @@ set(SOURCES
   TaskICPWorldAlignment.cpp
   TaskNDTIncrementalAlignment.cpp
   TaskNDTWorldAlignment.cpp
-  TaskNDTWorldSegmentAlignment.cpp
+  TaskPairAlignmentIncremental.cpp
   TaskPairAlignment.cpp
   TaskSaveRawCloud.cpp
   TaskSaveRawIMUFrame.cpp)

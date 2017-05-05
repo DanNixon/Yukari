@@ -10,8 +10,8 @@
 #include "TaskICPWorldAlignment.h"
 #include "TaskNDTIncrementalAlignment.h"
 #include "TaskNDTWorldAlignment.h"
-#include "TaskNDTWorldSegmentAlignment.h"
 #include "TaskPairAlignment.h"
+#include "TaskPairAlignmentIncremental.h"
 #include "TaskSaveRawCloud.h"
 #include "TaskSaveRawIMUFrame.h"
 
@@ -67,13 +67,13 @@ namespace Processing
     {
       task = std::make_shared<TaskNDTWorldAlignment>(outDir, parameters);
     }
-    else if (lowerType == "ndtworldsegment")
-    {
-      task = std::make_shared<TaskNDTWorldSegmentAlignment>(outDir, parameters);
-    }
     else if (lowerType == "pairalign")
     {
       task = std::make_shared<TaskPairAlignment>(outDir, parameters);
+    }
+    else if (lowerType == "pairalignincremental")
+    {
+      task = std::make_shared<TaskPairAlignmentIncremental>(outDir, parameters);
     }
     else if (lowerType == "savecloud")
     {
