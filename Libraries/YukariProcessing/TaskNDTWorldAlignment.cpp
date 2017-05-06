@@ -21,7 +21,7 @@ namespace Processing
   {
   }
 
-  int TaskNDTWorldAlignment::process(Task t)
+  void TaskNDTWorldAlignment::doAlignment(Task t)
   {
     CloudPtr inputCloud(new Cloud());
 

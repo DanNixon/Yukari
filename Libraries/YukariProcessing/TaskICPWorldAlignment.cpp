@@ -18,11 +18,10 @@ namespace Processing
                                                std::map<std::string, std::string> &params)
       : ITaskWorldAlignment(path, params)
       , m_logger(LoggingService::Instance().getLogger("TaskICPWorldAlignment"))
-      , m_worldCloud()
   {
   }
 
-  void TaskICPWorldAlignment::doAlignment(Task t) override;
+  void TaskICPWorldAlignment::doAlignment(Task t)
   {
     CloudPtr inputCloud(new Cloud());
 
