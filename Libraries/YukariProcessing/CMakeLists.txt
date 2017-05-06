@@ -5,6 +5,8 @@ set(HEADERS
   FrameProcessingTaskFactory.h
   IFrameProcessingTask.h
   ITaskAlignment.h
+  ITaskIncrementalAlignment.h
+  ITaskWorldAlignment.h
   PairRegistrationPointRepresentation.h
   TaskAppendTransformedClouds.h
   TaskDownsampleCloud.h
@@ -20,6 +22,8 @@ set(SOURCES
   FrameProcessingTaskFactory.cpp
   IFrameProcessingTask.cpp
   ITaskAlignment.cpp
+  ITaskIncrementalAlignment.cpp
+  ITaskWorldAlignment.cpp
   TaskAppendTransformedClouds.cpp
   TaskDownsampleCloud.cpp
   TaskICPWorldAlignment.cpp

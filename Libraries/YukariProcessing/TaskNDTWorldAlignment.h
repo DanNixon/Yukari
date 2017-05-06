@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "ITaskAlignment.h"
+#include "ITaskWorldAlignment.h"
 
 #include <YukariCommon/LoggingService.h>
 
@@ -10,24 +10,17 @@ namespace Yukari
 {
 namespace Processing
 {
-  class TaskNDTWorldAlignment : public ITaskAlignment
+  class TaskNDTWorldAlignment : public ITaskWorldAlignment
   {
   public:
     TaskNDTWorldAlignment(const boost::filesystem::path &path,
                           std::map<std::string, std::string> &params);
 
-    inline CloudPtr worldCloud()
-    {
-      return m_worldCloud;
-    }
-
-    virtual int process(Task t) override;
-    virtual int onStop() override;
+  protected:
+    virtual void doAlignment(Task t) override;
 
   private:
     Common::LoggingService::Logger m_logger;
-
-    CloudPtr m_worldCloud;
   };
 }
 }

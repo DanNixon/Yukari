@@ -36,6 +36,8 @@ namespace Processing
     void setNDTParameters(pcl::NormalDistributionsTransform<PointT, PointT> &ndt);
     void setICPParameters(pcl::IterativeClosestPoint<PointT, PointT> &icp);
 
+    virtual void doAlignment(Task t) = 0;
+
   protected:
     /* NDT parameters */
     double m_transformationEpsilon;
