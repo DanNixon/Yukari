@@ -49,13 +49,13 @@ namespace Processing
 
     /* Init registration */
     PairRegistrationPointRepresentation pr;
-    float alpha[4] = {1.0, 1.0, 1.0, 1.0};
+    float alpha[4] = {1.0f, 1.0f, 1.0f, 1.0f};
     pr.setRescaleValues(alpha);
 
     pcl::IterativeClosestPointNonLinear<pcl::PointNormal, pcl::PointNormal> reg;
     reg.setMaximumIterations(50);
-    reg.setTransformationEpsilon(1e-9);
-    reg.setMaxCorrespondenceDistance(0.0005);
+    reg.setTransformationEpsilon(1e-6);
+    reg.setMaxCorrespondenceDistance(0.001);
 
     reg.setPointRepresentation(boost::make_shared<const PairRegistrationPointRepresentation>(pr));
 

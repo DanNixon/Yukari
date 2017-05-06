@@ -14,7 +14,7 @@ namespace Processing
   {
   public:
     TaskPairWorldAlignment(const boost::filesystem::path &path,
-                      std::map<std::string, std::string> &params);
+                           std::map<std::string, std::string> &params);
 
   protected:
     virtual void doAlignment(Task t) override;

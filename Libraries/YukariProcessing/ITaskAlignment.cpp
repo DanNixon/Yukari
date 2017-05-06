@@ -37,7 +37,12 @@ namespace Processing
 
   void ITaskAlignment::setICPParameters(pcl::IterativeClosestPoint<PointT, PointT> &icp)
   {
+    icp.setMaximumIterations(m_maxIterations);
     /* TODO */
+    icp.setMaxCorrespondenceDistance(0.05);
+    icp.setMaximumIterations(50);
+    icp.setTransformationEpsilon(1e-8);
+    icp.setEuclideanFitnessEpsilon(1);
   }
 }
 }

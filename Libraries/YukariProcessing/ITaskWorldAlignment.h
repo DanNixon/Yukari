@@ -14,7 +14,7 @@ namespace Processing
   {
   public:
     ITaskWorldAlignment(const boost::filesystem::path &path,
-                          std::map<std::string, std::string> &params);
+                        std::map<std::string, std::string> &params);
 
     virtual int process(Task t) override;
     virtual int onStop() override;

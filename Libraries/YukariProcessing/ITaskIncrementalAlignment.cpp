@@ -17,8 +17,8 @@ namespace Yukari
 {
 namespace Processing
 {
-  ITaskIncrementalAlignment::ITaskIncrementalAlignment(
-      const boost::filesystem::path &path, std::map<std::string, std::string> &params)
+  ITaskIncrementalAlignment::ITaskIncrementalAlignment(const boost::filesystem::path &path,
+                                                       std::map<std::string, std::string> &params)
       : ITaskAlignment(path, params)
       , m_logger(LoggingService::Instance().getLogger("ITaskIncrementalAlignment"))
       , m_saveTransforms(false)
@@ -59,7 +59,7 @@ namespace Processing
     }
     else
     {
-      /* TODO */
+      doAlignment(t);
     }
 
     /* Set previous cloud */

@@ -43,7 +43,7 @@ namespace Processing
     }
     else
     {
-      /* TODO */
+      doAlignment(t);
     }
 
     return 0;

@@ -10,6 +10,7 @@ set(HEADERS
   PairRegistrationPointRepresentation.h
   TaskAppendTransformedClouds.h
   TaskDownsampleCloud.h
+  TaskICPIncrementalAlignment.h
   TaskICPWorldAlignment.h
   TaskNDTIncrementalAlignment.h
   TaskNDTWorldAlignment.h
@@ -26,6 +27,7 @@ set(SOURCES
   ITaskWorldAlignment.cpp
   TaskAppendTransformedClouds.cpp
   TaskDownsampleCloud.cpp
+  TaskICPIncrementalAlignment.cpp
   TaskICPWorldAlignment.cpp
   TaskNDTIncrementalAlignment.cpp
   TaskNDTWorldAlignment.cpp

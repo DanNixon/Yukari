@@ -17,7 +17,7 @@ namespace Yukari
 namespace Processing
 {
   TaskPairWorldAlignment::TaskPairWorldAlignment(const boost::filesystem::path &path,
-                                       std::map<std::string, std::string> &params)
+                                                 std::map<std::string, std::string> &params)
       : ITaskWorldAlignment(path, params)
       , m_logger(LoggingService::Instance().getLogger("TaskPairWorldAlignment"))
   {
