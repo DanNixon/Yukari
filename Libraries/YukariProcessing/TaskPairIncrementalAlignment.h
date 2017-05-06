@@ -10,10 +10,10 @@ namespace Yukari
 {
 namespace Processing
 {
-  class TaskPairAlignmentIncremental : public ITaskIncrementalAlignment
+  class TaskPairIncrementalAlignment : public ITaskIncrementalAlignment
   {
   public:
-    TaskPairAlignmentIncremental(const boost::filesystem::path &path,
+    TaskPairIncrementalAlignment(const boost::filesystem::path &path,
                                  std::map<std::string, std::string> &params);
 
   protected:

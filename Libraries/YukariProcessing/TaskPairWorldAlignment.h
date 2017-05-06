@@ -10,10 +10,10 @@ namespace Yukari
 {
 namespace Processing
 {
-  class TaskPairAlignment : public ITaskWorldAlignment
+  class TaskPairWorldAlignment : public ITaskWorldAlignment
   {
   public:
-    TaskPairAlignment(const boost::filesystem::path &path,
+    TaskPairWorldAlignment(const boost::filesystem::path &path,
                       std::map<std::string, std::string> &params);
 
   protected:

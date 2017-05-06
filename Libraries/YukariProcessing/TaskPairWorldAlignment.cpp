@@ -1,6 +1,6 @@
 /** @file */
 
-#include "TaskPairAlignment.h"
+#include "TaskPairWorldAlignment.h"
 
 #include <pcl/common/transforms.h>
 #include <pcl/features/normal_3d.h>
@@ -16,14 +16,14 @@ namespace Yukari
 {
 namespace Processing
 {
-  TaskPairAlignment::TaskPairAlignment(const boost::filesystem::path &path,
+  TaskPairWorldAlignment::TaskPairWorldAlignment(const boost::filesystem::path &path,
                                        std::map<std::string, std::string> &params)
       : ITaskWorldAlignment(path, params)
-      , m_logger(LoggingService::Instance().getLogger("TaskPairAlignment"))
+      , m_logger(LoggingService::Instance().getLogger("TaskPairWorldAlignment"))
   {
   }
 
-  void TaskPairAlignment::doAlignment(Task t)
+  void TaskPairWorldAlignment::doAlignment(Task t)
   {
     CloudPtr inputCloud(new Cloud());
 

@@ -13,8 +13,8 @@ set(HEADERS
   TaskICPWorldAlignment.h
   TaskNDTIncrementalAlignment.h
   TaskNDTWorldAlignment.h
-  TaskPairAlignment.h
-  TaskPairAlignmentIncremental.h
+  TaskPairIncrementalAlignment.h
+  TaskPairWorldAlignment.h
   TaskSaveRawCloud.h
   TaskSaveRawIMUFrame.h)
 
@@ -29,8 +29,8 @@ set(SOURCES
   TaskICPWorldAlignment.cpp
   TaskNDTIncrementalAlignment.cpp
   TaskNDTWorldAlignment.cpp
-  TaskPairAlignmentIncremental.cpp
-  TaskPairAlignment.cpp
+  TaskPairIncrementalAlignment.cpp
+  TaskPairWorldAlignment.cpp
   TaskSaveRawCloud.cpp
   TaskSaveRawIMUFrame.cpp)
 

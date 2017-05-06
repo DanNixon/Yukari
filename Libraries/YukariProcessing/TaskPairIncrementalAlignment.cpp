@@ -1,6 +1,6 @@
 /** @file */
 
-#include "TaskPairAlignmentIncremental.h"
+#include "TaskPairIncrementalAlignment.h"
 
 #include <pcl/common/transforms.h>
 #include <pcl/features/normal_3d.h>
@@ -16,14 +16,14 @@ namespace Yukari
 {
 namespace Processing
 {
-  TaskPairAlignmentIncremental::TaskPairAlignmentIncremental(
+  TaskPairIncrementalAlignment::TaskPairIncrementalAlignment(
       const boost::filesystem::path &path, std::map<std::string, std::string> &params)
       : ITaskIncrementalAlignment(path, params)
-      , m_logger(LoggingService::Instance().getLogger("TaskPairAlignmentIncremental"))
+      , m_logger(LoggingService::Instance().getLogger("TaskPairIncrementalAlignment"))
   {
   }
 
-  void TaskPairAlignmentIncremental::doAlignment(Task t)
+  void TaskPairIncrementalAlignment::doAlignment(Task t)
   {
     /* Downsample the input and world cloud for alignment */
     auto filteredInputCloud = Processing::CloudOperations<PointT>::DownsampleVoxelFilter(
