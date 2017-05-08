@@ -109,9 +109,9 @@ int main(void)
 
   msleep(500);
 
-  printf("Calibrating IMU...");
+  printf("Calibrating IMU...\n");
   mpu6000_calibrate();
-  printf(" done\n");
+  printf("Calibration done\n");
 
   printf("Packet len: %d\n", sizeof(Packet));
 
