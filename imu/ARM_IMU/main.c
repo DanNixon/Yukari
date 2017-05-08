@@ -107,6 +107,12 @@ int main(void)
   console_setup(115200);
   mpu6000_init();
 
+  msleep(500);
+
+  printf("Calibrating IMU...");
+  mpu6000_calibrate();
+  printf(" done\n");
+
   printf("Packet len: %d\n", sizeof(Packet));
 
   printf("Hello world.\n");
