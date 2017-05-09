@@ -48,8 +48,8 @@ namespace IMU
     /* Set orientation from attitude data */
     Eigen::Quaternionf rot =
         Eigen::AngleAxisf(-m_attitude[2] * DEG_TO_RAD, Eigen::Vector3f::UnitY()) *
-        Eigen::AngleAxisf(m_attitude[1] * DEG_TO_RAD, Eigen::Vector3f::UnitX()) *
-        Eigen::AngleAxisf(m_attitude[0] * DEG_TO_RAD, Eigen::Vector3f::UnitZ());
+        Eigen::AngleAxisf(-m_attitude[1] * DEG_TO_RAD, Eigen::Vector3f::UnitX()) *
+        Eigen::AngleAxisf(-m_attitude[0] * DEG_TO_RAD, Eigen::Vector3f::UnitZ());
     retVal->orientation() = m_transform.orientation() * rot;
 
     /* Set empty position */
