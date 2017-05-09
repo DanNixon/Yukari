@@ -86,8 +86,6 @@ static void send_logging_packet(void)
          mpu6000_world_velocity[0], mpu6000_world_velocity[1], mpu6000_world_velocity[2],
          mpu6000_world_displacement[0], mpu6000_world_displacement[1],
          mpu6000_world_displacement[2]);
-         /* mpu6000_axis[3], mpu6000_axis[4], */
-         /* mpu6000_axis[5]); */
 }
 
 int main(void)
