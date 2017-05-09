@@ -60,6 +60,55 @@ void taskBlink()
   digitalWrite(LED_PIN, blinkState);
 }
 
+#ifdef SERIALPLOT
+/*
+ * Prints debug data as CSV for serialplot.
+ *
+ *  1) Acceleration - x
+ *  2) Acceleration - y
+ *  3) Acceleration - z
+ *  4) Linear acceleration - x
+ *  5) Linear acceleration - y
+ *  6) Linear acceleration - z
+ *  7) World acceleration - x
+ *  8) World acceleration - y
+ *  9) World acceleration - z
+ * 10) Velocity - x
+ * 11) Velocity - y
+ * 12) Velocity - z
+ * 13) Displacement - x
+ * 14) Displacement - y
+ * 15) Displacement - z
+ */
+void taskDebugPrintCSV()
+{
+  DEBUG_SERIAL.printf("%d,%d,%d,%d,%d,%d,", g_accel.x, g_accel.y, g_accel.z, g_realAccel.x,
+                      g_realAccel.y, g_realAccel.z);
+
+  DEBUG_SERIAL.print(g_worldAccelMS2.x);
+  DEBUG_SERIAL.print(",");
+  DEBUG_SERIAL.print(g_worldAccelMS2.y);
+  DEBUG_SERIAL.print(",");
+  DEBUG_SERIAL.print(g_worldAccelMS2.z);
+  DEBUG_SERIAL.print(",");
+
+  DEBUG_SERIAL.print(g_velocity.x);
+  DEBUG_SERIAL.print(",");
+  DEBUG_SERIAL.print(g_velocity.y);
+  DEBUG_SERIAL.print(",");
+  DEBUG_SERIAL.print(g_velocity.z);
+  DEBUG_SERIAL.print(",");
+
+  DEBUG_SERIAL.print(g_displacement.x);
+  DEBUG_SERIAL.print(",");
+  DEBUG_SERIAL.print(g_displacement.y);
+  DEBUG_SERIAL.print(",");
+  DEBUG_SERIAL.print(g_displacement.z);
+
+  DEBUG_SERIAL.println();
+}
+#endif /* SERIALPLOT */
+
 void taskDMP()
 {
   if (!g_mpuInterrupt && g_dmpFIFOBufferSize < g_dmpFIFOPacketSize)
@@ -109,14 +158,10 @@ void taskDMP()
 
     for (uint8_t i = 0; i < 3; i++)
     {
-      if (g_worldAccelMS2[i] < 0.5f)
-      {
+      if (abs(g_worldAccelMS2[i]) < 0.2f)
         g_worldAccelMS2Zero[i]++;
-      }
       else
-      {
         g_worldAccelMS2Zero[i] = 0;
-      }
 
       if (g_worldAccelMS2Zero[i] >= 10)
         g_worldAccelMS2[i] = 0.0f;
@@ -137,6 +182,8 @@ void taskDMP()
       g_velocity += g_worldAccelMS2LPF * deltaTime;
       g_displacement += g_velocity * deltaTime;
     }
+
+    taskDebugPrintCSV();
 
     g_lastIntegrationTimestep = now;
   }
@@ -236,68 +283,6 @@ void taskPrintData()
   DEBUG_SERIAL.println(g_altitude);
 }
 #endif /* DEBUG */
-
-#ifdef SERIALPLOT
-/*
- * Prints debug data as CSV for serialplot.
- *
- *  1) Quaternion - w
- *  2) Quaternion - x
- *  3) Quaternion - y
- *  4) Quaternion - z
- *  5) Acceleration - x
- *  6) Acceleration - y
- *  7) Acceleration - z
- *  8) Linear acceleration - x
- *  9) Linear acceleration - y
- * 10) Linear acceleration - z
- * 11) World acceleration - x
- * 12) World acceleration - y
- * 13) World acceleration - z
- * 14) Velocity - x
- * 15) Velocity - y
- * 16) Velocity - z
- * 17) Displacement - x
- * 18) Displacement - y
- * 19) Displacement - z
- */
-void taskDebugPrintCSV()
-{
-  DEBUG_SERIAL.print(g_quat.w);
-  DEBUG_SERIAL.print(",");
-  DEBUG_SERIAL.print(g_quat.x);
-  DEBUG_SERIAL.print(",");
-  DEBUG_SERIAL.print(g_quat.y);
-  DEBUG_SERIAL.print(",");
-  DEBUG_SERIAL.print(g_quat.z);
-  DEBUG_SERIAL.print(",");
-
-  DEBUG_SERIAL.printf("%d,%d,%d,%d,%d,%d,", g_accel.x, g_accel.y, g_accel.z, g_realAccel.x,
-                      g_realAccel.y, g_realAccel.z);
-
-  DEBUG_SERIAL.print(g_worldAccelMS2.x);
-  DEBUG_SERIAL.print(",");
-  DEBUG_SERIAL.print(g_worldAccelMS2.y);
-  DEBUG_SERIAL.print(",");
-  DEBUG_SERIAL.print(g_worldAccelMS2.z);
-  DEBUG_SERIAL.print(",");
-
-  DEBUG_SERIAL.print(g_velocity.x);
-  DEBUG_SERIAL.print(",");
-  DEBUG_SERIAL.print(g_velocity.y);
-  DEBUG_SERIAL.print(",");
-  DEBUG_SERIAL.print(g_velocity.z);
-  DEBUG_SERIAL.print(",");
-
-  DEBUG_SERIAL.print(g_displacement.x);
-  DEBUG_SERIAL.print(",");
-  DEBUG_SERIAL.print(g_displacement.y);
-  DEBUG_SERIAL.print(",");
-  DEBUG_SERIAL.print(g_displacement.z);
-
-  DEBUG_SERIAL.println();
-}
-#endif /* SERIALPLOT */
 
 void taskFeedGPS()
 {
@@ -426,36 +411,11 @@ void imu_device_init()
   /* Init IMU */
   g_imu.initialize();
 #ifdef DEBU2
-  DEBUG_SERIuAL.printf("IMU init: %d\n", g_imu.testConnection());
+  DEBUG_SERIAL.printf("IMU init: %d\n", g_imu.testConnection());
 #endif /* DEBUG */
 
   for (uint8_t i = 0; i < 3; i++)
     g_worldAccelMS2Zero[i] = 0;
-
-  /* Calibration sample */
-  int64_t axa = 0;
-  int64_t aya = 0;
-  int64_t aza = 0;
-  const uint16_t numSamples = 1000;
-  int16_t dummy, ax, ay, az;
-#ifdef DEBU2
-  DEBUG_SERIuAL.printf("Accel. calibration start\n");
-#endif /* DEBUG */
-  for (uint16_t i = 0; i < numSamples; i++)
-  {
-    g_imu.getMotion6(&ax, &ay, &az, &dummy, &dummy, &dummy);
-    axa += ax;
-    aya += ay;
-    aza += az;
-    delay(1);
-  }
-  g_accelCalib.x = axa / numSamples;
-  g_accelCalib.y = aya / numSamples;
-  g_accelCalib.z = aza / numSamples;
-#ifdef DEBU2
-  DEBUG_SERIuAL.printf("Accel. calibration done: %d, %d, %d\n", g_accelCalib.x, g_accelCalib.y,
-                       g_accelCalib.z);
-#endif /* DEBUG */
 
   pinMode(MPU_INTERRUPT_PIN, INPUT);
 
@@ -470,6 +430,31 @@ void imu_device_init()
 
     g_dmpFIFOPacketSize = g_imu.dmpGetFIFOPacketSize();
   }
+
+  /* Calibration sample */
+  int64_t axa = 0;
+  int64_t aya = 0;
+  int64_t aza = 0;
+  const uint16_t numSamples = 5000;
+  int16_t dummy, ax, ay, az;
+#ifdef DEBUG
+  DEBUG_SERIAL.printf("Accel. calibration start\n");
+#endif /* DEBUG */
+  for (uint16_t i = 0; i < numSamples; i++)
+  {
+    g_imu.getMotion6(&ax, &ay, &az, &dummy, &dummy, &dummy);
+    axa += ax;
+    aya += ay;
+    aza += az;
+    delay(1);
+  }
+  g_accelCalib.x = axa / numSamples;
+  g_accelCalib.y = aya / numSamples;
+  g_accelCalib.z = aza / numSamples;
+#ifdef DEBUG
+  DEBUG_SERIAL.printf("Accel. calibration done: %d, %d, %d\n", g_accelCalib.x, g_accelCalib.y,
+                       g_accelCalib.z);
+#endif /* DEBUG */
 #endif /* DISABLE_IMU */
 
 #ifndef DISABLE_BARO
@@ -485,7 +470,7 @@ void imu_device_init()
   g_scheduler.addTask(&taskMSP, 0);
   g_scheduler.addTask(&taskResetIMUIntegration, Scheduler::HzToUsInterval(10.0f));
 #ifdef SERIALPLOT
-  g_scheduler.addTask(&taskDebugPrintCSV, Scheduler::HzToUsInterval(10.0f));
+  /* g_scheduler.addTask(&taskDebugPrintCSV, Scheduler::HzToUsInterval(10.0f)); */
 #endif /* SERIALPLOT */
 #ifndef DISABLE_GPS
   g_scheduler.addTask(&taskFeedGPS, 0);
