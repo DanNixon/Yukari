@@ -56,7 +56,7 @@ int main(int argc, char **argv)
     ("help", "Show brief usage message")
     ("loglevel", po::value<std::string>()->default_value("info"), "Global log level")
     ("grabber", po::value<std::string>()->default_value("dummy"), "IMU grabber type")
-    ("orientation", po::value<std::string>()->default_value("[0, 1, 0] -90"), "Relative IMU orientation as \"[axis] angle\"")
+    ("orientation", po::value<std::string>()->default_value("[0, 0, 0] 0"), "Relative IMU orientation as \"[axis] angle\"")
     ("position", po::value<std::string>()->default_value("[0, 0, 0]"), "Relative IMU position as \"[position]\"")
     ("cubesize" ,po::value<float>()->default_value(1.0f), "Width and depth of visualisation cube")
     ("datafile", po::value<std::string>(), "File to save recorded data to");

@@ -51,7 +51,7 @@ namespace IMU
     /* Set orientation */
     Eigen::Quaternionf q;
     MSPParsers::ParseQuaternion(m_mspPayloadQuat, q);
-    retVal->orientation() = q * m_transform.orientation();
+    retVal->orientation() = m_transform.orientation() * q;
 
     return retVal;
   }
