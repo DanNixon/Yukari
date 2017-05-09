@@ -137,8 +137,15 @@ vtkPolyData *generateCube(Eigen::Vector3f d)
     points->InsertPoint(i, x[i]);
   for (i = 0; i < 6; i++)
     polys->InsertNextCell(4, pts[i]);
-  for (i = 0; i < 8; i++)
-    scalars->InsertTuple1(i, i < 4);
+
+  scalars->InsertTuple1(0, 1);
+  scalars->InsertTuple1(1, 1);
+  scalars->InsertTuple1(2, 0);
+  scalars->InsertTuple1(3, 0);
+  scalars->InsertTuple1(4, 1);
+  scalars->InsertTuple1(5, 1);
+  scalars->InsertTuple1(6, 1);
+  scalars->InsertTuple1(7, 1);
 
   cube->SetPoints(points);
   points->Delete();
