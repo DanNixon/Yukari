@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/filesystem.hpp>
 #include <vtkActor.h>
 #include <vtkAxes.h>
 #include <vtkCommand.h>
@@ -35,9 +36,16 @@ namespace IMUGrabberTest
       m_actor = actor;
     }
 
+    inline void setDataFile(const boost::filesystem::path &filename)
+    {
+      m_dataFilename = filename;
+    }
+
   private:
     Yukari::IMU::IIMUGrabber::Ptr m_grabber;
     vtkSmartPointer<vtkActor> m_actor;
+    boost::filesystem::path m_dataFilename;
+
     Yukari::Common::LoggingService::Logger m_logger;
   };
 }

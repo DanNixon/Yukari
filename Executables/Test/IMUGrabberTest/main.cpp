@@ -8,6 +8,7 @@
 #include <string>
 #include <thread>
 
+#include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include <serial/serial.h>
 #include <vtkActor.h>
@@ -39,7 +40,8 @@ using namespace Yukari::MSP;
 using namespace Yukari::IMUGrabberTest;
 namespace po = boost::program_options;
 
-int runGrabberVisualisation(IIMUGrabber::Ptr grabber, float cubeSize);
+int runGrabberVisualisation(IIMUGrabber::Ptr grabber, float cubeSize,
+                            const boost::filesystem::path &dataFile);
 
 int main(int argc, char **argv)
 {
@@ -56,7 +58,8 @@ int main(int argc, char **argv)
     ("grabber", po::value<std::string>()->default_value("dummy"), "IMU grabber type")
     ("orientation", po::value<std::string>()->default_value("[0, 1, 0] -90"), "Relative IMU orientation as \"[axis] angle\"")
     ("position", po::value<std::string>()->default_value("[0, 0, 0]"), "Relative IMU position as \"[position]\"")
-    ("cubesize" ,po::value<float>()->default_value(1.0f), "Width and depth of visualisation cube");
+    ("cubesize" ,po::value<float>()->default_value(1.0f), "Width and depth of visualisation cube")
+    ("datafile", po::value<std::string>(), "File to save recorded data to");
   // clang-format on
 
   /* Parse command line args */
@@ -80,12 +83,22 @@ int main(int argc, char **argv)
   /* Configure logging */
   LoggingService::Instance().configure(args);
 
+  /* Get data file name */
+  boost::filesystem::path dataFile;
+  if (args.count("datafile"))
+    dataFile = args["datafile"].as<std::string>();
+
+  if (dataFile.empty())
+    logger->info("No data file will be produced.");
+  else
+    logger->info("Got data file: {}", dataFile);
+
   /* List all ports */
   std::vector<serial::PortInfo> ports = serial::list_ports();
   for (auto it = ports.begin(); it != ports.end(); ++it)
     logger->info("({}, {}, {})", it->port, it->description, it->hardware_id);
 
-  /* Start IMU test */
+  /* Create IMU grabber */
   auto grabber = IMUGrabberFactory::Create(args["grabber"].as<std::string>());
   if (!grabber)
   {
@@ -97,7 +110,7 @@ int main(int argc, char **argv)
   grabber->setTransform(Transform(args));
 
   /* Run visualisation */
-  runGrabberVisualisation(grabber, args["cubesize"].as<float>());
+  runGrabberVisualisation(grabber, args["cubesize"].as<float>(), dataFile);
 
   logger->info("Exiting.");
   return 0;
@@ -137,7 +150,8 @@ vtkPolyData *generateCube(Eigen::Vector3f d)
   return cube;
 }
 
-int runGrabberVisualisation(IIMUGrabber::Ptr grabber, float cubeSize)
+int runGrabberVisualisation(IIMUGrabber::Ptr grabber, float cubeSize,
+                            const boost::filesystem::path &dataFile)
 {
   auto logger = LoggingService::Instance().getLogger("runGrabber");
 
@@ -177,6 +191,7 @@ int runGrabberVisualisation(IIMUGrabber::Ptr grabber, float cubeSize)
   vtkSmartPointer<VTKIMUActorCallback> cb = vtkSmartPointer<VTKIMUActorCallback>::New();
   cb->setGrabber(grabber);
   cb->setActor(cubeActor);
+  cb->setDataFile(dataFile);
   rendererInteractor->AddObserver(vtkCommand::TimerEvent, cb);
   rendererInteractor->CreateRepeatingTimer(10);
 
