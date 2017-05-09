@@ -95,7 +95,7 @@ namespace MSP
     }
 
     quat = Eigen::Quaternionf(q[0], q[1], q[3], -q[2]) *
-           Eigen::AngleAxisf(M_PI * 0.5f, Eigen::Vector3f::UnitY());
+           Eigen::AngleAxisf(M_PI * -0.5f, Eigen::Vector3f::UnitY());
 
     return true;
   }
