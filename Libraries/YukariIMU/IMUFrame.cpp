@@ -63,15 +63,9 @@ namespace IMU
 
   Eigen::Matrix4f IMUFrame::toCloudTransform() const
   {
-    /* Reflect in XZ azis */
-    Eigen::Quaternionf quat(m_orientation);
-    quat.x() = -quat.x();
-    quat.z() = -quat.z();
-
     Eigen::Matrix4f out = Eigen::Matrix4f::Identity();
-    out.block(0, 0, 3, 3) = quat.toRotationMatrix();
+    out.block(0, 0, 3, 3) = m_orientation.toRotationMatrix();
     out.block(0, 3, 3, 1) = m_position;
-
     return out;
   }
 
