@@ -241,6 +241,8 @@ namespace Capture
       m_logger->info("No IMU grabber defined");
     }
 
+    m_logger->debug("{} points in raw cloud", cloud->size());
+
     /* Filter NaN alues from point cloud */
     m_logger->trace("Removing NaN values from captured cloud");
     {
@@ -256,8 +258,10 @@ namespace Capture
       sor.setMeanK(m_outlierRemovalMeanK);
       sor.setStddevMulThresh(m_outlierRemovalStdDevMulThr);
       size_t previousPointCount = cloud->size();
+      sor.setInputCloud(cloud);
       sor.filter(*cloud);
-      m_logger->debug("Removed {} outliers ({} points after filtering)", previousPointCount - cloud->size(), cloud->size());
+      m_logger->debug("Removed {} outliers ({} points after filtering)",
+                      previousPointCount - cloud->size(), cloud->size());
     }
 
     /* Queue post capture operations */

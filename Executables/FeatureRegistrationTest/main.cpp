@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
   pcl::console::print_value("Num points in feature cloud B = %ld\n", pfhsB->size());
   pcl::io::savePCDFileBinaryCompressed("out_pfhsB.pcd", *pfhsB);
 
- // PAIRWISE OPERATIONS START HERE
+  // PAIRWISE OPERATIONS START HERE
 
   pcl::console::print_info("Correspondence estimation\n");
   pcl::registration::CorrespondenceEstimation<FeatureT, FeatureT> ce;

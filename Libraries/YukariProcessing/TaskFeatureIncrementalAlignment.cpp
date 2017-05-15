@@ -121,7 +121,7 @@ namespace Processing
     m_logger->trace("Normal estimation");
     pcl::NormalEstimationOMP<PointT, NormalT> ne;
     ne.setSearchMethod(tree);
-    ne.setRadiusSearch(0.03);
+    ne.setRadiusSearch(m_normalEstimationRadiusSearch);
     ne.setInputCloud(d.downsampled);
     ne.compute(*d.normals);
 
@@ -135,7 +135,7 @@ namespace Processing
     m_logger->trace("Feature estimation");
     pcl::FPFHEstimationOMP<PointT, NormalT, FeatureT> pfh;
     pfh.setSearchMethod(tree);
-    pfh.setRadiusSearch(0.05);
+    pfh.setRadiusSearch(m_featureRadiusSearch);
     pfh.setInputCloud(d.downsampled);
     pfh.setInputNormals(d.normals);
     pfh.compute(*d.features);
@@ -160,8 +160,8 @@ namespace Processing
     /* Correspondence rejection */
     m_logger->trace("Correspondence rejection");
     pcl::registration::CorrespondenceRejectorSampleConsensus<PointT> sac;
-    sac.setMaxIterations(1000);
-    sac.setInlierThreshold(0.2);
+    sac.setMaxIterations(m_corrRejectMaxIters);
+    sac.setInlierThreshold(m_correRejectInlierThreshold);
     sac.setTargetCloud(m_targetData.downsampled);
     sac.setInputCloud(inputData.downsampled);
     sac.setInputCorrespondences(correspondences);
@@ -203,10 +203,7 @@ namespace Processing
     /* Fine alignment (ICP) */
     m_logger->trace("Fine alignment");
     pcl::IterativeClosestPoint<PointT, PointT> icp;
-    icp.setMaxCorrespondenceDistance(0.5);
-    icp.setMaximumIterations(50);
-    icp.setTransformationEpsilon(1e-6);
-    icp.setEuclideanFitnessEpsilon(0.01);
+    setICPParameters(icp);
     icp.setInputTarget(trimmedTarget);
     icp.setInputCloud(trimmedInput);
     CloudPtr registeredInput(new Cloud);

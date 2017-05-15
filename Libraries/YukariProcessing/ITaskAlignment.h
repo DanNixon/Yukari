@@ -23,10 +23,12 @@ namespace Processing
     friend std::ostream &operator<<(std::ostream &s, const ITaskAlignment &t)
     {
       s << "ITaskAlignment("
-        << "epsilon=" << t.m_transformationEpsilon << ","
+        << "maxiter=" << t.m_maxIterations << ","
+        << "transepsilon=" << t.m_transformationEpsilon << ","
         << "step=" << t.m_stepSize << ","
         << "resolution=" << t.m_resolution << ","
-        << "maxiter=" << t.m_maxIterations << ","
+        << "maxcorr=" << t.m_maxCorrDist << ","
+        << "efitepsilon=" << t.m_eFitnessEpsilon << ","
         << "downsample=" << t.m_voxelDownsamplePercentage << ")";
 
       return s;
@@ -39,17 +41,30 @@ namespace Processing
     virtual void doAlignment(Task t) = 0;
 
   protected:
-    /* NDT parameters */
+    /* Common parameters */
+    int m_maxIterations;
     double m_transformationEpsilon;
+
+    /* NDT parameters */
     double m_stepSize;
     double m_resolution;
-    int m_maxIterations;
 
     /* ICP parameters */
-    /* TODO */
+    double m_maxCorrDist;
+    double m_eFitnessEpsilon;
 
     /* Voxel filter parameters */
     double m_voxelDownsamplePercentage;
+
+    /* Normal estimation parameters */
+    double m_normalEstimationRadiusSearch;
+
+    /* Feature estimation parameters */
+    double m_featureRadiusSearch;
+
+    /* Correspondence rejection parameters */
+    int m_corrRejectMaxIters;
+    double m_correRejectInlierThreshold;
   };
 }
 }

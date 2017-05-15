@@ -72,7 +72,7 @@ Feature based registration:
 ```
 Capture.exe
   --cloudgrabber pcdfile(pattern=.*_cloud\.pcd,fps=1)
-  --process featureincremental(out=inc,downsample=0.01,transform=false)
+  --process featureincremental(out=inc,downsample=0.01,maxcorrdist=0.5,transepsilon=1e-6,efitepsilon=0.01,normradius=0.03,featureradius=0.05,corrrejectmaxiters=1000,corrrejinlierth=0.02,transform=false)
   --loglevel trace
 ```
 
