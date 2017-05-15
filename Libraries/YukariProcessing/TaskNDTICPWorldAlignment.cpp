@@ -4,8 +4,8 @@
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
-#include <pcl/registration/ndt.h>
 #include <pcl/registration/icp.h>
+#include <pcl/registration/ndt.h>
 
 #include "CloudOperations.h"
 
@@ -16,7 +16,7 @@ namespace Yukari
 namespace Processing
 {
   TaskNDTICPWorldAlignment::TaskNDTICPWorldAlignment(const boost::filesystem::path &path,
-                                               std::map<std::string, std::string> &params)
+                                                     std::map<std::string, std::string> &params)
       : ITaskWorldAlignment(path, params)
       , m_logger(LoggingService::Instance().getLogger("TaskNDTICPWorldAlignment"))
   {
@@ -67,7 +67,7 @@ namespace Processing
     else
       m_logger->warn("ICP convergence not reached");
     m_logger->debug("Iterative Closest Point score: {}", icp.getFitnessScore());
-    
+
     /* Translate full input cloud */
     pcl::transformPointCloud(*inputCloud, *transformedInputCloud, icp.getFinalTransformation());
 

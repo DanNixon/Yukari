@@ -4,8 +4,8 @@
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
-#include <pcl/registration/ndt.h>
 #include <pcl/registration/icp.h>
+#include <pcl/registration/ndt.h>
 
 #include "CloudOperations.h"
 
@@ -45,14 +45,14 @@ namespace Processing
     else
       m_logger->warn("NDT convergence not reached");
     m_logger->debug("Normal Distributions Transform score: {}", ndt.getFitnessScore());
-    
+
     /* Perform ICP alignment */
     pcl::IterativeClosestPoint<PointT, PointT> icp;
     setICPParameters(icp);
 
     icp.setInputSource(filteredInputCloud);
     icp.setInputTarget(m_previousCloud);
-    
+
     /* Run alignment */
     initialGuess = t.imuFrame->toCloudTransform() * ndt.getFinalTransformation();
     icp.align(*transformedInputCloud, initialGuess);

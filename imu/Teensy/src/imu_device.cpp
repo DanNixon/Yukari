@@ -453,7 +453,7 @@ void imu_device_init()
   g_accelCalib.z = aza / numSamples;
 #ifdef DEBUG
   DEBUG_SERIAL.printf("Accel. calibration done: %d, %d, %d\n", g_accelCalib.x, g_accelCalib.y,
-                       g_accelCalib.z);
+                      g_accelCalib.z);
 #endif /* DEBUG */
 #endif /* DISABLE_IMU */
 
@@ -470,7 +470,7 @@ void imu_device_init()
   g_scheduler.addTask(&taskMSP, 0);
   g_scheduler.addTask(&taskResetIMUIntegration, Scheduler::HzToUsInterval(10.0f));
 #ifdef SERIALPLOT
-  /* g_scheduler.addTask(&taskDebugPrintCSV, Scheduler::HzToUsInterval(10.0f)); */
+/* g_scheduler.addTask(&taskDebugPrintCSV, Scheduler::HzToUsInterval(10.0f)); */
 #endif /* SERIALPLOT */
 #ifndef DISABLE_GPS
   g_scheduler.addTask(&taskFeedGPS, 0);
