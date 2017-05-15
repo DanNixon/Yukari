@@ -2,6 +2,10 @@
 
 #include "ProxyTrigger.h"
 
+#include <YukariCommon/LoggingService.h>
+
+using namespace Yukari::Common;
+
 namespace Yukari
 {
 namespace Triggers
@@ -23,6 +27,7 @@ namespace Triggers
 
   void ProxyTrigger::trigger()
   {
+    LoggingService::Instance().getLogger("ProcyTrigger")->debug("Triggered.");
     if (m_enabled)
       m_handlerFunc();
   }

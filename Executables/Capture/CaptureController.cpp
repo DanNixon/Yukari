@@ -101,15 +101,13 @@ namespace Capture
       }
     }
 
-    /* Open cloud grabber */
-    m_logger->info("Opening cloud grabber");
-    m_cloudGrabber->open();
-    if (!m_cloudGrabber->isOpen())
-    {
-      m_logger->error("Failed to open cloud grabber!");
-      return false;
-    }
-    m_logger->debug("Cloud grabber opened");
+    /* Reset frame count */
+    m_currentFrameCount = 0;
+
+    /* Start operation workers */
+    m_logger->trace("Starting post capture operation workers");
+    for (auto it = m_postCaptureOperations.begin(); it != m_postCaptureOperations.end(); ++it)
+      (*it)->start();
 
     /* Check if cloud grabber provides a capture trigger */
     ITrigger::Ptr cloudGrabberTrigger = m_cloudGrabber->trigger();
@@ -119,18 +117,20 @@ namespace Capture
       addCaptureTrigger(cloudGrabberTrigger);
     }
 
-    /* Reset frame count */
-    m_currentFrameCount = 0;
-
-    /* Start operation workers */
-    m_logger->trace("Starting post capture operation workers");
-    for (auto it = m_postCaptureOperations.begin(); it != m_postCaptureOperations.end(); ++it)
-      (*it)->start();
-
     /* Enable capture triggers */
     m_logger->info("Enabling capture triggers");
     for (auto it = m_captureTriggers.begin(); it != m_captureTriggers.end(); ++it)
       (*it)->enable();
+
+    /* Open cloud grabber */
+    m_logger->info("Opening cloud grabber");
+    m_cloudGrabber->open();
+    if (!m_cloudGrabber->isOpen())
+    {
+      m_logger->error("Failed to open cloud grabber!");
+      return false;
+    }
+    m_logger->debug("Cloud grabber opened");
 
     /* Set running flags */
     m_isRunning.store(true);
@@ -257,7 +257,7 @@ namespace Capture
       sor.setStddevMulThresh(m_outlierRemovalStdDevMulThr);
       size_t previousPointCount = cloud->size();
       sor.filter(*cloud);
-      m_logger->debug("Removed {} outliers", previousPointCount - cloud->size());
+      m_logger->debug("Removed {} outliers ({} points after filtering)", previousPointCount - cloud->size(), cloud->size());
     }
 
     /* Queue post capture operations */

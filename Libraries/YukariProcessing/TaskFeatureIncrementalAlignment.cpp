@@ -5,7 +5,7 @@
 #include <pcl/common/transforms.h>
 #include <pcl/features/fpfh_omp.h>
 #include <pcl/features/normal_3d_omp.h>
-#include <pcl/filters/approximate_voxel_grid.h>
+#include <pcl/filters/voxel_grid.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/registration/correspondence_rejection_sample_consensus.h>
 #include <pcl/registration/icp.h>
@@ -99,6 +99,8 @@ namespace Processing
   TaskFeatureIncrementalAlignment::SingleCloudData
   TaskFeatureIncrementalAlignment::preProcessSingleCloud(Task t)
   {
+    m_logger->debug("{} points in input cloud", t.cloud->size());
+
     SingleCloudData d;
     d.downsampled = boost::make_shared<Cloud>();
     d.normals = boost::make_shared<NormalCloud>();
@@ -108,11 +110,12 @@ namespace Processing
 
     /* Downsample cloud */
     m_logger->trace("Downsampling (leaf size: {})", m_voxelDownsamplePercentage);
-    pcl::ApproximateVoxelGrid<PointT> voxelFilter;
+    pcl::VoxelGrid<PointT> voxelFilter;
     voxelFilter.setLeafSize(m_voxelDownsamplePercentage, m_voxelDownsamplePercentage,
                             m_voxelDownsamplePercentage);
     voxelFilter.setInputCloud(t.cloud);
     voxelFilter.filter(*d.downsampled);
+    m_logger->debug("{} points in downsampled cloud", d.downsampled->size());
 
     /* Normal estimation */
     m_logger->trace("Normal estimation");
@@ -136,6 +139,7 @@ namespace Processing
     pfh.setInputCloud(d.downsampled);
     pfh.setInputNormals(d.normals);
     pfh.compute(*d.features);
+    m_logger->debug("{} points in feature cloud", d.features->size());
 
     return d;
   }
@@ -197,7 +201,7 @@ namespace Processing
     m_logger->debug("Points in trimmed target cloud = {}", trimmedTarget->size());
 
     /* Fine alignment (ICP) */
-    m_logger->trace("Fine alignment\n");
+    m_logger->trace("Fine alignment");
     pcl::IterativeClosestPoint<PointT, PointT> icp;
     icp.setMaxCorrespondenceDistance(0.5);
     icp.setMaximumIterations(50);
