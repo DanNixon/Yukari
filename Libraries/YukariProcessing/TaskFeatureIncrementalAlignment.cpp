@@ -27,12 +27,6 @@ namespace Processing
       : ITaskIncrementalAlignment(path, params)
       , m_logger(LoggingService::Instance().getLogger("TaskICPIncrementalAlignment"))
   {
-    /* Parse IMU estimate option */
-    {
-      std::string paramStr = MapHelpers::Get<std::string, std::string>(params, "imu", "false");
-      StringParsers::CleanString(paramStr);
-      m_useIMUEstimate = paramStr == "true";
-    }
   }
 
   int TaskFeatureIncrementalAlignment::process(Task t)
@@ -40,12 +34,6 @@ namespace Processing
     if (!t.cloud)
     {
       m_logger->error("Do not have point cloud");
-      return 1;
-    }
-
-    if (m_useIMUEstimate && !t.imuFrame)
-    {
-      m_logger->error("Do not have IMU frame");
       return 1;
     }
 
@@ -57,10 +45,7 @@ namespace Processing
     if (!m_previousCloud)
     {
       /* Set initial transform */
-      if (m_useIMUEstimate)
-        m_previousCloudWorldTransform = t.imuFrame->toCloudTransform();
-      else
-        m_previousCloudWorldTransform = Eigen::Matrix4f::Identity();
+      m_previousCloudWorldTransform = Eigen::Matrix4f::Identity();
 
       m_targetData = preProcessSingleCloud(t);
     }

@@ -36,7 +36,6 @@ namespace Processing
     virtual void doAlignment(Task t) override;
 
   protected:
-    bool m_useIMUEstimate;
     SingleCloudData m_targetData;
 
   private:
