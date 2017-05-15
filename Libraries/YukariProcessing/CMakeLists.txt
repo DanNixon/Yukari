@@ -12,6 +12,8 @@ set(HEADERS
   TaskDownsampleCloud.h
   TaskICPIncrementalAlignment.h
   TaskICPWorldAlignment.h
+  TaskNDTICPIncrementalAlignment.h
+  TaskNDTICPWorldAlignment.h
   TaskNDTIncrementalAlignment.h
   TaskNDTWorldAlignment.h
   TaskPairIncrementalAlignment.h
@@ -29,6 +31,8 @@ set(SOURCES
   TaskDownsampleCloud.cpp
   TaskICPIncrementalAlignment.cpp
   TaskICPWorldAlignment.cpp
+  TaskNDTICPIncrementalAlignment.cpp
+  TaskNDTICPWorldAlignment.cpp
   TaskNDTIncrementalAlignment.cpp
   TaskNDTWorldAlignment.cpp
   TaskPairIncrementalAlignment.cpp

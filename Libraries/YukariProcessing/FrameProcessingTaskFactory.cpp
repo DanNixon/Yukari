@@ -9,6 +9,8 @@
 #include "TaskDownsampleCloud.h"
 #include "TaskICPIncrementalAlignment.h"
 #include "TaskICPWorldAlignment.h"
+#include "TaskNDTICPIncrementalAlignment.h"
+#include "TaskNDTICPWorldAlignment.h"
 #include "TaskNDTIncrementalAlignment.h"
 #include "TaskNDTWorldAlignment.h"
 #include "TaskPairIncrementalAlignment.h"
@@ -71,6 +73,14 @@ namespace Processing
     else if (lowerType == "ndtworld")
     {
       task = std::make_shared<TaskNDTWorldAlignment>(outDir, parameters);
+    }
+    else if (lowerType == "ndticpincremental")
+    {
+      task = std::make_shared<TaskNDTICPIncrementalAlignment>(outDir, parameters);
+    }
+    else if (lowerType == "ndticpworld")
+    {
+      task = std::make_shared<TaskNDTICPWorldAlignment>(outDir, parameters);
     }
     else if (lowerType == "pairalign")
     {
