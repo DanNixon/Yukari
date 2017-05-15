@@ -10,6 +10,7 @@ set(HEADERS
   PairRegistrationPointRepresentation.h
   TaskAppendTransformedClouds.h
   TaskDownsampleCloud.h
+  TaskFeatureIncrementalAlignment.h
   TaskICPIncrementalAlignment.h
   TaskICPWorldAlignment.h
   TaskNDTICPIncrementalAlignment.h
@@ -29,6 +30,7 @@ set(SOURCES
   ITaskWorldAlignment.cpp
   TaskAppendTransformedClouds.cpp
   TaskDownsampleCloud.cpp
+  TaskFeatureIncrementalAlignment.cpp
   TaskICPIncrementalAlignment.cpp
   TaskICPWorldAlignment.cpp
   TaskNDTICPIncrementalAlignment.cpp

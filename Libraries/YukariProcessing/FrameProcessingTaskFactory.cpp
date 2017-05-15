@@ -7,6 +7,7 @@
 
 #include "TaskAppendTransformedClouds.h"
 #include "TaskDownsampleCloud.h"
+#include "TaskFeatureIncrementalAlignment.h"
 #include "TaskICPIncrementalAlignment.h"
 #include "TaskICPWorldAlignment.h"
 #include "TaskNDTICPIncrementalAlignment.h"
@@ -57,6 +58,10 @@ namespace Processing
     else if (lowerType == "downsample")
     {
       task = std::make_shared<TaskDownsampleCloud>(outDir, parameters);
+    }
+    else if (lowerType == "featureincremental")
+    {
+      task = std::make_shared<TaskFeatureIncrementalAlignment>(outDir, parameters);
     }
     else if (lowerType == "icpincremental")
     {

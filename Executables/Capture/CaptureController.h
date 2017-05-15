@@ -32,6 +32,13 @@ namespace Capture
       return m_isRunning;
     }
 
+    inline void setOutlierRemoval(bool enable, int k = 50, double stdDevThr = 1.0)
+    {
+      m_outlierRemoval = enable;
+      m_outlierRemovalMeanK = k;
+      m_outlierRemovalStdDevMulThr = stdDevThr;
+    }
+
     inline void setForcedExit(bool forceExit)
     {
       m_forceExit = forceExit;
@@ -65,6 +72,10 @@ namespace Capture
 
   private:
     Common::LoggingService::Logger m_logger;
+
+    bool m_outlierRemoval;
+    int m_outlierRemovalMeanK;
+    double m_outlierRemovalStdDevMulThr;
 
     std::atomic_bool m_isRunning;
     size_t m_currentFrameCount;

@@ -5,6 +5,7 @@
 #include <typeinfo>
 
 #include <pcl/filters/filter.h>
+#include <pcl/filters/statistical_outlier_removal.h>
 
 #include <YukariIMU/IMUFrame.h>
 
@@ -18,6 +19,9 @@ namespace Capture
 {
   CaptureController::CaptureController()
       : m_logger(LoggingService::Instance().getLogger("CaptureController"))
+      , m_outlierRemoval(true)
+      , m_outlierRemovalMeanK(50)
+      , m_outlierRemovalStdDevMulThr(1.0)
   {
     m_isRunning.store(false);
   }
@@ -239,8 +243,22 @@ namespace Capture
 
     /* Filter NaN alues from point cloud */
     m_logger->trace("Removing NaN values from captured cloud");
-    std::vector<int> indices;
-    pcl::removeNaNFromPointCloud(*cloud, *cloud, indices);
+    {
+      std::vector<int> indices;
+      pcl::removeNaNFromPointCloud(*cloud, *cloud, indices);
+    }
+
+    /* Filter outliers */
+    if (m_outlierRemoval)
+    {
+      m_logger->trace("Performing statistical outlier point removal");
+      pcl::StatisticalOutlierRemoval<PointType> sor;
+      sor.setMeanK(m_outlierRemovalMeanK);
+      sor.setStddevMulThresh(m_outlierRemovalStdDevMulThr);
+      size_t previousPointCount = cloud->size();
+      sor.filter(*cloud);
+      m_logger->debug("Removed {} outliers", previousPointCount - cloud->size());
+    }
 
     /* Queue post capture operations */
     m_logger->trace("Queueing post capture operations");

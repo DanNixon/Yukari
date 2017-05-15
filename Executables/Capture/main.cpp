@@ -30,7 +30,7 @@ int main(int argc, char **argv)
     ("imugrabber", po::value<std::string>(), "IMU grabber to use")
     ("orientation", po::value<std::string>()->default_value("[0, 0, 0] 0"), "Relative IMU orientation as \"[axis] angle\"")
     ("position", po::value<std::string>()->default_value("[0, 0, 0]"), "Relative IMU position as \"[position]\"")
-    ("capturetrigger", po::value<std::string>()->default_value("periodic(delay=5000)"), "Trigger for a single frame")
+    ("capturetrigger", po::value<std::string>()->default_value(""), "Trigger for a single frame")
     ("exittrigger", po::value<std::string>()->default_value("signal(signal=2)"), "Trigger for program exit")
     ("process", po::value<std::vector<std::string>>()->multitoken(), "Add processing stage");
   // clang-format on

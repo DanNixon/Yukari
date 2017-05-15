@@ -68,6 +68,21 @@ Capture.exe
   --process downsample(out=downsample,downsample=0.01)
 ```
 
+Feature based registration:
+```
+Capture.exe
+  --cloudgrabber pcdfile(pattern=.*_cloud\.pcd,fps=1)
+  --process featureincremental(out=inc,downsample=0.01,transform=false)
+  --loglevel trace
+```
+
+Operate on a set of saved point clouds:
+```
+Capture.exe
+  --cloudgrabber pcdfile(pattern=.*_cloud\.pcd,fps=1)
+  --process savecloud(out=raw_clouds,transform=false)
+```
+
 Test grabbing frames from a Kinect:
 ```
 CloudGrabberTest.exe

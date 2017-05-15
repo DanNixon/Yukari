@@ -27,16 +27,18 @@ namespace Processing
       , m_previousCloudWorldTransform(Eigen::Matrix4f::Identity())
   {
     /* Parse save transforms option */
-    std::string saveTransformParam =
-        MapHelpers::Get<std::string, std::string>(params, "transform", "true");
-    StringParsers::CleanString(saveTransformParam);
-    m_saveTransforms = saveTransformParam == "true";
+    {
+      std::string paramStr = MapHelpers::Get<std::string, std::string>(params, "transform", "true");
+      StringParsers::CleanString(paramStr);
+      m_saveTransforms = paramStr == "true";
+    }
 
     /* Parse save clouds option */
-    std::string saveCloudParam =
-        MapHelpers::Get<std::string, std::string>(params, "cloud", "false");
-    StringParsers::CleanString(saveCloudParam);
-    m_saveClouds = saveCloudParam == "true";
+    {
+      std::string paramStr = MapHelpers::Get<std::string, std::string>(params, "cloud", "true");
+      StringParsers::CleanString(paramStr);
+      m_saveClouds = paramStr == "true";
+    }
   }
 
   int ITaskIncrementalAlignment::process(Task t)
@@ -70,7 +72,7 @@ namespace Processing
                                      m_previousCloudWorldTransform);
 
     /* Save transformed cloud */
-    if (m_saveTransforms)
+    if (m_saveClouds)
     {
       boost::filesystem::path cloudFilename = m_outputDirectory / (frameNoStr + "_cloud.pcd");
       m_logger->trace("Saving transformed point cloud for frame {}: {}", t.frameNumber,
@@ -79,7 +81,7 @@ namespace Processing
     }
 
     /* Save transformation */
-    if (m_saveClouds)
+    if (m_saveTransforms)
     {
       IMU::IMUFrame transformFrame(m_previousCloudWorldTransform);
       boost::filesystem::path imuFilename = m_outputDirectory / (frameNoStr + "_transform.txt");
