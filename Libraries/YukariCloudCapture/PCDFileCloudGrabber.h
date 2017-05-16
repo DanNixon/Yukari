@@ -27,6 +27,9 @@ namespace CloudCapture
       FilesystemHelpers::FindByRegex(root, pattern, m_filenames);
       logger->info("Found {} PCD files", m_filenames.size());
 
+      for (auto it = m_filenames.begin(); it != m_filenames.end(); ++it)
+        logger->trace("File: {}", *it);
+
       setGrabber(std::make_shared<pcl::PCDGrabber<POINT_TYPE>>(m_filenames, fps, false));
     }
 
