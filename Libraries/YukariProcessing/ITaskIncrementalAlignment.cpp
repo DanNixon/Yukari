@@ -9,8 +9,6 @@
 #include <YukariCommon/MapHelpers.h>
 #include <YukariCommon/StringParsers.h>
 
-#include "CloudOperations.h"
-
 using namespace Yukari::Common;
 
 namespace Yukari

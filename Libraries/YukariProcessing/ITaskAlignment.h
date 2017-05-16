@@ -11,6 +11,8 @@
 #include <pcl/registration/icp.h>
 #include <pcl/registration/ndt.h>
 
+#include <YukariCommon/LoggingService.h>
+
 namespace Yukari
 {
 namespace Processing
@@ -42,7 +44,13 @@ namespace Processing
     void setNDTParameters(pcl::NormalDistributionsTransform<PointT, PointT> &ndt);
     void setICPParameters(pcl::IterativeClosestPoint<PointT, PointT> &icp);
 
+    void removeOutliers(CloudConstPtr in, CloudPtr out);
+    void downsample(CloudConstPtr in, CloudPtr out);
+
     virtual void doAlignment(Task t) = 0;
+
+  private:
+    Yukari::Common::LoggingService::Logger m_logger;
 
   protected:
     /* Outlier removal parameters */

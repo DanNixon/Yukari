@@ -1,7 +1,6 @@
 project(YukariProcessing)
 
 set(HEADERS
-  CloudOperations.h
   FrameProcessingTaskFactory.h
   IFrameProcessingTask.h
   ITaskAlignment.h

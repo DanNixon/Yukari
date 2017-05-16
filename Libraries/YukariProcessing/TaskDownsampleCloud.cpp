@@ -4,8 +4,6 @@
 
 #include <pcl/io/pcd_io.h>
 
-#include "CloudOperations.h"
-
 using namespace Yukari::Common;
 
 namespace Yukari
@@ -33,8 +31,8 @@ namespace Processing
     std::string frameNoStr = ss.str();
 
     /* Downsample the input cloud for alignment */
-    auto filteredInputCloud = Processing::CloudOperations<PointT>::DownsampleVoxelFilter(
-        t.cloud, m_voxelDownsamplePercentage);
+	CloudPtr filteredInputCloud(new Cloud);
+	downsample(t.cloud, filteredInputCloud);
 
     /* Save transformed cloud */
     boost::filesystem::path cloudFilename = m_outputDirectory / (frameNoStr + "_cloud.pcd");

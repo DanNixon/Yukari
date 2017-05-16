@@ -6,8 +6,6 @@
 #include <pcl/io/pcd_io.h>
 #include <pcl/registration/icp.h>
 
-#include "CloudOperations.h"
-
 using namespace Yukari::Common;
 
 namespace Yukari
@@ -24,8 +22,8 @@ namespace Processing
   void TaskICPIncrementalAlignment::doAlignment(Task t)
   {
     /* Downsample the input cloud for alignment */
-    auto filteredInputCloud = Processing::CloudOperations<PointT>::DownsampleVoxelFilter(
-        t.cloud, m_voxelDownsamplePercentage);
+	CloudPtr filteredInputCloud(new Cloud);
+	downsample(t.cloud, filteredInputCloud);
 
     /* Perform alignment */
     pcl::IterativeClosestPoint<PointT, PointT> icp;

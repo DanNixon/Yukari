@@ -7,7 +7,6 @@
 #include <pcl/io/pcd_io.h>
 #include <pcl/registration/icp_nl.h>
 
-#include "CloudOperations.h"
 #include "PairRegistrationPointRepresentation.h"
 
 using namespace Yukari::Common;
@@ -32,10 +31,10 @@ namespace Processing
     pcl::transformPointCloud(*t.cloud, *inputCloud, t.imuFrame->toCloudTransform());
 
     /* Downsample the input and world cloud for alignment */
-    auto filteredInputCloud = Processing::CloudOperations<PointT>::DownsampleVoxelFilter(
-        inputCloud, m_voxelDownsamplePercentage);
-    auto filteredWorldCloud = Processing::CloudOperations<PointT>::DownsampleVoxelFilter(
-        m_worldCloud, m_voxelDownsamplePercentage);
+    CloudPtr filteredInputCloud(new Cloud);
+    downsample(inputCloud, filteredInputCloud);
+    CloudPtr filteredWorldCloud(new Cloud);
+    downsample(m_worldCloud, filteredWorldCloud);
 
     /* Compute normals and curvature */
     pcl::PointCloud<pcl::PointNormal>::Ptr sourceNormals(new pcl::PointCloud<pcl::PointNormal>());

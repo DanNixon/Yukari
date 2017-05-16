@@ -2,6 +2,9 @@
 
 #include "ITaskAlignment.h"
 
+#include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/filters/voxel_grid.h>
+
 #include <YukariCommon/LoggingService.h>
 #include <YukariCommon/MapHelpers.h>
 
@@ -14,6 +17,7 @@ namespace Processing
   ITaskAlignment::ITaskAlignment(const boost::filesystem::path &path,
                                  std::map<std::string, std::string> &params)
       : IFrameProcessingTask(path)
+      , m_logger(LoggingService::Instance().getLogger("ITaskAlignment"))
       , m_outlierRemoval(
             std::stoi(MapHelpers::Get<std::string, std::string>(params, "orenable", "0")))
       , m_outlierRemovalMeanK(
@@ -56,9 +60,32 @@ namespace Processing
   void ITaskAlignment::setICPParameters(pcl::IterativeClosestPoint<PointT, PointT> &icp)
   {
     icp.setMaximumIterations(m_maxIterations);
-    icp.setMaxCorrespondenceDistance(m_maxCorrDist);       // 0.5
-    icp.setTransformationEpsilon(m_transformationEpsilon); // 1e-6
-    icp.setEuclideanFitnessEpsilon(m_eFitnessEpsilon);     // 0.01
+    icp.setMaxCorrespondenceDistance(m_maxCorrDist);
+    icp.setTransformationEpsilon(m_transformationEpsilon);
+    icp.setEuclideanFitnessEpsilon(m_eFitnessEpsilon);
+  }
+
+  void ITaskAlignment::removeOutliers(CloudConstPtr in, CloudPtr out)
+  {
+    m_logger->trace("Performing statistical outlier point removal");
+    pcl::StatisticalOutlierRemoval<PointT> sor;
+    sor.setMeanK(m_outlierRemovalMeanK);
+    sor.setStddevMulThresh(m_outlierRemovalStdDevMulThr);
+    sor.setInputCloud(in);
+    sor.filter(*out);
+    m_logger->debug("Removed {} outliers ({} points after filtering)", in->size() - out->size(),
+                    out->size());
+  }
+
+  void ITaskAlignment::downsample(CloudConstPtr in, CloudPtr out)
+  {
+    m_logger->trace("Downsampling (leaf size: {})", m_voxelDownsamplePercentage);
+    pcl::VoxelGrid<PointT> voxelFilter;
+    voxelFilter.setLeafSize(m_voxelDownsamplePercentage, m_voxelDownsamplePercentage,
+                            m_voxelDownsamplePercentage);
+    voxelFilter.setInputCloud(in);
+    voxelFilter.filter(*out);
+    m_logger->debug("{} points in downsampled cloud", out->size());
   }
 }
 }
