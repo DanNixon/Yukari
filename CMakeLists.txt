@@ -80,8 +80,6 @@ add_subdirectory(Executables/Test/CloudGrabberTest)
 add_subdirectory(Executables/Test/IMUGrabberTest)
 add_subdirectory(Executables/Test/TriggerTest)
 
-add_subdirectory(Executables/FeatureRegistrationTest)
-
 # Docs
 add_doxygen(
   Doxyfile
