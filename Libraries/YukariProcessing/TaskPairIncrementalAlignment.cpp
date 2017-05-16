@@ -25,8 +25,9 @@ namespace Processing
   void TaskPairIncrementalAlignment::doAlignment(Task t)
   {
     /* Downsample the input and world cloud for alignment */
-    CloudPtr filteredInputCloud(new Cloud);
-    downsample(t.cloud, filteredInputCloud);
+    CloudPtr filteredInputCloud(new Cloud(*t.cloud));
+    removeOutliers(filteredInputCloud, filteredInputCloud);
+    downsample(filteredInputCloud, filteredInputCloud);
     CloudPtr filteredWorldCloud(new Cloud);
     downsample(m_previousCloud, filteredWorldCloud);
 

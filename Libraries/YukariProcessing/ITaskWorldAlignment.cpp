@@ -30,11 +30,14 @@ namespace Processing
 
     if (!m_worldCloud)
     {
-      CloudPtr inputCloud(new Cloud());
+      CloudPtr inputCloud(new Cloud(*t.cloud));
+
+      /* Filter cloud */
+      removeOutliers(t.cloud, inputCloud);
 
       /* Transform cloud */
       m_logger->trace("Transforming cloud by IMU");
-      pcl::transformPointCloud(*t.cloud, *inputCloud, t.imuFrame->toCloudTransform());
+      pcl::transformPointCloud(*inputCloud, *inputCloud, t.imuFrame->toCloudTransform());
 
       /* If this is the first recored cloud simply set it as he "world" cloud */
       m_worldCloud = inputCloud;

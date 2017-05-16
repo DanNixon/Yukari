@@ -93,15 +93,8 @@ namespace Processing
     CloudPtr inCloud;
 
     /* Filter outliers */
-    if (m_outlierRemoval)
-    {
-      inCloud = boost::make_shared<Cloud>();
-      removeOutliers(t.cloud, inCloud);
-    }
-    else
-    {
-      inCloud = boost::make_shared<Cloud>(*t.cloud);
-    }
+    inCloud = boost::make_shared<Cloud>(*t.cloud);
+    removeOutliers(t.cloud, inCloud);
 
     /* Downsample cloud */
     downsample(inCloud, d.downsampled);

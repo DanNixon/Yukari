@@ -22,8 +22,9 @@ namespace Processing
   void TaskNDTIncrementalAlignment::doAlignment(Task t)
   {
     /* Downsample the input cloud for alignment */
-    CloudPtr filteredInputCloud(new Cloud);
-    downsample(t.cloud, filteredInputCloud);
+    CloudPtr filteredInputCloud(new Cloud(*t.cloud));
+    removeOutliers(filteredInputCloud, filteredInputCloud);
+    downsample(filteredInputCloud, filteredInputCloud);
 
     /* Perform alignment */
     pcl::NormalDistributionsTransform<PointT, PointT> ndt;

@@ -67,14 +67,17 @@ namespace Processing
 
   void ITaskAlignment::removeOutliers(CloudConstPtr in, CloudPtr out)
   {
-    m_logger->trace("Performing statistical outlier point removal");
-    pcl::StatisticalOutlierRemoval<PointT> sor;
-    sor.setMeanK(m_outlierRemovalMeanK);
-    sor.setStddevMulThresh(m_outlierRemovalStdDevMulThr);
-    sor.setInputCloud(in);
-    sor.filter(*out);
-    m_logger->debug("Removed {} outliers ({} points after filtering)", in->size() - out->size(),
-                    out->size());
+    if (m_outlierRemoval)
+    {
+      m_logger->trace("Performing statistical outlier point removal");
+      pcl::StatisticalOutlierRemoval<PointT> sor;
+      sor.setMeanK(m_outlierRemovalMeanK);
+      sor.setStddevMulThresh(m_outlierRemovalStdDevMulThr);
+      sor.setInputCloud(in);
+      sor.filter(*out);
+      m_logger->debug("Removed {} outliers ({} points after filtering)", in->size() - out->size(),
+                      out->size());
+    }
   }
 
   void ITaskAlignment::downsample(CloudConstPtr in, CloudPtr out)

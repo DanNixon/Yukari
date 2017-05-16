@@ -64,6 +64,7 @@ namespace Processing
 
     /* Set previous cloud */
     m_previousCloud = CloudPtr(new Cloud(*t.cloud));
+    removeOutliers(t.cloud, m_previousCloud);
 
     /* Transform the previous/target cloud by it's world position (for next frame) */
     pcl::transformPointCloud<PointT>(*m_previousCloud, *m_previousCloud,
