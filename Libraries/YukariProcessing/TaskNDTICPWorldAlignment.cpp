@@ -29,8 +29,8 @@ namespace Processing
     pcl::transformPointCloud(*t.cloud, *inputCloud, t.imuFrame->toCloudTransform());
 
     /* Downsample the input cloud for alignment */
-	CloudPtr filteredInputCloud(new Cloud);
-	downsample(inputCloud, filteredInputCloud);
+    CloudPtr filteredInputCloud(new Cloud);
+    downsample(inputCloud, filteredInputCloud);
 
     /* Perform NDT alignment */
     pcl::NormalDistributionsTransform<PointT, PointT> ndt;

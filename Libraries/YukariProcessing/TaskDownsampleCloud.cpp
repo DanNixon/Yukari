@@ -31,8 +31,8 @@ namespace Processing
     std::string frameNoStr = ss.str();
 
     /* Downsample the input cloud for alignment */
-	CloudPtr filteredInputCloud(new Cloud);
-	downsample(t.cloud, filteredInputCloud);
+    CloudPtr filteredInputCloud(new Cloud);
+    downsample(t.cloud, filteredInputCloud);
 
     /* Save transformed cloud */
     boost::filesystem::path cloudFilename = m_outputDirectory / (frameNoStr + "_cloud.pcd");

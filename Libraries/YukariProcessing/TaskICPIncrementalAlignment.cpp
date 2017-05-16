@@ -22,8 +22,8 @@ namespace Processing
   void TaskICPIncrementalAlignment::doAlignment(Task t)
   {
     /* Downsample the input cloud for alignment */
-	CloudPtr filteredInputCloud(new Cloud);
-	downsample(t.cloud, filteredInputCloud);
+    CloudPtr filteredInputCloud(new Cloud);
+    downsample(t.cloud, filteredInputCloud);
 
     /* Perform alignment */
     pcl::IterativeClosestPoint<PointT, PointT> icp;
