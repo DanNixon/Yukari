@@ -14,6 +14,12 @@ namespace Processing
   ITaskAlignment::ITaskAlignment(const boost::filesystem::path &path,
                                  std::map<std::string, std::string> &params)
       : IFrameProcessingTask(path)
+      , m_outlierRemoval(
+            std::stoi(MapHelpers::Get<std::string, std::string>(params, "orenable", "0")))
+      , m_outlierRemovalMeanK(
+            std::stoi(MapHelpers::Get<std::string, std::string>(params, "ormeank", "50")))
+      , m_outlierRemovalStdDevMulThr(
+            std::stof(MapHelpers::Get<std::string, std::string>(params, "orstddev", "1.0")))
       , m_maxIterations(
             std::stoi(MapHelpers::Get<std::string, std::string>(params, "maxiter", "35")))
       , m_transformationEpsilon(

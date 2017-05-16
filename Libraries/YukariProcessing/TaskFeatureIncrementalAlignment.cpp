@@ -5,6 +5,7 @@
 #include <pcl/common/transforms.h>
 #include <pcl/features/fpfh_omp.h>
 #include <pcl/features/normal_3d_omp.h>
+#include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/registration/correspondence_rejection_sample_consensus.h>
@@ -25,7 +26,7 @@ namespace Processing
   TaskFeatureIncrementalAlignment::TaskFeatureIncrementalAlignment(
       const boost::filesystem::path &path, std::map<std::string, std::string> &params)
       : ITaskIncrementalAlignment(path, params)
-      , m_logger(LoggingService::Instance().getLogger("TaskICPIncrementalAlignment"))
+      , m_logger(LoggingService::Instance().getLogger("TaskFeatureIncrementalAlignment"))
   {
   }
 
@@ -93,12 +94,32 @@ namespace Processing
 
     pcl::search::KdTree<PointT>::Ptr tree(new pcl::search::KdTree<PointT>());
 
+    CloudPtr inCloud;
+
+    /* Filter outliers */
+    if (m_outlierRemoval)
+    {
+      m_logger->trace("Performing statistical outlier point removal");
+      pcl::StatisticalOutlierRemoval<PointT> sor;
+      sor.setMeanK(m_outlierRemovalMeanK);
+      sor.setStddevMulThresh(m_outlierRemovalStdDevMulThr);
+      sor.setInputCloud(t.cloud);
+      inCloud = boost::make_shared<Cloud>();
+      sor.filter(*inCloud);
+      m_logger->debug("Removed {} outliers ({} points after filtering)",
+                      t.cloud->size() - inCloud->size(), inCloud->size());
+    }
+    else
+    {
+      inCloud = boost::make_shared<Cloud>(*t.cloud);
+    }
+
     /* Downsample cloud */
     m_logger->trace("Downsampling (leaf size: {})", m_voxelDownsamplePercentage);
     pcl::VoxelGrid<PointT> voxelFilter;
     voxelFilter.setLeafSize(m_voxelDownsamplePercentage, m_voxelDownsamplePercentage,
                             m_voxelDownsamplePercentage);
-    voxelFilter.setInputCloud(t.cloud);
+    voxelFilter.setInputCloud(inCloud);
     voxelFilter.filter(*d.downsampled);
     m_logger->debug("{} points in downsampled cloud", d.downsampled->size());
 

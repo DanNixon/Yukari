@@ -29,7 +29,11 @@ namespace Processing
         << "resolution=" << t.m_resolution << ","
         << "maxcorr=" << t.m_maxCorrDist << ","
         << "efitepsilon=" << t.m_eFitnessEpsilon << ","
-        << "downsample=" << t.m_voxelDownsamplePercentage << ")";
+        << "downsample=" << t.m_voxelDownsamplePercentage << ","
+        << "normradius=" << t.m_normalEstimationRadiusSearch << ","
+        << "featureradius=" << t.m_featureRadiusSearch << ","
+        << "corrrejectmaxiters=" << t.m_corrRejectMaxIters << ","
+        << "corrrejinlierth=" << t.m_correRejectInlierThreshold << ")";
 
       return s;
     }
@@ -41,6 +45,11 @@ namespace Processing
     virtual void doAlignment(Task t) = 0;
 
   protected:
+    /* Outlier removal parameters */
+    bool m_outlierRemoval;
+    int m_outlierRemovalMeanK;
+    double m_outlierRemovalStdDevMulThr;
+
     /* Common parameters */
     int m_maxIterations;
     double m_transformationEpsilon;
