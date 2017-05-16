@@ -4,6 +4,7 @@
 
 #include <atomic>
 #include <chrono>
+#include <iomanip>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -45,6 +46,13 @@ namespace Processing
 
     void start();
     void stop(bool finishJobs = true);
+
+    inline boost::filesystem::path formatFilename(Task t, const std::string &filename) const
+    {
+      std::stringstream ss;
+      ss << std::setw(5) << std::setfill('0') << t.frameNumber;
+      return m_outputDirectory / (ss.str() + filename);
+    }
 
     inline bool isRunning() const
     {

@@ -34,11 +34,6 @@ namespace Processing
       return 1;
     }
 
-    /* Format frame number */
-    std::stringstream ss;
-    ss << std::setw(5) << std::setfill('0') << t.frameNumber;
-    std::string frameNoStr = ss.str();
-
     if (!m_previousCloud)
     {
       /* Set initial transform */
@@ -61,7 +56,7 @@ namespace Processing
     /* Save transformed cloud */
     if (m_saveClouds)
     {
-      boost::filesystem::path cloudFilename = m_outputDirectory / (frameNoStr + "_cloud.pcd");
+      boost::filesystem::path cloudFilename = formatFilename(t, "_cloud.pcd");
       m_logger->trace("Saving transformed point cloud for frame {}: {}", t.frameNumber,
                       cloudFilename);
       pcl::io::savePCDFileBinaryCompressed(cloudFilename.string(), *m_previousCloud);
@@ -71,7 +66,7 @@ namespace Processing
     if (m_saveTransforms)
     {
       IMU::IMUFrame transformFrame(m_previousCloudWorldTransform);
-      boost::filesystem::path imuFilename = m_outputDirectory / (frameNoStr + "_transform.txt");
+      boost::filesystem::path imuFilename = formatFilename(t, "_transform.txt");
       transformFrame.save(imuFilename);
     }
 
@@ -111,6 +106,14 @@ namespace Processing
     {
       if (!pcl::isFinite<pcl::Normal>(d.normals->points[i]))
         m_logger->warn("normals[{}] is not finite", i);
+    }
+
+    /* Save point cloud with normals for debugging */
+    {
+      pcl::PointCloud<pcl::PointNormal>::Ptr cloudWithNormals(
+          new pcl::PointCloud<pcl::PointNormal>);
+      // pcl::concatenateFields(*d.downsampled, *d.normals, *cloudWithNormals);
+      // TODO
     }
 
     /* Feature estimation */

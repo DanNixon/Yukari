@@ -25,17 +25,12 @@ namespace Processing
       return 1;
     }
 
-    /* Format frame number */
-    std::stringstream ss;
-    ss << std::setw(5) << std::setfill('0') << t.frameNumber;
-    std::string frameNoStr = ss.str();
-
     /* Downsample the input cloud for alignment */
     CloudPtr filteredInputCloud(new Cloud);
     downsample(t.cloud, filteredInputCloud);
 
     /* Save transformed cloud */
-    boost::filesystem::path cloudFilename = m_outputDirectory / (frameNoStr + "_cloud.pcd");
+    boost::filesystem::path cloudFilename = formatFilename(t, "_cloud.pcd");
     m_logger->trace("Saving point cloud for frame {}: {}", t.frameNumber, cloudFilename);
     pcl::io::savePCDFileBinaryCompressed(cloudFilename.string(), *filteredInputCloud);
 

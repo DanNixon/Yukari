@@ -27,9 +27,7 @@ namespace Processing
     if (t.cloud)
     {
       /* Generate filename */
-      std::stringstream ss;
-      ss << std::setw(5) << std::setfill('0') << t.frameNumber;
-      boost::filesystem::path cloudFilename = m_outputDirectory / (ss.str() + "_cloud.pcd");
+      boost::filesystem::path cloudFilename = formatFilename(t, "_cloud.pcd");
 
       if (m_transform)
       {

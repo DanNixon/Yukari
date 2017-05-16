@@ -24,9 +24,7 @@ namespace Processing
     if (t.imuFrame)
     {
       /* Generate filename */
-      std::stringstream ss;
-      ss << std::setw(5) << std::setfill('0') << t.frameNumber;
-      boost::filesystem::path imuFilename = m_outputDirectory / (ss.str() + "_imu.txt");
+      boost::filesystem::path imuFilename = formatFilename(t, "_imu.txt");
 
       /* Save IMU frame */
       t.imuFrame->save(imuFilename);
