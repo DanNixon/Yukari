@@ -23,6 +23,7 @@ namespace Processing
       const boost::filesystem::path &path, std::map<std::string, std::string> &params)
       : ITaskIncrementalAlignment(path, params)
       , m_logger(LoggingService::Instance().getLogger("TaskFeatureIncrementalAlignment"))
+      , m_debugSave(true)
   {
   }
 
@@ -66,8 +67,7 @@ namespace Processing
     if (m_saveTransforms)
     {
       IMU::IMUFrame transformFrame(m_previousCloudWorldTransform);
-      boost::filesystem::path imuFilename = formatFilename(t, "_transform.txt");
-      transformFrame.save(imuFilename);
+      transformFrame.save(formatFilename(t, "_transform.txt"));
     }
 
     return 0;
@@ -109,11 +109,16 @@ namespace Processing
     }
 
     /* Save point cloud with normals for debugging */
+    if (m_debugSave)
     {
+      auto filename = formatFilename(t, "_downsampledWithNormals.pcd");
+      m_logger->debug("Saving downsampled cloud with normals: {}", filename);
+      pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
       pcl::PointCloud<pcl::PointNormal>::Ptr cloudWithNormals(
           new pcl::PointCloud<pcl::PointNormal>);
-      // pcl::concatenateFields(*d.downsampled, *d.normals, *cloudWithNormals);
-      // TODO
+      pcl::copyPointCloud(*d.downsampled, *cloud);
+      pcl::concatenateFields(*cloud, *d.normals, *cloudWithNormals);
+      pcl::io::savePCDFileBinaryCompressed(filename.string(), *cloudWithNormals);
     }
 
     /* Feature estimation */
@@ -125,6 +130,14 @@ namespace Processing
     pfh.setInputNormals(d.normals);
     pfh.compute(*d.features);
     m_logger->debug("{} points in feature cloud", d.features->size());
+
+    /* Save feature cloud with normals for debugging */
+    if (m_debugSave)
+    {
+      auto filename = formatFilename(t, "_features.pcd");
+      m_logger->debug("Saving feature cloud: {}", filename);
+      pcl::io::savePCDFileBinaryCompressed(filename.string(), *d.features);
+    }
 
     return d;
   }
@@ -184,6 +197,21 @@ namespace Processing
     }
     m_logger->debug("Points in trimmed input cloud = {}", trimmedInput->size());
     m_logger->debug("Points in trimmed target cloud = {}", trimmedTarget->size());
+
+    /* Save trimmed clouds for debugging */
+    if (m_debugSave)
+    {
+      {
+        auto filename = formatFilename(t, "_trimmedInput.pcd");
+        m_logger->debug("Saving trimmed input cloud: {}", filename);
+        pcl::io::savePCDFileBinaryCompressed(filename.string(), *trimmedInput);
+      }
+      {
+        auto filename = formatFilename(t, "_trimmedTarget.pcd");
+        m_logger->debug("Saving trimmed target cloud: {}", filename);
+        pcl::io::savePCDFileBinaryCompressed(filename.string(), *trimmedTarget);
+      }
+    }
 
     /* Fine alignment (ICP) */
     m_logger->trace("Fine alignment");

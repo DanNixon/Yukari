@@ -50,7 +50,7 @@ namespace Capture
 
     /* Get cloud grabber */
     CloudGrabberPtr grabber =
-        CloudGrabberFactory<pcl::PointXYZRGBA>::Create(config["cloudgrabber"].as<std::string>());
+        CloudGrabberFactory<PointType>::Create(config["cloudgrabber"].as<std::string>());
     if (!grabber)
     {
       logger->error("Failed to create cloud grabber");

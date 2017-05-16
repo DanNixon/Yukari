@@ -18,6 +18,8 @@ using namespace Yukari::Common;
 using namespace Yukari::IMU;
 using namespace Yukari::Maths;
 
+typedef pcl::PointXYZRGBA PointType;
+
 int main(int argc, char **argv)
 {
   auto log = LoggingService::Instance().getLogger("main");
@@ -58,8 +60,8 @@ int main(int argc, char **argv)
   LoggingService::Instance().configure(args);
 
   /* Create cloud grabber */
-  typename ICloudGrabber<pcl::PointXYZRGBA>::Ptr grabber =
-      CloudGrabberFactory<pcl::PointXYZRGBA>::Create(args["grabber"].as<std::string>());
+  typename ICloudGrabber<PointType>::Ptr grabber =
+      CloudGrabberFactory<PointType>::Create(args["grabber"].as<std::string>());
   if (!grabber)
   {
     log->critical("Failed to create cloud grabber");
@@ -81,7 +83,7 @@ int main(int argc, char **argv)
     log->error("Failed to create IMU grabber");
   }
 
-  Yukari::CloudGrabberTest::CloudGrabberVisualisation<pcl::PointXYZRGBA> viewer(grabber, imu);
+  Yukari::CloudGrabberTest::CloudGrabberVisualisation<PointType> viewer(grabber, imu);
   viewer.run();
 
   log->info("Exiting");
