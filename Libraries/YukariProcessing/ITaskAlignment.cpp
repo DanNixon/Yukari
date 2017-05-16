@@ -46,7 +46,7 @@ namespace Processing
       , m_correRejectInlierThreshold(
             std::stod(MapHelpers::Get<std::string, std::string>(params, "corrrejinlierth", "0.5")))
   {
-    LoggingService::Instance().getLogger("ITaskAlignment")->info("Created: {}", *this);
+    m_logger->info("Created: {}", *this);
   }
 
   void ITaskAlignment::setNDTParameters(pcl::NormalDistributionsTransform<PointT, PointT> &ndt)
