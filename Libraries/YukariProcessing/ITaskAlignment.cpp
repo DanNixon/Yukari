@@ -70,12 +70,13 @@ namespace Processing
     if (m_outlierRemoval)
     {
       m_logger->trace("Performing statistical outlier point removal");
+      size_t inSize = in->size();
       pcl::StatisticalOutlierRemoval<PointT> sor;
       sor.setMeanK(m_outlierRemovalMeanK);
       sor.setStddevMulThresh(m_outlierRemovalStdDevMulThr);
       sor.setInputCloud(in);
       sor.filter(*out);
-      m_logger->debug("Removed {} outliers ({} points after filtering)", in->size() - out->size(),
+      m_logger->debug("Removed {} outliers ({} points after filtering)", inSize - out->size(),
                       out->size());
     }
   }
