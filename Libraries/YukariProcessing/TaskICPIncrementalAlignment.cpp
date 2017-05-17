@@ -45,7 +45,7 @@ namespace Processing
     m_logger->debug("Fitness score: {}", icp.getFitnessScore());
 
     /* Get transform from world origin to input cloud position */
-    m_previousCloudWorldTransform = icp.getFinalTransformation();
+    m_previousCloudWorldTransform = icp.getFinalTransformation() * m_previousCloudWorldTransform;
   }
 }
 }

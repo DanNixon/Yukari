@@ -223,7 +223,8 @@ namespace Processing
     icp.align(*registeredInput, transform);
     m_logger->debug("ICP has converged: {}", icp.hasConverged());
     m_logger->debug("ICP fitness score = {}", icp.getFitnessScore());
-    m_previousCloudWorldTransform = icp.getFinalTransformation();
+
+    m_previousCloudWorldTransform = icp.getFinalTransformation() * m_previousCloudWorldTransform;
 
     m_targetData = inputData;
   }
