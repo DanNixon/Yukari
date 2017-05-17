@@ -73,7 +73,7 @@ namespace Processing
       m_logger->warn("Convergence not reached");
     m_logger->debug("Fitness score: {}", reg.getFitnessScore());
 
-    m_previousCloudWorldTransform = reg.getFinalTransformation() * m_previousCloudWorldTransform;
+    m_previousCloudWorldTransform = reg.getFinalTransformation();
     m_logger->debug("Final transform: {}", m_previousCloudWorldTransform);
   }
 }

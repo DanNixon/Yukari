@@ -63,7 +63,7 @@ namespace Processing
     m_logger->debug("Iterative Closest Point score: {}", icp.getFitnessScore());
 
     /* Get transform from world origin to inoput cloud position */
-    m_previousCloudWorldTransform = icp.getFinalTransformation() * m_previousCloudWorldTransform;
+    m_previousCloudWorldTransform = icp.getFinalTransformation();
   }
 }
 }

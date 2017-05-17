@@ -27,7 +27,7 @@ namespace Triggers
 
   void ProxyTrigger::trigger()
   {
-    LoggingService::Instance().getLogger("ProcyTrigger")->debug("Triggered.");
+    LoggingService::Instance().getLogger("ProxyTrigger")->debug("Triggered.");
     if (m_enabled)
       m_handlerFunc();
   }

@@ -44,8 +44,8 @@ namespace Processing
       m_logger->warn("Convergence not reached");
     m_logger->debug("Normal Distributions Transform score: {}", ndt.getFitnessScore());
 
-    /* Get transform from world origin to inoput cloud position */
-    m_previousCloudWorldTransform = ndt.getFinalTransformation() * m_previousCloudWorldTransform;
+    /* Get transform from world origin to input cloud position */
+    m_previousCloudWorldTransform = ndt.getFinalTransformation();
   }
 }
 }
