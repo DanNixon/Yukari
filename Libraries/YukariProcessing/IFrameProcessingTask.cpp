@@ -113,9 +113,9 @@ namespace Processing
       }
 
       /* Process the task */
-      m_logger->trace("Processing task started (for frame {})", t.frameNumber);
+      m_logger->info("Processing task started (for frame {})", t.frameNumber);
       process(t);
-      m_logger->trace("Processing task complete (for frame {})", t.frameNumber);
+      m_logger->info("Processing task complete (for frame {})", t.frameNumber);
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
