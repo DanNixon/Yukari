@@ -37,6 +37,11 @@ namespace CloudCapture
     {
     }
 
+    virtual bool isOpen() const override
+    {
+      return true;
+    }
+
     virtual Triggers::ITrigger::Ptr trigger()
     {
       return m_trigger;

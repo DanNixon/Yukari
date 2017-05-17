@@ -155,7 +155,6 @@ namespace Capture
       if (m_imuGrabber->isOpen())
       {
         m_logger->error("Failed to close IMU grabber!");
-        return false;
       }
     }
     else
@@ -169,7 +168,6 @@ namespace Capture
     if (m_cloudGrabber->isOpen())
     {
       m_logger->error("Failed to close cloud grabber!");
-      return false;
     }
 
     /* Stop operation workers */
