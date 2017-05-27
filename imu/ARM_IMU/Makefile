@@ -3,13 +3,7 @@ V = 1
 BINARY = main
 OBJS += $(BINARY).o clock.o console.o mpu6000.o MadgwickAHRS.o leds.o
 
-LDSCRIPT = stm32f4.ld
-
-LIBNAME = opencm3_stm32f4
-DEFS += -DSTM32F4
-
-FP_FLAGS?= -mfloat-abi=hard -mfpu=fpv4-sp-d16
-ARCH_FLAGS= -mthumb -mcpu=cortex-m4 $(FP_FLAGS)
+DEVICE = STM32F405RG
 
 ################################################################################
 # OpenOCD specific variables
